@@ -18,15 +18,15 @@
                             <!-- Role Name -->
                             <div class="col-md-6">
                                 <label for="name" class="form-label fw-bold">Role Name</label>
-                                <select class="form-select select2" name="roles[]">
+                                {{-- <select class="form-select select2" name="roles[]">
                                         <option><-Select Role-></option>
                                         @foreach ($roles as $role)
                                         <option value="{{$role->name}}">{{$role->name}}</option>
                                         @endforeach
-                                    </select>
-                                {{-- <input id="name" type="text"
+                                    </select> --}}
+                                <input id="name" type="text"
                                     class="form-control @error('name') is-invalid @enderror" name="name"
-                                    value="{{ old('name') }}" required> --}}
+                                    value="{{ old('name') }}" required>
                                 @error('name')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
