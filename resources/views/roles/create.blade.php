@@ -7,7 +7,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center"
                     style="background:#FC5C14; color: white;">
-                    <span>{{ __('Create Role') }}</span>
+                    <span>{{Create Role}}</span>
                     <a href="{{ route('roles.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                 </div>
 
