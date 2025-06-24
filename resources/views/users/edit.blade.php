@@ -54,13 +54,17 @@
                             {{-- Role, Status & Div Code --}}
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="role" class="form-label fw-bold">Role</label>
-                                    <select id="status" name="status" class="form-select select2" required>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
-                                    @endforeach
+                                    <label for="roles" class="form-label fw-bold">Role</label>
+                                    <select id="roles" name="roles[]" class="form-select select2" required>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}"
+                                                {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                                {{ ucfirst($role->name) }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
+
                                 <div class="col-md-4">
                                     <label for="status" class="form-label fw-bold">Status</label>
                                     <select id="status" name="status" class="form-select select2" required>

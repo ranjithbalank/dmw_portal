@@ -53,6 +53,7 @@
                                                     @endif
                                                 </td>
 
+
                                                 {{-- <td class="text-center">
                                                     <a href="{{ route('roles.edit', $permission->id) }}"
                                                         class="btn btn-sm btn-primary">
@@ -65,7 +66,7 @@
                                                         <i class="bi bi-eye"></i>
                                                     </button>
 
-                                                   
+
                                                 </td> --}}
                                             </tr>
                                         @endforeach

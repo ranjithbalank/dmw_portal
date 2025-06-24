@@ -16,10 +16,13 @@
                     <div class="card-body">
 
                         <div class="d-flex justify-content-end mb-3">
-                            <a href="{{ route('users.create') }}" class="btn btn-success shadow-sm">
-                                <i class="bi bi-person-plus"></i> Create User
-                            </a>
+                            @can('Create')
+                                <a href="{{ route('users.create') }}" class="btn btn-success shadow-sm">
+                                    <i class="bi bi-person-plus"></i> Create User
+                                </a>
+                            @endcan
                         </div>
+
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered text-center align-middle">
                                 <thead class="table-dark">
@@ -27,8 +30,8 @@
                                         <th>S.No</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Roles</th>
                                         <th>Action</th>
-
                                     </tr>
                                 </thead>
                                 <tbody class="text-start">
@@ -37,19 +40,33 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <td class="d-flex justify-content-center">
+                                                @foreach ($user->getRoleNames() as $roles)
+                                                    <button class="btn btn-success">{{ $roles }}</button>
+                                                @endforeach
+                                            </td>
+
                                             <td class="text-center">
-                                                <a href="{{ route('users.edit', $user->id) }}"
-                                                    class="btn btn-sm btn-primary">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <!-- View Button to trigger modal -->
+                                                @can('edit')
+                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                @endcan
+                                                @role('Admin')
+                                                {{-- @can('view') --}}
                                                 <button type="button" class="btn btn-sm btn-secondary"
                                                     data-bs-toggle="modal" data-bs-target="#userModal{{ $user->id }}">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
-
+                                                {{-- @endcan --}}
+                                                @endrole
                                                 <!-- Include the modal -->
-                                                @include('users.partials.show-modal', ['user' => $user])
+                                                @include('users.partials.show-modal', [
+                                                    'user' => $user,
+                                                ])
+
+
 
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST"
                                                     style="display: inline-block;"
@@ -60,12 +77,14 @@
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
+
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>

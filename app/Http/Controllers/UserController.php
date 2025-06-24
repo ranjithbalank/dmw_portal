@@ -7,6 +7,7 @@ use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -30,6 +31,8 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        // $ipAddress = $request->ip();
+
         return view("users.create", compact('roles'));
     }
 
@@ -38,6 +41,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
@@ -55,7 +59,7 @@ class UserController extends Controller
         ]);
 
         // Assign multiple roles
-        
+
 
         // Save user_details
         $user->details()->create([
@@ -78,7 +82,7 @@ class UserController extends Controller
     {
         $user = User::with('details')->findOrFail($id);
 
-        return view('users.show', compact('user'));
+        return view('users.view', compact('user'));
     }
 
     /**
@@ -87,11 +91,11 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::with('details')->findOrFail($id);
-         $roles = Role::all();
+        $roles = Role::all();
         // dd($user);
         return view("users.edit", [
             "user" => $user,
-            "roles"=> $roles,
+            "roles" => $roles,
         ]);
     }
 
@@ -100,40 +104,43 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate inputs
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'password' => 'nullable',
-            'role' => 'required|string|in:admin,manager,employee',
-            'status' => 'required|string|in:active,inactive',
+            'name'     => 'required|string|max:255',
+            'email'    => ['required', 'email', Rule::unique('users')->ignore($id)],
+            'password' => 'nullable|string|min:6',
+            'roles'    => 'required|array|size:1',
+            'status'   => 'required|string|in:active,inactive',
             'division' => 'nullable|string|max:255',
-            'divcode' => 'nullable|string|max:255',
+            'divcode'  => 'nullable|string|max:255',
         ]);
 
-        // Find user and update basic info
         $user = User::findOrFail($id);
-        $user->update([
+
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+        ];
 
-        ]);
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
 
-        // Update or create user details
+        $user->update($updateData);
+
+        $user->syncRoles($request->roles);
+
         $user->details()->updateOrCreate(
-            ['user_id' => $user->id], // match
+            ['user_id' => $user->id],
             [
-                'role' => $request->role,
-                'status' => $request->status,
+                'role'     => $request->roles[0],
+                'status'   => $request->status,
                 'division' => $request->division,
-                'divcode' => $request->divcode,
+                'divcode'  => $request->divcode,
             ]
         );
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
-
 
     /**
      * Remove the specified resource from storage.

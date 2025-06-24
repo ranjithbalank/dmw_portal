@@ -20,6 +20,7 @@
                     <div class="container py-3">
 
                         {{-- General Section --}}
+                        @role("Admin")
                         <h6 class="text-muted mb-3">General</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-3">
@@ -27,6 +28,8 @@
                                     <i class="bi bi-people-fill"></i> Users
                                 </a>
                             </div>
+                        @endrole
+
                             <div class="col-md-3">
                                 <a href="{{ route('leaves.index') }}" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm">
                                     <i class="bi bi-calendar-check-fill"></i> Leaves
