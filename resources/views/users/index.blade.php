@@ -16,11 +16,11 @@
                     <div class="card-body">
 
                         <div class="d-flex justify-content-end mb-3">
-                            @can('Create')
+                            {{-- @can('Create') --}}
                                 <a href="{{ route('users.create') }}" class="btn btn-success shadow-sm">
                                     <i class="bi bi-person-plus"></i> Create User
                                 </a>
-                            @endcan
+                            {{-- @endcan --}}
                         </div>
 
                         <div class="table-responsive mb-4">
@@ -47,20 +47,20 @@
                                             </td>
 
                                             <td class="text-center">
-                                                @can('edit')
+                                                {{-- @can('edit') --}}
                                                     <a href="{{ route('users.edit', $user->id) }}"
                                                         class="btn btn-sm btn-primary">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                @endcan
-                                                @role('Admin')
+                                                {{-- @endcan --}}
+                                                {{-- @role('Admin') --}}
                                                 {{-- @can('view') --}}
                                                 <button type="button" class="btn btn-sm btn-secondary"
                                                     data-bs-toggle="modal" data-bs-target="#userModal{{ $user->id }}">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
                                                 {{-- @endcan --}}
-                                                @endrole
+                                                {{-- @endrole --}}
                                                 <!-- Include the modal -->
                                                 @include('users.partials.show-modal', [
                                                     'user' => $user,

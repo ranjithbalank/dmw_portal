@@ -58,7 +58,7 @@ class LeaveController extends Controller
 
     public function show(Leave $leave)
     {
-        return view('leaves.show', compact('leave'));
+        return view('leaves.view', compact('leave'));
     }
 
     public function edit(Leave $leave)
