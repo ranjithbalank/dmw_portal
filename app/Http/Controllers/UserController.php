@@ -31,9 +31,10 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        $user = User::all();
         // $ipAddress = $request->ip();
 
-        return view("users.create", compact('roles'));
+        return view("users.create", compact('roles', 'user'));
     }
 
     /**
@@ -41,39 +42,36 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // Validate input
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string',
-            'roles'    => 'required|array', // ← multiple role IDs
-            'division' => 'required|string',
-            'divcode'  => 'required|string',
-            'status'   => 'required|string',
+            'name'          => ['required', 'string', 'max:255'],
+            'employee_id'   => ['required', 'string', 'max:20', 'unique:users'],
+            'email'         => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'unit'          => ['required', 'string', 'max:100'],
+            'department'    => ['required', 'string', 'max:100'],
+            'manager_id'    => ['required', 'string', 'max:255'],
+            'designation'   => ['required', 'string', 'max:100'],
+            'password'      => ['required', 'string', 'min:8', 'confirmed'],
+            'roles'         => ['required', 'array'],
         ]);
 
+        // Create user
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
+            'name'         => $request->name,
+            'employee_id'  => $request->employee_id,
+            'email'        => $request->email,
+            'unit'         => $request->unit,
+            'department'   => $request->department,
+            'manager_id'   => $request->manager_id,
+            'designation'  => $request->designation,
+            'password'     => Hash::make($request->password),
         ]);
 
-        // Assign multiple roles
-
-
-        // Save user_details
-        $user->details()->create([
-            'role'     => implode(',', $request->roles), // or store one primary role if needed
-            'division' => $request->division,
-            'divcode'  => $request->divcode,
-            'status'   => $request->status,
-        ]);
-
+        // Assign roles using Spatie
         $user->syncRoles($request->roles);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
-
 
     /**
      * Display the specified resource.
@@ -90,7 +88,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::with('details')->findOrFail($id);
+
+        $user = User::find($id);
+
         $roles = Role::all();
         // dd($user);
         return view("users.edit", [
@@ -104,43 +104,38 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => ['required', 'email', Rule::unique('users')->ignore($id)],
-            'password' => 'nullable|string|min:6',
-            'roles'    => 'required|array|size:1',
-            'status'   => 'required|string|in:active,inactive',
-            'division' => 'nullable|string|max:255',
-            'divcode'  => 'nullable|string|max:255',
-        ]);
-
         $user = User::findOrFail($id);
 
-        $updateData = [
-            'name' => $request->name,
-            'email' => $request->email,
-        ];
+        // Validate fields except email first
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
+            'roles'    => 'required|array',
+        ]);
 
-        if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->password);
+        // Check manually if the email already exists in another user
+        if ($request->email !== $user->email) {
+            $request->validate([
+                'email' => 'required|email|unique:users,email',
+            ]);
         }
 
-        $user->update($updateData);
+        // Update user fields
+        $user->name  = $request->name;
+        $user->email = $request->email;
 
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        // Assign roles
         $user->syncRoles($request->roles);
-
-        $user->details()->updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'role'     => $request->roles[0],
-                'status'   => $request->status,
-                'division' => $request->division,
-                'divcode'  => $request->divcode,
-            ]
-        );
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.

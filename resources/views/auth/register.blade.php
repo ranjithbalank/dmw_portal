@@ -15,7 +15,7 @@
                             {{-- Row 1: Name, Employee ID, Email --}}
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4">
-                                    <label for="name" class="form-label">Full Name<span
+                                    <label for="name" class="form-label">Full Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         name="name" id="name" value="{{ old('name') }}" required>
@@ -23,6 +23,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
 
                                 <div class="col-md-4">
                                     <label for="employee_id" class="form-label">Employee ID <span
@@ -109,24 +110,24 @@
                                         id="password-confirm" required>
                                 </div>
                             </div>
-
-                            <div class="card-footer bg-light">
-                                <div class="row">
-                                    <div class="col-12 d-flex justify-content-between align-items-center">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            {{ 'Register' }}
-                                        </button>
-
-                                        <a href="{{ route('login') }}" class="text-decoration-none small text-muted">
-                                            {{ 'Already registered? Click here to login' }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
                     </div>
 
+                    <div class="card-footer bg-light">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    {{ 'Register' }}
+                                </button>
+
+                                <a href="{{ route('login') }}" class="text-decoration-none small text-muted">
+                                    {{ 'Already registered? Click here to login' }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>

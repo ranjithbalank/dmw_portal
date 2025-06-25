@@ -7,97 +7,109 @@
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center"
                         style="background:#FC5C14; color: white;">
-                        <span>{{ __('Edit User') }}</span>
+                        <span>Edit User</span>
                         <a href="{{ route('users.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body py-3">
                         <form method="POST" action="{{ route('users.update', $user->id) }}">
                             @csrf
                             @method('PUT')
 
-                            {{-- Name & Email --}}
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="name" class="form-label fw-bold">Name</label>
-                                    <input id="name" type="text"
-                                        class="form-control @error('name') is-invalid @enderror" name="name"
+                            {{-- Row 1 --}}
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label for="name" class="form-label">Full Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="name"
+                                        class="form-control @error('name') is-invalid @enderror"
                                         value="{{ old('name', $user->name) }}" required>
                                     @error('name')
-                                        <small class="text-danger">{{ $message }}</small>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label fw-bold">Email</label>
-                                    <input id="email" type="email"
-                                        class="form-control @error('email') is-invalid @enderror" name="email"
+
+                                <div class="col-md-4">
+                                    <label for="employee_id" class="form-label">Employee ID</label>
+                                    <input type="text" class="form-control" value="{{ $user->employee_id }}" disabled>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="email" class="form-label">Email <span
+                                            class="text-danger">*</span></label>
+                                    <input type="email" name="email"
+                                        class="form-control @error('email') is-invalid @enderror"
                                         value="{{ old('email', $user->email) }}" required>
                                     @error('email')
-                                        <small class="text-danger">{{ $message }}</small>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
-                            {{-- Password & Confirm --}}
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="password" class="form-label fw-bold">Password</label>
-                                    <input id="password" type="password"
-                                        class="form-control @error('password') is-invalid @enderror" name="password"
-                                        placeholder="Password cannot be seen here">
-                                    @error('password')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            {{-- Role, Status & Div Code --}}
-                            <div class="row mb-3">
+                            {{-- Row 2 --}}
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-4">
-                                    <label for="roles" class="form-label fw-bold">Role</label>
-                                    <select id="roles" name="roles[]" class="form-select select2" required>
+                                    <label for="unit" class="form-label">Unit</label>
+                                    <input type="text" class="form-control" value="{{ $user->unit }}" disabled>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="department" class="form-label">Department</label>
+                                    <input type="text" class="form-control" value="{{ $user->department }}" disabled>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="manager_id" class="form-label">Manager ID</label>
+                                    <input type="text" class="form-control" value="{{ $user->manager_id }}" disabled>
+                                </div>
+                            </div>
+
+                            {{-- Row 3 --}}
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label for="designation" class="form-label">Designation</label>
+                                    <input type="text" class="form-control" value="{{ $user->designation }}" disabled>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="roles" class="form-label">Role <span class="text-danger">*</span></label>
+                                    <select name="roles[]" id="roles" class="form-select select2" required>
                                         @foreach ($roles as $role)
                                             <option value="{{ $role->name }}"
-                                                {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                                {{ $user->roles->pluck('name')->contains($role->name) ? 'selected' : '' }}>
                                                 {{ ucfirst($role->name) }}
                                             </option>
                                         @endforeach
                                     </select>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="status" class="form-label fw-bold">Status</label>
-                                    <select id="status" name="status" class="form-select select2" required>
-                                        <option value="active"
-                                            {{ ($user->details->status ?? '') === 'active' ? 'selected' : '' }}>Active
-                                        </option>
-                                        <option value="inactive"
-                                            {{ ($user->details->status ?? '') === 'inactive' ? 'selected' : '' }}>Inactive
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="divcode" class="form-label fw-bold">Div Code</label>
-                                    <input type="text" id="divcode" name="divcode" class="form-control"
-                                        value="{{ old('divcode', $user->details->divcode ?? '') }}">
+                                    @error('roles')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
-                            {{-- Division --}}
-                            <div class="row mb-4">
+                            {{-- Row 4 --}}
+                            <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label for="division" class="form-label fw-bold">Division</label>
-                                    <input type="text" id="division" name="division" class="form-control"
-                                        value="{{ old('division', $user->details->division ?? '') }}">
+                                    <label for="password" class="form-label">New Password (optional)</label>
+                                    <input type="password" name="password"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        placeholder="Leave blank to keep current">
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                                    <input type="password" name="password_confirmation" class="form-control">
                                 </div>
                             </div>
-
-                            {{-- Submit --}}
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary px-4">Update</button>
-                            </div>
-                        </form>
                     </div>
+                    {{-- Submit --}}
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary px-4">Update</button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
