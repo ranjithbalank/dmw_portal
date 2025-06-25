@@ -18,10 +18,10 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        $user_details = UserDetails::all();
+        // $user_details = UserDetails::all();
         return view("users.index", [
             "users" => $users,
-            "user_details" => $user_details
+            // "user_details" => $user_details
         ]);
     }
 
@@ -41,7 +41,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
+        dd($request->all());
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',

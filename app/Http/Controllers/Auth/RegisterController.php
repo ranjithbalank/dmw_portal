@@ -25,13 +25,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'employee_id' => ['required', 'string', 'max:20', 'unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'unit' => ['required', 'string', 'max:100'],
-            'department' => ['required', 'string', 'max:100'],
-            'manager' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'          => ['required', 'string', 'max:255'],
+            'employee_id'   => ['required', 'string', 'max:20', 'unique:users'],
+            'email'         => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'unit'          => ['required', 'string', 'max:100'],
+            'department'    => ['required', 'string', 'max:100'],
+            'manager_id'    => ['required', 'string', 'max:255'],
+            'designation'   => ['required', 'string', 'max:100'],
+            'password'      => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -46,8 +47,10 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'unit' => $data['unit'],
             'department' => $data['department'],
-            'manager' => $data['manager'],
+            'manager_id' => $data['manager_id'],
+            'designation' => $data['designation'], // ✅ Added field
             'password' => Hash::make($data['password']),
+
         ]);
     }
 }

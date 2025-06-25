@@ -11,9 +11,29 @@
                         <a href="{{ route('leaves.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                     </div>
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('leaves.store') }}">
-                            @csrf
+                    {{-- ✅ Form wraps both card-body and card-footer --}}
+                    <form method="POST" action="{{ route('leaves.store') }}">
+                        @csrf
+
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Emp ID</label>
+                                    <input type="text" class="form-control" value="{{ auth()->user()->id }}" disabled>
+                                    <input type="hidden" name="employee_id" value="{{ auth()->user()->id }}">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Emp Name</label>
+                                    <input type="text" class="form-control" value="{{ auth()->user()->name }}" disabled>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Emp Role</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ auth()->user()->getRoleNames()->first() }}" disabled>
+                                </div>
+                            </div>
 
                             {{-- Leave Type & Duration --}}
                             <div class="row mb-3">
@@ -67,12 +87,38 @@
                                 </div>
                             </div>
 
+                            {{-- Comp-Off Specific Fields --}}
+                            <div id="comp_off_fields" style="display: none;">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="comp_off_worked_date" class="form-label fw-bold">Worked Date (Earned
+                                            Comp-Off)</label>
+                                        <input type="date" name="comp_off_worked_date" id="comp_off_worked_date"
+                                            class="form-control" value="{{ old('comp_off_worked_date') }}">
+                                        @error('comp_off_worked_date')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="comp_off_leave_date" class="form-label fw-bold">Leave Date (Using
+                                            Comp-Off)</label>
+                                        <input type="date" name="comp_off_leave_date" id="comp_off_leave_date"
+                                            class="form-control" value="{{ old('comp_off_leave_date') }}">
+                                        @error('comp_off_leave_date')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             {{-- Leave Days & Available --}}
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="leave_days" class="form-label fw-bold">No. of Leave Days</label>
-                                    <input type="number" min="0" step="0.5" name="leave_days" id="leave_days"
-                                        class="form-control" value="{{ old('leave_days') }}" readonly required>
+                                    <input type="number" min="0" step="0.5" name="leave_days"
+                                        id="leave_days" class="form-control" value="{{ old('leave_days') }}" readonly
+                                        required>
                                     @error('leave_days')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
@@ -95,13 +141,13 @@
                                     @enderror
                                 </div>
                             </div>
+                        </div> {{-- End card-body --}}
 
-                            {{-- Submit --}}
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary px-4">Submit</button>
-                            </div>
-                        </form>
-                    </div>
+                        {{-- Submit in Card Footer --}}
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary px-4">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -112,9 +158,16 @@
     <script>
         $(document).ready(function() {
             function calculateLeaveDays() {
+                const leaveType = $('#leave_type').val();
+                const duration = $('#leave_duration').val();
+
+                if (leaveType === 'comp-off') {
+                    $('#leave_days').val(1);
+                    return;
+                }
+
                 const fromDate = new Date($('#from_date').val());
                 const toDate = new Date($('#to_date').val());
-                const duration = $('#leave_duration').val();
 
                 if (!isNaN(fromDate) && !isNaN(toDate) && fromDate <= toDate) {
                     let diff = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -125,7 +178,34 @@
                 }
             }
 
+            function toggleFieldsForLeaveType() {
+                const leaveType = $('#leave_type').val();
+
+                if (leaveType === 'comp-off') {
+                    $('#comp_off_fields').show();
+                    $('#from_date').closest('.col-md-6').parent().hide();
+                    $('#to_date').closest('.col-md-6').parent().hide();
+                    $('#leave_duration option[value="Half Day"]').prop('disabled', true);
+                    $('#leave_duration').val('Full Day').trigger('change');
+                    $('#leave_days').val(1);
+                } else {
+                    $('#comp_off_fields').hide();
+                    $('#from_date').closest('.col-md-6').parent().show();
+                    $('#to_date').closest('.col-md-6').parent().show();
+                    $('#leave_duration option[value="Half Day"]').prop('disabled', false);
+                }
+            }
+
+            $('#leave_type').on('change', function() {
+                toggleFieldsForLeaveType();
+                calculateLeaveDays();
+            });
+
             $('#from_date, #to_date, #leave_duration').on('change', calculateLeaveDays);
+
+            // Initial
+            toggleFieldsForLeaveType();
+            calculateLeaveDays();
         });
     </script>
 @endsection

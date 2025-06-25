@@ -27,8 +27,11 @@ class User extends Authenticatable
         'email',
         'unit',
         'department',
-        'manager',
+        'manager_id',
         'password',
+        'designation',
+        'leave_balance',
+        'status',
     ];
 
     /**
