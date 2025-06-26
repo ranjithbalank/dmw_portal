@@ -35,7 +35,8 @@
                                 </div>
                             </div>
                     @endrole
-                    @hasrole(['Manager', 'Admin'])
+                    @hasrole(['Manager', 'Admin',"Employee"])
+                        {{-- Manager/Employee Section --}}
                         {{-- General Section --}}
                         <h6 class="text-muted mb-3">General</h6>
                         <div class="row g-3">
