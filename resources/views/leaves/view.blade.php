@@ -20,11 +20,12 @@
                     <h5><strong>From Date:</strong> {{ \Carbon\Carbon::parse($leave->from_date)->format('d M Y') }}</h5>
                     <h5><strong>To Date:</strong> {{ \Carbon\Carbon::parse($leave->to_date)->format('d M Y') }}</h5>
                     <h5><strong>Total Leave Days:</strong> {{ $leave->leave_days }}</h5>
-                    <h5><strong>Status:</strong> 
-                        <span class="badge 
-                            @if($leave->status == 'approved') bg-success 
-                            @elseif($leave->status == 'rejected') bg-danger 
-                            @else bg-warning text-dark 
+                    <h5><strong>Leave Balance:</strong> {{ $leave->leave_days }}</h5>
+                    <h5><strong>Status:</strong>
+                        <span class="badge
+                            @if($leave->status == 'approved') bg-success
+                            @elseif($leave->status == 'rejected') bg-danger
+                            @else bg-warning text-dark
                             @endif">
                             {{ ucfirst($leave->status) }}
                         </span>

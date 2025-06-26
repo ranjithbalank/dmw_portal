@@ -7,130 +7,195 @@
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center"
                         style="background:#FC5C14; color: white;">
-                        <span>{{ __('Edit Leave Request') }}</span>
+                        <span>Edit Leave Request</span>
                         <a href="{{ route('leaves.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                     </div>
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('leaves.update', $leave->id) }}">
-                            @csrf
-                            @method('PUT')
+                    @if ($errors->any())
+                        <div class="alert alert-danger mt-2">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger mt-2">{{ session('error') }}</div>
+                    @endif
 
-                            {{-- Leave Type & Duration --}}
+                    <form method="POST" action="{{ route('leaves.update', $leave->id) }}">
+                        @csrf
+                        @method('PUT')
+                        <div class="card-body">
+
+                            {{-- Employee Details --}}
+                            <h6 class="text-muted border-bottom pb-1 mb-3">Employee Information</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Employee ID</label>
+                                    <input type="text" class="form-control" value="{{ $leave->user_id }}" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Name</label>
+                                    <input type="text" class="form-control" value="{{ $leave->user->name }}" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Role</label>
+                                    <input type="text" class="form-control" value="{{ $leave->user->designation }}"
+                                        disabled>
+                                </div>
+                            </div>
+
+                            {{-- Leave Details --}}
+                            <h6 class="text-muted border-bottom pb-1 mb-3">Leave Details</h6>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="leave_type" class="form-label fw-bold">Leave Type</label>
+                                    <label for="leave_type" class="form-label fw-semibold">Leave Type</label>
                                     <select name="leave_type" id="leave_type" class="form-select" required>
-                                        <option value="casual" {{ $leave->leave_type === 'casual' ? 'selected' : '' }}>Casual</option>
-                                        <option value="sick" {{ $leave->leave_type === 'sick' ? 'selected' : '' }}>Sick</option>
-                                        <option value="earned" {{ $leave->leave_type === 'earned' ? 'selected' : '' }}>Earned</option>
+                                        <option disabled>Select Type</option>
+                                        <option value="casual" {{ $leave->leave_type == 'casual' ? 'selected' : '' }}>Casual
+                                        </option>
+                                        <option value="sick" {{ $leave->leave_type == 'sick' ? 'selected' : '' }}>Sick
+                                        </option>
+                                        <option value="earned" {{ $leave->leave_type == 'earned' ? 'selected' : '' }}>Earned
+                                        </option>
+                                        <option value="comp-off" {{ $leave->leave_type == 'comp-off' ? 'selected' : '' }}>
+                                            Comp-Off</option>
                                     </select>
-                                    @error('leave_type')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
                                 </div>
-
                                 <div class="col-md-6">
-                                    <label for="leave_duration" class="form-label fw-bold">Duration</label>
+                                    <label for="leave_duration" class="form-label fw-semibold">Duration</label>
                                     <select name="leave_duration" id="leave_duration" class="form-select" required>
-                                        <option value="Full Day" {{ $leave->leave_duration === 'Full Day' ? 'selected' : '' }}>Full Day</option>
-                                        <option value="Half Day" {{ $leave->leave_duration === 'Half Day' ? 'selected' : '' }}>Half Day</option>
+                                        <option value="Full Day"
+                                            {{ $leave->leave_duration == 'Full Day' ? 'selected' : '' }}>Full Day</option>
+                                        <option value="Half Day"
+                                            {{ $leave->leave_duration == 'Half Day' ? 'selected' : '' }}>Half Day</option>
                                     </select>
-                                    @error('leave_duration')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
                                 </div>
                             </div>
 
-                            {{-- From & To Date --}}
-                            <div class="row mb-3">
+                            <div class="row mb-3" id="normal_date_fields">
                                 <div class="col-md-6">
-                                    <label for="from_date" class="form-label fw-bold">From Date</label>
+                                    <label for="from_date" class="form-label fw-semibold">From Date</label>
                                     <input type="date" name="from_date" id="from_date" class="form-control"
-                                        value="{{ old('from_date', $leave->from_date) }}" required>
-                                    @error('from_date')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                        value="{{ $leave->from_date }}">
                                 </div>
-
                                 <div class="col-md-6">
-                                    <label for="to_date" class="form-label fw-bold">To Date</label>
+                                    <label for="to_date" class="form-label fw-semibold">To Date</label>
                                     <input type="date" name="to_date" id="to_date" class="form-control"
-                                        value="{{ old('to_date', $leave->to_date) }}" required>
-                                    @error('to_date')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                        value="{{ $leave->to_date }}">
                                 </div>
                             </div>
 
-                            {{-- Leave Days --}}
+                            <div class="row mb-3" id="comp_off_fields" style="display: none;">
+                                <div class="col-md-6">
+                                    <label for="comp_off_worked_date" class="form-label fw-semibold">Worked Date</label>
+                                    <input type="date" name="comp_off_worked_date" id="comp_off_worked_date"
+                                        class="form-control" value="{{ $leave->comp_off_worked_date }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="comp_off_leave_date" class="form-label fw-semibold">Leave Date</label>
+                                    <input type="date" name="comp_off_leave_date" id="comp_off_leave_date"
+                                        class="form-control" value="{{ $leave->comp_off_leave_date }}">
+                                </div>
+                            </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="leave_days" class="form-label fw-bold">No. of Leave Days</label>
-                                    <input type="number" step="0.5" min="0" name="leave_days" id="leave_days" class="form-control"
-                                        value="{{ old('leave_days', $leave->leave_days) }}" required>
-                                    @error('leave_days')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <label for="leave_days" class="form-label fw-semibold">No. of Leave Days</label>
+                                    <input type="number" min="0" step="0.5" name="leave_days" id="leave_days"
+                                        class="form-control" value="{{ $leave->leave_days }}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Available Leaves</label>
+                                    <input type="text" class="form-control bg-light fw-bold text-success"
+                                        value="{{ $availableLeaves ?? 0 }}" readonly>
                                 </div>
                             </div>
 
-                            {{-- Reason --}}
-                            <div class="row mb-4">
+                            <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label for="reason" class="form-label fw-bold">Reason</label>
-                                    <textarea name="reason" id="reason" rows="3" class="form-control" required>{{ old('reason', $leave->reason) }}</textarea>
-                                    @error('reason')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <label for="reason" class="form-label fw-semibold">Reason</label>
+                                    <textarea name="reason" id="reason" rows="3" class="form-control" required>{{ $leave->reason }}</textarea>
                                 </div>
                             </div>
 
                             {{-- Status --}}
-                            <div class="row mb-4">
+                            <h6 class="text-muted border-bottom pb-1 mb-3">Approval Status</h6>
+                            <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="status" class="form-label fw-bold">Status</label>
+                                    <label for="status" class="form-label fw-semibold">Status</label>
                                     <select name="status" id="status" class="form-select" required>
-                                        <option value="pending" {{ $leave->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ $leave->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="rejected" {{ $leave->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        <option value="pending" {{ $leave->status === 'pending' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="approved" {{ $leave->status === 'approved' ? 'selected' : '' }}>
+                                            Approved</option>
+                                        <option value="rejected" {{ $leave->status === 'rejected' ? 'selected' : '' }}>
+                                            Rejected</option>
                                     </select>
-                                    @error('status')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
                                 </div>
                             </div>
+                        </div>
 
-                            {{-- Submit --}}
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary px-4">Update</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary px-4">Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
+
+
 @section('scripts')
-<script>
-    $(document).ready(function () {
-        function calculateLeaveDays() {
-            const fromDate = new Date($('#from_date').val());
-            const toDate = new Date($('#to_date').val());
-            const duration = $('#leave_duration').val();
-
-            if (!isNaN(fromDate) && !isNaN(toDate) && fromDate <= toDate) {
-                let diff = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
-                let leaveDays = (duration === 'Half Day') ? 0.5 : diff;
-                $('#leave_days').val(leaveDays);
-            } else {
-                $('#leave_days').val('');
+    <script>
+        $(function() {
+            function calculateLeaveDays() {
+                const type = $('#leave_type').val();
+                const duration = $('#leave_duration').val();
+                if (type === 'comp-off') {
+                    $('#leave_days').val(1);
+                    return;
+                }
+                const from = new Date($('#from_date').val());
+                const to = new Date($('#to_date').val());
+                if (!isNaN(from) && !isNaN(to) && from <= to) {
+                    const days = Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
+                    $('#leave_days').val(duration === 'Half Day' ? 0.5 : days);
+                } else {
+                    $('#leave_days').val('');
+                }
             }
-        }
 
-        $('#from_date, #to_date, #leave_duration').on('change', calculateLeaveDays);
-    });
-</script>
+            function toggleLeaveFields() {
+                const type = $('#leave_type').val();
+                if (type === 'comp-off') {
+                    $('#comp_off_fields').show();
+                    $('#normal_date_fields').hide();
+                    $('#from_date, #to_date').prop('required', false);
+                    $('#comp_off_worked_date, #comp_off_leave_date').prop('required', true);
+                    $('#leave_duration option[value="Half Day"]').prop('disabled', true);
+                    $('#leave_duration').val('Full Day').trigger('change');
+                } else {
+                    $('#comp_off_fields').hide();
+                    $('#normal_date_fields').show();
+                    $('#from_date, #to_date').prop('required', true);
+                    $('#comp_off_worked_date, #comp_off_leave_date').prop('required', false);
+                    $('#leave_duration option[value="Half Day"]').prop('disabled', false);
+                }
+            }
+
+            $('#leave_type').on('change', () => {
+                toggleLeaveFields();
+                calculateLeaveDays();
+            });
+            $('#from_date, #to_date, #leave_duration').on('change', calculateLeaveDays);
+
+            toggleLeaveFields();
+            calculateLeaveDays();
+        });
+    </script>
 @endsection

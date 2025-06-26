@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -6,32 +7,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-            $table->enum('leave_type', ['casual', 'sick', 'earned']);
+            $table->enum('leave_type', ['casual', 'sick', 'earned', 'comp-off', 'od', 'permission'])
+                ->default('casual');
             $table->enum('leave_duration', ['Full Day', 'Half Day']);
 
-            $table->date('from_date');
-            $table->date('to_date');
-            $table->integer('leave_days');
-            $table->text('reason')->nullable();
+            $table->date('from_date')->nullable();
+            $table->date('to_date')->nullable();
+            $table->date('comp_off_worked_date')->nullable();
+            $table->date('comp_off_leave_date')->nullable();
 
+            $table->decimal('leave_days', 4, 2);
+            $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('leaves');

@@ -38,9 +38,13 @@
                             <td>{{ $leave->leave_days }}</td>
                         </tr>
                         <tr>
+                            <th>Leave Balance</th>
+                            <td class="text-danger fw-bold">{{ $user->leave_balance }}</td>
+                        </tr>
+                        <tr>
                             <th>Status</th>
                             <td>
-                                <span class="badge 
+                                <span class="badge
                                     @if($leave->status === 'approved') bg-success
                                     @elseif($leave->status === 'rejected') bg-danger
                                     @else bg-warning text-dark

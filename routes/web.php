@@ -30,6 +30,6 @@ Route::middleware(['auth'])->group(function () {
         'leaves' => 'leave' // 👈 force route model binding to use {leave}
     ]);
 
-    Route::get('leaves/{leave}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
-    Route::get('leaves/{leave}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+    Route::post('leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
+    Route::post('leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
 });

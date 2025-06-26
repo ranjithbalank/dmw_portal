@@ -12,22 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-
             $table->id();
             $table->string('name');
             $table->string('employee_id')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('designation')->nullable();
+            $table->string('designation')->nullable()->default('Employee');
             $table->string('unit')->nullable();
             $table->string('department')->nullable();
-            $table->string('manager_id')->nullable();
-            $table->string('leave_balance')->default(20);
+
+            // Corrected manager_id setup
+            $table->unsignedBigInteger('manager_id')->nullable();
+            // $table->foreign('manager_id')->references('id')->on('users')->onDelete('set null');
+
+            $table->decimal('leave_balance', 5, 1)->default(20); // store as decimal for half-day
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

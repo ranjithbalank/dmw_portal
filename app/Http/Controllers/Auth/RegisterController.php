@@ -31,7 +31,7 @@ class RegisterController extends Controller
             'unit'          => ['required', 'string', 'max:100'],
             'department'    => ['required', 'string', 'max:100'],
             'manager_id'    => ['required', 'string', 'max:255'],
-            'designation'   => ['required', 'string', 'max:100'],
+            // 'designation'   => ['required', 'string', 'max:100'],
             'password'      => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -48,7 +48,7 @@ class RegisterController extends Controller
             'unit' => $data['unit'],
             'department' => $data['department'],
             'manager_id' => $data['manager_id'],
-            'designation' => $data['designation'], // ✅ Added field
+            // 'designation' => $data['designation'], // ✅ Added field
             'password' => Hash::make($data['password']),
 
         ]);

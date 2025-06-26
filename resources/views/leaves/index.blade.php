@@ -10,28 +10,49 @@
                     <div class="card-header d-flex justify-content-between align-items-center"
                         style="background:#FC5C14; color: white;">
                         Leave History
-                        <a href="{{ route('home') }}" class="btn btn-light btn-sm text-dark shadow-sm">
-                            ← Back
-                        </a>
+                        <a href="{{ route('home') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                     </div>
 
                     <div class="card-body">
-                        <div class="d-flex justify-content-end mb-3">
-                            <a href="{{ route('leaves.create') }}" class="btn btn-success shadow-sm">
-                                <i class="bi bi-plus-circle"></i> Apply Leave
-                            </a>
-                        </div>
+                        {{-- View Tabs --}}
+                        <ul class="nav nav-tabs mb-3">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->get('view') !== 'team' ? 'active' : '' }}"
+                                    href="{{ route('leaves.index', ['view' => 'mine']) }}">
+                                    My Leaves
+                                </a>
+                            </li>
+                            @if (auth()->user()->hasRole('Manager'))
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->get('view') === 'team' ? 'active' : '' }}"
+                                        href="{{ route('leaves.index', ['view' => 'team']) }}">
+                                        Leave Approvals
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
 
+                        {{-- Apply Leave --}}
+                        @if (request()->get('view') !== 'team')
+                            <div class="d-flex justify-content-end mb-3">
+                                <a href="{{ route('leaves.create') }}" class="btn btn-success shadow-sm">
+                                    <i class="bi bi-plus-circle"></i> Apply Leave
+                                </a>
+                            </div>
+                        @endif
 
-
+                        {{-- Table --}}
                         @if ($leaves->isEmpty())
                             <div class="alert alert-warning text-center">No leave records found.</div>
                         @else
                             <div class="table-responsive mb-4">
-                                <table class="table table-bordered text-center align-middle">
+                                <table class="table table-bordered table-striped table-hover text-center align-middle">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>S.No</th>
+                                            @if (request()->get('view') === 'team')
+                                                <th>Employee</th>
+                                            @endif
                                             <th>Leave Type</th>
                                             <th>Duration</th>
                                             <th>From</th>
@@ -46,10 +67,27 @@
                                         @foreach ($leaves as $index => $leave)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+
+                                                @if (request()->get('view') === 'team')
+                                                    <td>{{ $leave->user->name ?? '-' }}</td>
+                                                @endif
+
                                                 <td class="text-capitalize">{{ $leave->leave_type }}</td>
                                                 <td>{{ $leave->leave_duration }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($leave->from_date)->format('d M Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($leave->to_date)->format('d M Y') }}</td>
+                                                <td>
+                                                    {{ $leave->leave_type === 'comp-off' && $leave->comp_off_worked_date
+                                                        ? \Carbon\Carbon::parse($leave->comp_off_worked_date)->format('d M Y')
+                                                        : ($leave->from_date
+                                                            ? \Carbon\Carbon::parse($leave->from_date)->format('d M Y')
+                                                            : '-') }}
+                                                </td>
+                                                <td>
+                                                    {{ $leave->leave_type === 'comp-off' && $leave->comp_off_leave_date
+                                                        ? \Carbon\Carbon::parse($leave->comp_off_leave_date)->format('d M Y')
+                                                        : ($leave->to_date
+                                                            ? \Carbon\Carbon::parse($leave->to_date)->format('d M Y')
+                                                            : '-') }}
+                                                </td>
                                                 <td>{{ $leave->leave_days }}</td>
                                                 <td>{{ $leave->reason }}</td>
                                                 <td>
@@ -61,34 +99,66 @@
                                                         <span class="badge bg-warning text-dark">Pending</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
-                                                    <a href="{{ route('leaves.edit', $leave->id) }}"
-                                                        class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </a>
-                                                    <!-- View Button to trigger modal -->
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        {{-- Edit: Only Employee can edit their own leave --}}
+                                                        @if (auth()->user()->hasRole('Employee') && auth()->id() === $leave->user_id)
+                                                            <a href="{{ route('leaves.edit', $leave->id) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="bi bi-pencil-square"></i>
+                                                            </a>
+                                                        @endif
 
-                                                    <!-- Trigger Button -->
-                                                    <button type="button" class="btn btn-info btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#leaveModal{{ $leave->id }}">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-
-                                                    <!-- Include the modal -->
-                                                    @include('leaves.partials.show-modal', [
-                                                        'user' => $user,
-                                                    ])
-
-                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                                        style="display: inline-block;"
-                                                        onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger">
-                                                            <i class="bi bi-trash"></i>
+                                                        {{-- View Button --}}
+                                                        <button type="button" class="btn btn-sm btn-info"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#leaveModal{{ $leave->id }}">
+                                                            <i class="bi bi-eye"></i>
                                                         </button>
-                                                    </form>
+
+                                                        {{-- Approve / Reject --}}
+                                                        @if (request()->get('view') === 'team' &&
+                                                                auth()->user()->hasRole('Manager') &&
+                                                                $leave->status === 'pending' &&
+                                                                auth()->id() === optional($leave->user)->manager_id)
+                                                            <form action="{{ route('leaves.approve', $leave->id) }}"
+                                                                method="POST" style="display:inline-block;">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-sm btn-success"
+                                                                    title="Approve">
+                                                                    <i class="bi bi-check-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                            <form action="{{ route('leaves.reject', $leave->id) }}"
+                                                                method="POST" style="display:inline-block;">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-warning text-white"
+                                                                    title="Reject">
+                                                                    <i class="bi bi-x-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+
+                                                        {{-- Delete: Only Admin --}}
+                                                        @if (auth()->user()->hasRole('Admin'))
+                                                            <form action="{{ route('leaves.destroy', $leave->id) }}"
+                                                                method="POST" onsubmit="return confirm('Are you sure?');"
+                                                                style="display:inline-block">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+
+                                                    {{-- Modal View --}}
+                                                    @include('leaves.partials.show-modal', [
+                                                        'leave' => $leave,
+                                                        'user' => $leave->user ?? null,
+                                                    ])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -96,7 +166,6 @@
                                 </table>
                             </div>
                         @endif
-
                     </div>
                 </div>
             </div>

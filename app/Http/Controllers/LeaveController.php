@@ -8,81 +8,220 @@ use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $leaves = Leave::where('user_id', $user->id)->latest()->get();
+        $view = $request->get('view', 'mine');
 
-        return view('leaves.index', compact('leaves', 'user'));
+        if ($view === 'team' && $user->hasRole('Manager')) {
+            // Fetch employees whose manager_id is current user
+            $teamLeaves = Leave::with('user')
+                ->whereHas('user', fn($q) => $q->where('manager_id', $user->id))
+                ->latest()
+                ->get();
+
+            return view('leaves.index', [
+                'leaves' => $teamLeaves,
+                'user' => $user,
+                'view' => 'team'
+            ]);
+        }
+
+        // Default: My leaves
+        $myLeaves = Leave::where('user_id', $user->id)->latest()->get();
+        return view('leaves.index', [
+            'leaves' => $myLeaves,
+            'user' => $user,
+            'view' => 'mine'
+        ]);
     }
+
+
 
     public function create()
     {
         $user = Auth::user();
-        $availableLeaves = $user->details->available_leaves ?? 0;
+        $availableLeaves = $user->leave_balance ?? 0;
 
         return view('leaves.create', compact('availableLeaves'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'leave_type' => 'required|in:casual,sick,earned',
+        $user = Auth::user();
+
+        $rules = [
+            'leave_type' => 'required|in:casual,sick,earned,comp-off,od,permission',
             'leave_duration' => 'required|in:Full Day,Half Day',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
             'leave_days' => 'required|numeric|min:0.5',
             'reason' => 'required|string|max:1000',
-        ]);
+        ];
 
-        $user = Auth::user();
-        $details = $user->details;
+        // Conditionally validate based on leave type
+        if ($request->leave_type === 'comp-off') {
+            $rules['comp_off_worked_date'] = 'required|date';
+            $rules['comp_off_leave_date'] = 'required|date|after_or_equal:comp_off_worked_date';
+        } else {
+            $rules['from_date'] = 'required|date';
+            $rules['to_date'] = 'required|date|after_or_equal:from_date';
+        }
 
-        if ($details->available_leaves < $request->leave_days) {
+        $validated = $request->validate($rules);
+
+        // Check leave balance (not for comp-off)
+        if ($request->leave_type !== 'comp-off' && $user->leave_balance < $request->leave_days) {
             return back()->withInput()->with('error', 'Not enough leave balance.');
         }
 
-        Leave::create([
-            'user_id' => $user->id,
-            'leave_type' => $request->leave_type,
-            'leave_duration' => $request->leave_duration,
-            'from_date' => $request->from_date,
-            'to_date' => $request->to_date,
-            'leave_days' => $request->leave_days,
-            'reason' => $request->reason,
-            'status' => 'pending',
-        ]);
+        // Save leave
+        $leave = new Leave();
+        $leave->user_id = $user->id;
+        $leave->leave_type = $request->leave_type;
+        $leave->leave_duration = $request->leave_duration;
+        $leave->from_date = $request->from_date;
+        $leave->to_date = $request->to_date;
+        $leave->comp_off_worked_date = $request->comp_off_worked_date;
+        $leave->comp_off_leave_date = $request->comp_off_leave_date;
+        $leave->leave_days = $request->leave_days;
+        $leave->reason = $request->reason;
+        $leave->status = 'pending';
+        $leave->save();
+
+        // Deduct leave balance (not for comp-off)
+        if ($request->leave_type !== 'comp-off') {
+            $user->leave_balance -= $request->leave_days;
+            $user->save();
+        }
 
         return redirect()->route('leaves.index')->with('success', 'Leave request submitted.');
     }
 
+
     public function show(Leave $leave)
     {
-        return view('leaves.view', compact('leave'));
+        $user = Auth::user();
+        return view('leaves.view', compact('leave', 'user'));
     }
 
     public function edit(Leave $leave)
     {
-        return view('leaves.edit', compact('leave'));
+        $user = Auth::user();
+        $availableLeaves = $user->leave_balance ?? 0;
+        return view('leaves.edit', compact('leave', 'availableLeaves'));
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'leave_type' => 'required|in:casual,sick,earned,comp-off',
+    //         'leave_duration' => 'required|in:Full Day,Half Day',
+    //         'leave_days' => 'required|numeric|min:0.5',
+    //         'reason' => 'required|string|max:1000',
+    //         'from_date' => 'nullable|date|required_unless:leave_type,comp-off',
+    //         'to_date' => 'nullable|date|after_or_equal:from_date|required_unless:leave_type,comp-off',
+    //         'comp_off_worked_date' => 'nullable|date|required_if:leave_type,comp-off',
+    //         'comp_off_leave_date' => 'nullable|date|required_if:leave_type,comp-off',
+    //     ]);
 
+    //     $leave = Leave::findOrFail($id);
 
-    public function update(Request $request, Leave $leave)
+    //     // Optional: Prevent editing approved/rejected leave
+    //     if (in_array($leave->status, ['approved', 'rejected'])) {
+    //         return redirect()->back()->with('error', 'Cannot update an already processed leave request.');
+    //     }
+
+    //     $leave->leave_type = $request->leave_type;
+    //     $leave->leave_duration = $request->leave_duration;
+    //     $leave->leave_days = $request->leave_days;
+    //     $leave->reason = $request->reason;
+
+    //     if ($request->leave_type === 'comp-off') {
+    //         $leave->comp_off_worked_date = $request->comp_off_worked_date;
+    //         $leave->comp_off_leave_date = $request->comp_off_leave_date;
+    //         $leave->from_date = null;
+    //         $leave->to_date = null;
+    //     } else {
+    //         $leave->from_date = $request->from_date;
+    //         $leave->to_date = $request->to_date;
+    //         $leave->comp_off_worked_date = null;
+    //         $leave->comp_off_leave_date = null;
+    //     }
+
+    //     // Optional: Reset status to pending on edit
+    //     $leave->status = 'pending';
+
+    //     $leave->save();
+
+    //     return redirect()->route('leaves.index')->with('success', 'Leave request updated successfully.');
+    // }
+
+    public function update(Request $request, $id)
     {
+        $user = Auth::user();
+        $leave = Leave::findOrFail($id);
+
+        // Prevent editing if already approved/rejected
+        if (in_array($leave->status, ['approved', 'rejected'])) {
+            return redirect()->back()->with('error', 'Cannot update an already processed leave request.');
+        }
+
+        // Validate form input
         $request->validate([
-            'leave_type' => 'required|in:casual,sick,earned',
+            'leave_type' => 'required|in:casual,sick,earned,comp-off',
             'leave_duration' => 'required|in:Full Day,Half Day',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
             'leave_days' => 'required|numeric|min:0.5',
-            'status' => 'required|in:pending,approved,rejected'
+            'reason' => 'required|string|max:1000',
+            'from_date' => 'nullable|date|required_unless:leave_type,comp-off',
+            'to_date' => 'nullable|date|after_or_equal:from_date|required_unless:leave_type,comp-off',
+            'comp_off_worked_date' => 'nullable|date|required_if:leave_type,comp-off',
+            'comp_off_leave_date' => 'nullable|date|required_if:leave_type,comp-off',
         ]);
 
-        $leave->update($request->all());
+        $newLeaveDays = $request->leave_days;
+        $oldLeaveDays = $leave->leave_days;
 
-        return redirect()->route('leaves.index')->with('success', 'Leave updated.');
+        // Update leave balance in users table (for non-comp-off only)
+        if ($leave->leave_type !== 'comp-off') {
+            $difference = $newLeaveDays - $oldLeaveDays;
+
+            if ($difference > 0) {
+                // Need more leave days
+                if ($user->leave_balance < $difference) {
+                    return back()->withInput()->with('error', 'Not enough leave balance to increase leave days.');
+                }
+                $user->leave_balance -= $difference;
+            } elseif ($difference < 0) {
+                // Restore unused leave days
+                $user->leave_balance += abs($difference);
+            }
+
+            $user->save(); // 👈 Save updated leave_balance in users table
+        }
+
+        // Update leave record
+        $leave->leave_type = $request->leave_type;
+        $leave->leave_duration = $request->leave_duration;
+        $leave->leave_days = $newLeaveDays;
+        $leave->reason = $request->reason;
+
+        if ($request->leave_type === 'comp-off') {
+            $leave->comp_off_worked_date = $request->comp_off_worked_date;
+            $leave->comp_off_leave_date = $request->comp_off_leave_date;
+            $leave->from_date = null;
+            $leave->to_date = null;
+        } else {
+            $leave->from_date = $request->from_date;
+            $leave->to_date = $request->to_date;
+            $leave->comp_off_worked_date = null;
+            $leave->comp_off_leave_date = null;
+        }
+
+        $leave->status = $request->status; // Reset status to pending or keep existing
+        $leave->save();
+
+        return redirect()->route('leaves.index')->with('success', 'Leave request updated and balance adjusted.');
     }
+
 
     public function destroy(Leave $leave)
     {
@@ -90,35 +229,90 @@ class LeaveController extends Controller
         return redirect()->route('leaves.index')->with('success', 'Leave deleted.');
     }
 
+    // public function approve($id)
+    // {
+    //     $leave = Leave::findOrFail($id);
+    //     $currentUser = Auth::user();
+
+    //     // Allow only the assigned manager to approve
+    //     if ($leave->user->manager_id !== $currentUser->id) {
+    //         return back()->with('error', 'You are not authorized to approve this leave.');
+    //     }
+
+    //     if ($leave->status !== 'pending') {
+    //         return back()->with('error', 'Leave already processed.');
+    //     }
+
+    //     // Deduct from balance
+    //     if ($leave->leave_type !== 'comp-off' && $leave->user->leave_balance < $leave->leave_days) {
+    //         return back()->with('error', 'Insufficient leave balance.');
+    //     }
+
+    //     if ($leave->leave_type !== 'comp-off') {
+    //         $leave->user->leave_balance -= $leave->leave_days;
+    //         $leave->user->save();
+    //     }
+
+    //     $leave->status = 'approved';
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave approved successfully.');
+    // }
+
+    // public function reject($id)
+    // {
+    //     $leave = Leave::findOrFail($id);
+    //     $currentUser = Auth::user();
+
+    //     // Allow only the assigned manager to reject
+    //     if ($leave->user->manager_id !== $currentUser->id) {
+    //         return back()->with('error', 'You are not authorized to reject this leave.');
+    //     }
+
+    //     if ($leave->status !== 'pending') {
+    //         return back()->with('error', 'Leave already processed.');
+    //     }
+
+    //     $leave->status = 'rejected';
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave rejected.');
+    // }
     public function approve($id)
     {
         $leave = Leave::findOrFail($id);
-
-        if ($leave->status !== 'pending') {
-            return back()->with('error', 'Leave already processed.');
+        if (Auth::id() === optional($leave->user)->manager_id) {
+            $leave->status = 'approved';
+            $leave->save();
+            return back()->with('success', 'Leave approved successfully.');
         }
-
-        $details = $leave->user->details;
-
-        if ($details->available_leaves < $leave->leave_days) {
-            return back()->with('error', 'Insufficient leave balance.');
-        }
-
-        $details->available_leaves -= $leave->leave_days;
-        $details->save();
-
-        $leave->status = 'approved';
-        $leave->save();
-
-        return back()->with('success', 'Leave approved and balance updated.');
+        return back()->with('error', 'Unauthorized approval attempt.');
     }
 
     public function reject($id)
     {
         $leave = Leave::findOrFail($id);
+
+        // Only allow the manager of the employee to reject
+        $managerId = Auth::id();
+        if ($leave->user->manager_id != $managerId) {
+            return back()->with('error', 'You are not authorized to reject this leave.');
+        }
+
+        // Check if already rejected or approved
+        if (in_array($leave->status, ['approved', 'rejected'])) {
+            return back()->with('info', 'This leave has already been processed.');
+        }
+
+        // Revert leave balance only for non-comp-off types
+        if ($leave->leave_type !== 'comp-off') {
+            $leave->user->leave_balance += $leave->leave_days;
+            $leave->user->save();
+        }
+
         $leave->status = 'rejected';
         $leave->save();
 
-        return back()->with('success', 'Leave rejected.');
+        return back()->with('success', 'Leave request rejected and balance reverted.');
     }
 }

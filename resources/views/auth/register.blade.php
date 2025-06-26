@@ -79,7 +79,7 @@
                             </div>
 
                             {{-- Row 3: Work Designation --}}
-                            <div class="row g-3 mb-3">
+                            {{-- <div class="row g-3 mb-3">
                                 <div class="col-md-4">
                                     <label for="designation" class="form-label">Work Designation <span
                                             class="text-danger">*</span></label>
@@ -89,7 +89,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                             {{-- Row 4: Password + Confirm Password --}}
                             <div class="row g-3 mb-4">
