@@ -16,25 +16,26 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-
-                    <div class="container py-3">
-                        {{-- Admin Section --}}
-                        <h6 class="text-muted mb-3">Admin Panel</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <a href="{{ route('roles.index') }}"
-                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm">
-                                    <i class="bi bi-person-lock"></i> Roles
-                                </a>
+                    @hasrole('Admin')
+                        <div class="container py-3">
+                            {{-- Admin Section --}}
+                            <h6 class="text-muted mb-3">Admin Panel</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <a href="{{ route('roles.index') }}"
+                                        class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm">
+                                        <i class="bi bi-person-lock"></i> Roles
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ route('permissions.index') }}"
+                                        class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm">
+                                        <i class="bi bi-shield-lock-fill"></i> Role-Permissions
+                                    </a>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <a href="{{ route('permissions.index') }}"
-                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm">
-                                    <i class="bi bi-shield-lock-fill"></i> Role-Permissions
-                                </a>
-                            </div>
-                        </div>
-
+                    @endrole
+                    @hasrole(['Manager', 'Admin'])
                         {{-- General Section --}}
                         <h6 class="text-muted mb-3">General</h6>
                         <div class="row g-3">
@@ -51,7 +52,7 @@
                                 </a>
                             </div>
                         </div>
-
+                    @endrole
 
                     </div> {{-- end container --}}
                 </div>

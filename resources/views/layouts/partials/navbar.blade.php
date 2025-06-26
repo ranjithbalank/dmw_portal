@@ -1,6 +1,13 @@
 <nav class="navbar navbar-expand-lg" style="background-color: #FC5C14;">
     <div class="container">
-        <a class="navbar-brand text-light" href="{{ url('/') }}">DMW CNC Solutions</a>
+        <a href="{{ url('/') }}" class="d-flex align-items-center text-decoration-none">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo"
+                style="background: white; width: 40px; height: 40px; object-fit: contain; border-radius: 5px;">
+            <span class="navbar-brand text-light ms-2 fw-bold">
+                DMW CNC Solutions
+            </span>
+        </a>
+
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
