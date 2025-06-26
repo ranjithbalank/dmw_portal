@@ -16,20 +16,25 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-// User Controller
-Route::resource("users", UserController::class)->middleware('auth');
-Route::resource("roles", RoleController::class);
-Route::resource("permissions", PermissionController::class);
-Route::post('/roles/permissions/toggle', [RoleController::class, 'togglePermission'])->name('roles.permissions.toggle');
-
-
+// ✅ Everything below requires login
 Route::middleware(['auth'])->group(function () {
-    Route::resource('leaves', LeaveController::class)->parameters([
-        'leaves' => 'leave' // 👈 force route model binding to use {leave}
-    ]);
 
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // Users
+    Route::resource("users", UserController::class);
+
+    // Roles & Permissions
+    Route::resource("roles", RoleController::class);
+    Route::resource("permissions", PermissionController::class);
+    Route::post('/roles/permissions/toggle', [RoleController::class, 'togglePermission'])->name('roles.permissions.toggle');
+
+    // Leave Management
+    Route::resource('leaves', LeaveController::class)->parameters([
+        'leaves' => 'leave'
+    ]);
     Route::post('leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
     Route::post('leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+
+    // ✅ Add more modules here: assets, attendance, payroll, etc.
 });
