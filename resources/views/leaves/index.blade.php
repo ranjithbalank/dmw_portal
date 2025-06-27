@@ -22,11 +22,15 @@
                                     My Leaves
                                 </a>
                             </li>
-                            @if (auth()->user()->hasRole('Manager'))
+
+                            @if (auth()->user()->hasAnyRole(['Manager', 'Admin']))
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->get('view') === 'team' ? 'active' : '' }}"
                                         href="{{ route('leaves.index', ['view' => 'team']) }}">
-                                        Leave Approvals
+                                        {{ auth()->user()->hasRole('Admin') ? 'All Leaves' : 'Leave Approvals' }}
+                                        @if (!empty($pendingCount) && $pendingCount > 0)
+                                            <span class="badge bg-danger ms-1">{{ $pendingCount }}</span>
+                                        @endif
                                     </a>
                                 </li>
                             @endif
@@ -104,13 +108,13 @@
                                                         {{-- Edit: Only Employee can edit their own leave --}}
                                                         @if (auth()->user()->hasRole('Employee') && auth()->id() === $leave->user_id)
                                                             <a href="{{ route('leaves.edit', $leave->id) }}"
-                                                                class="btn btn-sm btn-primary">
+                                                                class="btn btn-sm btn-primary me-1">
                                                                 <i class="bi bi-pencil-square"></i>
                                                             </a>
                                                         @endif
 
                                                         {{-- View Button --}}
-                                                        <button type="button" class="btn btn-sm btn-info"
+                                                        <button type="button" class="btn btn-sm btn-info me-1"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#leaveModal{{ $leave->id }}">
                                                             <i class="bi bi-eye"></i>
@@ -122,7 +126,7 @@
                                                                 $leave->status === 'pending' &&
                                                                 auth()->id() === optional($leave->user)->manager_id)
                                                             <form action="{{ route('leaves.approve', $leave->id) }}"
-                                                                method="POST" style="display:inline-block;">
+                                                                method="POST" style="display:inline-block;" class="me-1">
                                                                 @csrf
                                                                 <button type="submit" class="btn btn-sm btn-success"
                                                                     title="Approve">
@@ -130,7 +134,7 @@
                                                                 </button>
                                                             </form>
                                                             <form action="{{ route('leaves.reject', $leave->id) }}"
-                                                                method="POST" style="display:inline-block;">
+                                                                method="POST" style="display:inline-block;" class="me-1">
                                                                 @csrf
                                                                 <button type="submit"
                                                                     class="btn btn-sm btn-warning text-white"
@@ -144,7 +148,7 @@
                                                         @if (auth()->user()->hasRole('Admin'))
                                                             <form action="{{ route('leaves.destroy', $leave->id) }}"
                                                                 method="POST" onsubmit="return confirm('Are you sure?');"
-                                                                style="display:inline-block">
+                                                                style="display:inline-block;">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="btn btn-sm btn-danger">
@@ -160,6 +164,7 @@
                                                         'user' => $leave->user ?? null,
                                                     ])
                                                 </td>
+
                                             </tr>
                                         @endforeach
                                     </tbody>

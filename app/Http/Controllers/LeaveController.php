@@ -13,8 +13,30 @@ class LeaveController extends Controller
         $user = Auth::user();
         $view = $request->get('view', 'mine');
 
+        // Pending count based on role
+        $pendingCount = 0;
+        if ($user->hasRole('Admin')) {
+            $pendingCount = Leave::where('status', 'pending')->count();
+        } elseif ($user->hasRole('Manager')) {
+            $pendingCount = Leave::whereHas('user', fn($q) => $q->where('manager_id', $user->id))
+                ->where('status', 'pending')
+                ->count();
+        }
+
+        // Admin: All Leaves
+        if ($view === 'team' && $user->hasRole('Admin')) {
+            $allLeaves = Leave::with('user')->latest()->get();
+
+            return view('leaves.index', [
+                'leaves' => $allLeaves,
+                'user' => $user,
+                'view' => 'team',
+                'pendingCount' => $pendingCount,
+            ]);
+        }
+
+        // Manager: Only team leaves
         if ($view === 'team' && $user->hasRole('Manager')) {
-            // Fetch employees whose manager_id is current user
             $teamLeaves = Leave::with('user')
                 ->whereHas('user', fn($q) => $q->where('manager_id', $user->id))
                 ->latest()
@@ -23,20 +45,21 @@ class LeaveController extends Controller
             return view('leaves.index', [
                 'leaves' => $teamLeaves,
                 'user' => $user,
-                'view' => 'team'
+                'view' => 'team',
+                'pendingCount' => $pendingCount,
             ]);
         }
 
-        // Default: My leaves
+        // My leaves
         $myLeaves = Leave::where('user_id', $user->id)->latest()->get();
+
         return view('leaves.index', [
             'leaves' => $myLeaves,
             'user' => $user,
-            'view' => 'mine'
+            'view' => 'mine',
+            'pendingCount' => $pendingCount,
         ]);
     }
-
-
 
     public function create()
     {
@@ -109,51 +132,6 @@ class LeaveController extends Controller
         $availableLeaves = $user->leave_balance ?? 0;
         return view('leaves.edit', compact('leave', 'availableLeaves'));
     }
-
-    // public function update(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'leave_type' => 'required|in:casual,sick,earned,comp-off',
-    //         'leave_duration' => 'required|in:Full Day,Half Day',
-    //         'leave_days' => 'required|numeric|min:0.5',
-    //         'reason' => 'required|string|max:1000',
-    //         'from_date' => 'nullable|date|required_unless:leave_type,comp-off',
-    //         'to_date' => 'nullable|date|after_or_equal:from_date|required_unless:leave_type,comp-off',
-    //         'comp_off_worked_date' => 'nullable|date|required_if:leave_type,comp-off',
-    //         'comp_off_leave_date' => 'nullable|date|required_if:leave_type,comp-off',
-    //     ]);
-
-    //     $leave = Leave::findOrFail($id);
-
-    //     // Optional: Prevent editing approved/rejected leave
-    //     if (in_array($leave->status, ['approved', 'rejected'])) {
-    //         return redirect()->back()->with('error', 'Cannot update an already processed leave request.');
-    //     }
-
-    //     $leave->leave_type = $request->leave_type;
-    //     $leave->leave_duration = $request->leave_duration;
-    //     $leave->leave_days = $request->leave_days;
-    //     $leave->reason = $request->reason;
-
-    //     if ($request->leave_type === 'comp-off') {
-    //         $leave->comp_off_worked_date = $request->comp_off_worked_date;
-    //         $leave->comp_off_leave_date = $request->comp_off_leave_date;
-    //         $leave->from_date = null;
-    //         $leave->to_date = null;
-    //     } else {
-    //         $leave->from_date = $request->from_date;
-    //         $leave->to_date = $request->to_date;
-    //         $leave->comp_off_worked_date = null;
-    //         $leave->comp_off_leave_date = null;
-    //     }
-
-    //     // Optional: Reset status to pending on edit
-    //     $leave->status = 'pending';
-
-    //     $leave->save();
-
-    //     return redirect()->route('leaves.index')->with('success', 'Leave request updated successfully.');
-    // }
 
     public function update(Request $request, $id)
     {
@@ -229,55 +207,6 @@ class LeaveController extends Controller
         return redirect()->route('leaves.index')->with('success', 'Leave deleted.');
     }
 
-    // public function approve($id)
-    // {
-    //     $leave = Leave::findOrFail($id);
-    //     $currentUser = Auth::user();
-
-    //     // Allow only the assigned manager to approve
-    //     if ($leave->user->manager_id !== $currentUser->id) {
-    //         return back()->with('error', 'You are not authorized to approve this leave.');
-    //     }
-
-    //     if ($leave->status !== 'pending') {
-    //         return back()->with('error', 'Leave already processed.');
-    //     }
-
-    //     // Deduct from balance
-    //     if ($leave->leave_type !== 'comp-off' && $leave->user->leave_balance < $leave->leave_days) {
-    //         return back()->with('error', 'Insufficient leave balance.');
-    //     }
-
-    //     if ($leave->leave_type !== 'comp-off') {
-    //         $leave->user->leave_balance -= $leave->leave_days;
-    //         $leave->user->save();
-    //     }
-
-    //     $leave->status = 'approved';
-    //     $leave->save();
-
-    //     return back()->with('success', 'Leave approved successfully.');
-    // }
-
-    // public function reject($id)
-    // {
-    //     $leave = Leave::findOrFail($id);
-    //     $currentUser = Auth::user();
-
-    //     // Allow only the assigned manager to reject
-    //     if ($leave->user->manager_id !== $currentUser->id) {
-    //         return back()->with('error', 'You are not authorized to reject this leave.');
-    //     }
-
-    //     if ($leave->status !== 'pending') {
-    //         return back()->with('error', 'Leave already processed.');
-    //     }
-
-    //     $leave->status = 'rejected';
-    //     $leave->save();
-
-    //     return back()->with('success', 'Leave rejected.');
-    // }
     public function approve($id)
     {
         $leave = Leave::findOrFail($id);
