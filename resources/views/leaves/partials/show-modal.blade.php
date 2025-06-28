@@ -1,9 +1,11 @@
-<div class="modal fade" id="leaveModal{{ $leave->id }}" tabindex="-1" aria-labelledby="leaveModalLabel{{ $leave->id }}" aria-hidden="true">
+<div class="modal fade" id="leaveModal{{ $leave->id }}" tabindex="-1"
+    aria-labelledby="leaveModalLabel{{ $leave->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content shadow">
             <div class="modal-header text-white" style="background:#FC5C14;">
                 <h5 class="modal-title" id="leaveModalLabel{{ $leave->id }}">Leave Request - #{{ $leave->id }}</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -11,7 +13,10 @@
                     <tbody>
                         <tr>
                             <th>Employee</th>
-                            <td>{{ $leave->user->name ?? 'N/A' }}</td>
+                            <td class="text-primary fw-italic">
+                                <em>{{ $leave->user?->name ?: '👤 Unknown User' }}</em>
+                            </td>
+
                         </tr>
                         <tr>
                             <th>Email</th>
@@ -26,12 +31,14 @@
                             <td>{{ $leave->leave_duration }}</td>
                         </tr>
                         <tr>
-                            <th>From Date</th>
-                            <td>{{ \Carbon\Carbon::parse($leave->from_date)->format('d-m-Y') }}</td>
+                            <th>From / For Date</th>
+                            <td><span style="color:blue">{{ \Carbon\Carbon::parse($leave->from_date)->format('d-m-Y') }}
+                            </td>
                         </tr>
                         <tr>
-                            <th>To Date</th>
-                            <td>{{ \Carbon\Carbon::parse($leave->to_date)->format('d-m-Y') }}</td>
+                            <th>To / Comp-Off Date</th>
+                            <td><span style="color:blue">{{ \Carbon\Carbon::parse($leave->to_date)->format('d-m-Y') }}
+                            </td>
                         </tr>
                         <tr>
                             <th>Leave Days</th>
@@ -44,11 +51,11 @@
                         <tr>
                             <th>Status</th>
                             <td>
-                                <span class="badge
-                                    @if($leave->status === 'approved') bg-success
+                                <span
+                                    class="badge
+                                    @if ($leave->status === 'approved') bg-success
                                     @elseif($leave->status === 'rejected') bg-danger
-                                    @else bg-warning text-dark
-                                    @endif">
+                                    @else bg-warning text-dark @endif">
                                     {{ ucfirst($leave->status) }}
                                 </span>
                             </td>

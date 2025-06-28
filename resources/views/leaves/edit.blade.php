@@ -122,20 +122,7 @@
                             </div>
 
                             {{-- Status --}}
-                            <h6 class="text-muted border-bottom pb-1 mb-3">Approval Status</h6>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="status" class="form-label fw-semibold">Status</label>
-                                    <select name="status" id="status" class="form-select" required>
-                                        <option value="pending" {{ $leave->status === 'pending' ? 'selected' : '' }}>
-                                            Pending</option>
-                                        <option value="approved" {{ $leave->status === 'approved' ? 'selected' : '' }}>
-                                            Approved</option>
-                                        <option value="rejected" {{ $leave->status === 'rejected' ? 'selected' : '' }}>
-                                            Rejected</option>
-                                    </select>
-                                </div>
-                            </div>
+
                         </div>
 
                         <div class="card-footer text-end">

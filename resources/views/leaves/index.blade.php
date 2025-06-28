@@ -59,8 +59,8 @@
                                             @endif
                                             <th>Leave Type</th>
                                             <th>Duration</th>
-                                            <th>From</th>
-                                            <th>To</th>
+                                            <th>From / Worked </th>
+                                            <th>To / Comp off </th>
                                             <th>Days</th>
                                             <th>Reason</th>
                                             <th>Status</th>
