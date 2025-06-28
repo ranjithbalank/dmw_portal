@@ -59,7 +59,7 @@
                                 </div>
                                 {{-- check the redirection link  --}}
                                 <div class="col-md-3">
-                                    <a href="#"
+                                    <a href="{{ route('holidays.index') }}"
                                         class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
                                         <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
                                     </a>

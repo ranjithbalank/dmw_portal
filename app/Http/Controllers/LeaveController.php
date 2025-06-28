@@ -69,6 +69,55 @@ class LeaveController extends Controller
         return view('leaves.create', compact('availableLeaves'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $user = Auth::user();
+
+    //     $rules = [
+    //         'leave_type' => 'required|in:casual,sick,earned,comp-off,od,permission',
+    //         'leave_duration' => 'required|in:Full Day,Half Day',
+    //         'leave_days' => 'required|numeric|min:0.5',
+    //         'reason' => 'required|string|max:1000',
+    //     ];
+
+    //     // Conditionally validate based on leave type
+    //     if ($request->leave_type === 'comp-off') {
+    //         $rules['comp_off_worked_date'] = 'required|date';
+    //         $rules['comp_off_leave_date'] = 'required|date|after_or_equal:comp_off_worked_date';
+    //     } else {
+    //         $rules['from_date'] = 'required|date';
+    //         $rules['to_date'] = 'required|date|after_or_equal:from_date';
+    //     }
+
+    //     $validated = $request->validate($rules);
+
+    //     // Check leave balance (not for comp-off)
+    //     if ($request->leave_type !== 'comp-off' && $user->leave_balance < $request->leave_days) {
+    //         return back()->withInput()->with('error', 'Not enough leave balance.');
+    //     }
+
+    //     // Save leave
+    //     $leave = new Leave();
+    //     $leave->user_id = $user->id;
+    //     $leave->leave_type = $request->leave_type;
+    //     $leave->leave_duration = $request->leave_duration;
+    //     $leave->from_date = $request->from_date;
+    //     $leave->to_date = $request->to_date;
+    //     $leave->comp_off_worked_date = $request->comp_off_worked_date;
+    //     $leave->comp_off_leave_date = $request->comp_off_leave_date;
+    //     $leave->leave_days = $request->leave_days;
+    //     $leave->reason = $request->reason;
+    //     $leave->status = 'pending';
+    //     $leave->save();
+
+    //     // Deduct leave balance (not for comp-off)
+    //     if ($request->leave_type !== 'comp-off') {
+    //         $user->leave_balance -= $request->leave_days;
+    //         $user->save();
+    //     }
+
+    //     return redirect()->route('leaves.index')->with('success', 'Leave request submitted.');
+    // }
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -80,7 +129,6 @@ class LeaveController extends Controller
             'reason' => 'required|string|max:1000',
         ];
 
-        // Conditionally validate based on leave type
         if ($request->leave_type === 'comp-off') {
             $rules['comp_off_worked_date'] = 'required|date';
             $rules['comp_off_leave_date'] = 'required|date|after_or_equal:comp_off_worked_date';
@@ -91,12 +139,26 @@ class LeaveController extends Controller
 
         $validated = $request->validate($rules);
 
-        // Check leave balance (not for comp-off)
+        // ✅ Check leave balance (not for comp-off)
         if ($request->leave_type !== 'comp-off' && $user->leave_balance < $request->leave_days) {
             return back()->withInput()->with('error', 'Not enough leave balance.');
         }
 
-        // Save leave
+        // ✅ Check if leave date(s) clash with holidays (only for non comp-off)
+        if ($request->leave_type !== 'comp-off') {
+            $holidayExists = \App\Models\Holiday::whereBetween('date', [$request->from_date, $request->to_date])->exists();
+            if ($holidayExists) {
+                return back()->withInput()->withErrors(['from_date' => 'Selected date(s) include holiday. Please choose another date.']);
+            }
+        } else {
+            // For comp-off, check comp_off_leave_date itself is not a holiday
+            $isHoliday = \App\Models\Holiday::where('date', $request->comp_off_leave_date)->exists();
+            if ($isHoliday) {
+                return back()->withInput()->withErrors(['comp_off_leave_date' => 'Comp-off leave date is a holiday. Please choose another date.']);
+            }
+        }
+
+        // ✅ Save leave
         $leave = new Leave();
         $leave->user_id = $user->id;
         $leave->leave_type = $request->leave_type;
@@ -110,7 +172,7 @@ class LeaveController extends Controller
         $leave->status = 'pending';
         $leave->save();
 
-        // Deduct leave balance (not for comp-off)
+        // ✅ Deduct leave balance (not for comp-off)
         if ($request->leave_type !== 'comp-off') {
             $user->leave_balance -= $request->leave_days;
             $user->save();

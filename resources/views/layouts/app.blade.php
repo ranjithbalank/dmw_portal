@@ -25,6 +25,8 @@
 
     <!-- Custom CSS -->
     <style>
+
+
         .select2-container .select2-selection--single {
             height: 38px !important;
             padding: 6px 12px !important;

@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PermissionController;
 
 Route::get('/', function () {
@@ -35,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
     ]);
     Route::post('leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
     Route::post('leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+
+    // Holidays
+    Route::resource('holidays', HolidayController::class);
 
     // ✅ Add more modules here: assets, attendance, payroll, etc.
 });

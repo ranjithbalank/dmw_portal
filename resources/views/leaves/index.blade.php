@@ -73,10 +73,11 @@
                                                 <td>{{ $index + 1 }}</td>
 
                                                 @if (request()->get('view') === 'team')
-                                                    <td>{{ $leave->user->name ?? '-' }}</td>
+                                                    <td class="text-primary">{{ $leave->user->name ?? '-' }}</td>
                                                 @endif
 
-                                                <td class="text-capitalize">{{ $leave->leave_type }}</td>
+                                                <td class="text-capitalize text-danger text-start">{{ $leave->leave_type }}
+                                                </td>
                                                 <td>{{ $leave->leave_duration }}</td>
                                                 <td>
                                                     {{ $leave->leave_type === 'comp-off' && $leave->comp_off_worked_date
