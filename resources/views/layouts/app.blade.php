@@ -21,12 +21,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <!-- Bootstrap 5 Bundle JS (with Popper.js included) -->
 
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+
+
 
 
     <!-- Custom CSS -->
     <style>
-
-
         .select2-container .select2-selection--single {
             height: 38px !important;
             padding: 6px 12px !important;
@@ -107,6 +110,10 @@
             });
         });
     </script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     {{-- Custom Scripts --}}
     @yield('scripts')
