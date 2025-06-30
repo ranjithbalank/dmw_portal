@@ -21,7 +21,7 @@
 
                     {{-- Admin Panel --}}
                     @hasrole('Admin')
-                        <div class="container py-3">
+                        <div class="container py-2">
                             <h6 class="text-muted fw-bold fst-italic mb-2">Admin Panel</h6>
                             <hr class="mt-0 mb-2">
                             <div class="row g-3 mb-4">
@@ -42,7 +42,7 @@
 
                         {{-- General Section --}}
                         @hasrole(['Manager', 'Admin', 'Employee'])
-                            <h6 class="text-muted fw-bold fst-italic mb-2">General</h6>
+                            <h6 class="text-muted fw-bold fst-italic mb-2">Human Resource Management</h6>
                             <hr class="mt-0 mb-2">
                             <div class="row g-3">
                                 <div class="col-md-3">
@@ -52,29 +52,32 @@
                                     </a>
                                 </div>
                             @endrole
-                            <div class="container py-3">
-                                <div class="row"> {{-- Added missing .row --}}
-                                    <div class="col-md-3">
-                                        <a href="{{ route('leaves.index') }}"
-                                            class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                            <i class="bi bi-calendar-check-fill"></i> <span>Leaves</span>
-                                        </a>
-                                    </div>
-                                    {{-- check the redirection link  --}}
-                                    <div class="col-md-3">
-                                        <a href="{{ route('holidays.index') }}"
-                                            class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                            <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
-                                        </a>
-                                    </div>
-                                </div> {{-- Closed .row --}}
-                            </div> {{-- Closed .container --}}
 
-                            <div class="container py-3">
+                            <h6 class="text-muted fw-bold fst-italic mb-2">Leave Management</h6>
+                            <hr class="mt-0 mb-2">
+                            <div class="row"> {{-- Added missing .row --}}
+                                <div class="col-md-3">
+                                    <a href="{{ route('leaves.index') }}"
+                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                        <i class="bi bi-calendar-check-fill"></i> <span>Leaves</span>
+                                    </a>
+                                </div>
+                                {{-- check the redirection link  --}}
+                                <div class="col-md-3">
+                                    <a href="{{ route('holidays.index') }}"
+                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                        <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
+                                    </a>
+                                </div>
+                            </div> {{-- Closed .row --}}
+                        </div> {{-- Closed .container --}}
 
-                            </div>
+                        <div class="container py-3">
+
                         </div>
                     </div>
                 </div>
             </div>
-        @endsection
+        </div>
+    </div>
+@endsection

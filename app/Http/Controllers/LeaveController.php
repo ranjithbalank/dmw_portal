@@ -64,9 +64,11 @@ class LeaveController extends Controller
     public function create()
     {
         $user = Auth::user();
+        // LeaveController@create or wherever you load the form
+        $minDate = now()->addDays(7)->toDateString();
         $availableLeaves = $user->leave_balance ?? 0;
 
-        return view('leaves.create', compact('availableLeaves'));
+        return view('leaves.create', compact('availableLeaves','minDate'));
     }
 
     // public function store(Request $request)
