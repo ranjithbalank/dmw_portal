@@ -79,17 +79,35 @@
                             </div>
 
                             {{-- Row 3: Work Designation --}}
-                            {{-- <div class="row g-3 mb-3">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-4">
-                                    <label for="designation" class="form-label">Work Designation <span
+                                    <label for="doj" class="form-label">Date of Join <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('designation') is-invalid @enderror"
-                                        name="designation" id="designation" value="{{ old('designation') }}" required>
-                                    @error('designation')
+                                    <input type="date" class="form-control @error('doj') is-invalid @enderror"
+                                        name="doj" id="doj" value="{{ old('doj') }}" required>
+                                    @error('doj')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div> --}}
+
+
+                                <div class="col-md-4">
+                                    <label for="type_emp" class="form-label">
+                                        Type of Shift <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="type_emp" id="type_emp"
+                                        class="form-select @error('type_emp') is-invalid @enderror" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="General" {{ old('type_emp') == 'General' ? 'selected' : '' }}>
+                                            General</option>
+                                        <option value="Shift" {{ old('type_emp') == 'Shift' ? 'selected' : '' }}>Shift
+                                        </option>
+                                    </select>
+                                    @error('type_emp')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             {{-- Row 4: Password + Confirm Password --}}
                             <div class="row g-3 mb-4">

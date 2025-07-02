@@ -47,7 +47,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label for="leave_type" class="form-label fw-bold">Leave Type</label>
                                     <select name="leave_type" id="leave_type" class="form-select" required>
                                         <option value="" disabled selected>Select Type</option>
@@ -57,17 +57,17 @@
                                         <option value="comp-off">Comp-Off</option>
                                         {{-- <option value="od">On-Duty</option> --}}
                                         {{-- <option value="permission">Permission</option> --}}
-                                    </select>
-                                </div>
+                                    {{-- </select> --}}
+                                {{-- </div> --}}
 
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label for="leave_duration" class="form-label fw-bold">Duration</label>
                                     <select name="leave_duration" id="leave_duration" class="form-select" required>
                                         <option value="" disabled selected>-- Select Duration --</option>
                                         <option value="Full Day">Full Day</option>
                                         <option value="Half Day">Half Day</option>
                                     </select>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="row mb-3" id="normal_date_fields">

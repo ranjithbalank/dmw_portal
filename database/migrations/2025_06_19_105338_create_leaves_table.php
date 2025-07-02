@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-            $table->enum('leave_type', ['casual', 'sick', 'earned', 'comp-off', 'od', 'permission'])
-                ->default('casual');
-            $table->enum('leave_duration', ['Full Day', 'Half Day']);
+            $table->enum('leave_type', ["N/A",'casual', 'sick', 'earned', 'comp-off', 'od', 'permission'])
+                ->default('N/A')->nullable();
+            $table->enum('leave_duration', ['N/A','Full Day', 'Half Day'])->nullable();
 
             $table->date('from_date')->nullable();
             $table->date('to_date')->nullable();
@@ -24,7 +23,25 @@ return new class extends Migration
 
             $table->decimal('leave_days', 4, 2);
             $table->text('reason')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Approver details & comments
+            $table->text('approver_1')->nullable(); // usually manager name or ID
+            $table->text('approver_2')->nullable(); // usually HR/Admin name or ID
+
+            $table->timestamp('approver_1_approved_at')->nullable();
+            $table->timestamp('approver_2_approved_at')->nullable();
+
+            $table->text('approver_1_comments')->nullable();
+            $table->text('approver_2_comments')->nullable();
+
+            // Single status column to track workflow
+            $table->enum('status', [
+                'pending',                      // waiting for manager
+                'supervisor/ manager approved', // manager approved, waiting for HR
+                'supervisor/ manager rejected',
+                'hr approved',
+                'hr rejected',
+            ])->default('pending');
 
             $table->timestamps();
         });

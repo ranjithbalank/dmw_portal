@@ -30,12 +30,21 @@ Route::middleware(['auth'])->group(function () {
     Route::resource("permissions", PermissionController::class);
     Route::post('/roles/permissions/toggle', [RoleController::class, 'togglePermission'])->name('roles.permissions.toggle');
 
+    // // Leave Management
+    // Route::resource('leaves', LeaveController::class)->parameters([
+    //     'leaves' => 'leave'
+    // ]);
+    // Route::post('leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
+    // Route::post('leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+
     // Leave Management
     Route::resource('leaves', LeaveController::class)->parameters([
         'leaves' => 'leave'
     ]);
-    Route::post('leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
-    Route::post('leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+
+    // Manager approval routes
+    Route::post('leaves/{leave}/manager-decision', [LeaveController::class, 'managerDecision'])->name('leaves.manager.decision');
+    Route::post('leaves/{leave}/hr-decision', [LeaveController::class, 'hrDecision'])->name('leaves.hr.decision');
 
     // Holidays
     Route::resource('holidays', HolidayController::class);

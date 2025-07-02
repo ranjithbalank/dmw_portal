@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('designation')->nullable()->default('Employee');
             $table->string('unit')->nullable();
             $table->string('department')->nullable();
-
+            $table->date("doj");
+            $table->string("type_emp");
             // Corrected manager_id setup
             $table->unsignedBigInteger('manager_id')->nullable();
             // $table->foreign('manager_id')->references('id')->on('users')->onDelete('set null');

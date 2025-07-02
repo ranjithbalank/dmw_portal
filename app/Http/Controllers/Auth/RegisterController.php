@@ -31,16 +31,19 @@ class RegisterController extends Controller
             'unit'          => ['required', 'string', 'max:100'],
             'department'    => ['required', 'string', 'max:100'],
             'manager_id'    => ['required', 'string', 'max:255'],
-            // 'designation'   => ['required', 'string', 'max:100'],
+            'doj'           => ['required', 'date'],
+            'type_emp'      => ['required', 'in:General,Shift'],
             'password'      => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
+
 
     /**
      * Create a new user after valid registration.
      */
     protected function create(array $data)
     {
+        // dd($data);
         return User::create([
             'name' => $data['name'],
             'employee_id' => $data['employee_id'],
@@ -48,7 +51,8 @@ class RegisterController extends Controller
             'unit' => $data['unit'],
             'department' => $data['department'],
             'manager_id' => $data['manager_id'],
-            // 'designation' => $data['designation'], // ✅ Added field
+            "doj"        => $data['doj'],
+            "type_emp"   => $data['type_emp'],
             'password' => Hash::make($data['password']),
 
         ]);

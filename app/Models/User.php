@@ -31,6 +31,8 @@ class User extends Authenticatable
         'password',
         'designation',
         'leave_balance',
+        "doj",
+        "type_emp",
         'status',
     ];
 

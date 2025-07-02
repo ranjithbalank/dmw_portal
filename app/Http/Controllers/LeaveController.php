@@ -23,6 +23,17 @@ class LeaveController extends Controller
                 ->count();
         }
 
+        if ($view === 'team' && $user->hasRole('HR')) {
+            $allLeaves = Leave::with('user')->latest()->get();
+
+            return view('leaves.index', [
+                'leaves' => $allLeaves,
+                'user' => $user,
+                'view' => 'team',
+                'pendingCount' => $pendingCount,
+            ]);
+        }
+
         // Admin: All Leaves
         if ($view === 'team' && $user->hasRole('Admin')) {
             $allLeaves = Leave::with('user')->latest()->get();
@@ -51,8 +62,7 @@ class LeaveController extends Controller
         }
 
         // My leaves
-        $myLeaves = Leave::where('user_id', $user->employee_id)->latest()->get();
-
+        $myLeaves = Leave::where('user_id', $user->id)->latest()->get();
         return view('leaves.index', [
             'leaves' => $myLeaves,
             'user' => $user,
@@ -71,62 +81,14 @@ class LeaveController extends Controller
         return view('leaves.create', compact('availableLeaves', 'minDate'));
     }
 
-    // public function store(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $rules = [
-    //         'leave_type' => 'required|in:casual,sick,earned,comp-off,od,permission',
-    //         'leave_duration' => 'required|in:Full Day,Half Day',
-    //         'leave_days' => 'required|numeric|min:0.5',
-    //         'reason' => 'required|string|max:1000',
-    //     ];
-
-    //     // Conditionally validate based on leave type
-    //     if ($request->leave_type === 'comp-off') {
-    //         $rules['comp_off_worked_date'] = 'required|date';
-    //         $rules['comp_off_leave_date'] = 'required|date|after_or_equal:comp_off_worked_date';
-    //     } else {
-    //         $rules['from_date'] = 'required|date';
-    //         $rules['to_date'] = 'required|date|after_or_equal:from_date';
-    //     }
-
-    //     $validated = $request->validate($rules);
-
-    //     // Check leave balance (not for comp-off)
-    //     if ($request->leave_type !== 'comp-off' && $user->leave_balance < $request->leave_days) {
-    //         return back()->withInput()->with('error', 'Not enough leave balance.');
-    //     }
-
-    //     // Save leave
-    //     $leave = new Leave();
-    //     $leave->user_id = $user->id;
-    //     $leave->leave_type = $request->leave_type;
-    //     $leave->leave_duration = $request->leave_duration;
-    //     $leave->from_date = $request->from_date;
-    //     $leave->to_date = $request->to_date;
-    //     $leave->comp_off_worked_date = $request->comp_off_worked_date;
-    //     $leave->comp_off_leave_date = $request->comp_off_leave_date;
-    //     $leave->leave_days = $request->leave_days;
-    //     $leave->reason = $request->reason;
-    //     $leave->status = 'pending';
-    //     $leave->save();
-
-    //     // Deduct leave balance (not for comp-off)
-    //     if ($request->leave_type !== 'comp-off') {
-    //         $user->leave_balance -= $request->leave_days;
-    //         $user->save();
-    //     }
-
-    //     return redirect()->route('leaves.index')->with('success', 'Leave request submitted.');
-    // }
     public function store(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
 
         $rules = [
-            'leave_type' => 'required|in:casual,sick,earned,comp-off,od,permission',
-            'leave_duration' => 'required|in:Full Day,Half Day',
+            // 'leave_type' => 'required|in:casual,sick,earned,comp-off,od,permission',
+            // 'leave_duration' => 'required|in:Full Day,Half Day',
             'leave_days' => 'required|numeric|min:0.5',
             'reason' => 'required|string|max:1000',
         ];
@@ -163,8 +125,8 @@ class LeaveController extends Controller
         // ✅ Save leave
         $leave = new Leave();
         $leave->user_id = $user->id;
-        $leave->leave_type = $request->leave_type;
-        $leave->leave_duration = $request->leave_duration;
+        $leave->leave_type = $request->leave_type ?? 'N/A';
+        $leave->leave_duration = $request->leave_duration ?? 'N/A';
         $leave->from_date = $request->from_date;
         $leave->to_date = $request->to_date;
         $leave->comp_off_worked_date = $request->comp_off_worked_date;
@@ -308,5 +270,169 @@ class LeaveController extends Controller
         $leave->save();
 
         return back()->with('success', 'Leave request rejected and balance reverted.');
+    }
+
+    // public function managerApprove(Request $request, Leave $leave)
+    // {
+    //     $request->validate(['comment' => 'required|string|max:1000']);
+
+    //     if (AUTH::user()->employee_id !== optional($leave->user)->manager_id) {
+    //         return back()->with('error', 'Unauthorized.');
+    //     }
+
+    //     if ($leave->status !== 'pending') {
+    //         return back()->with('info', 'This leave has already been processed.');
+    //     }
+
+    //     $leave->status = 'supervisor/ manager approved';
+    //     $leave->approver_1 = Auth::user()->id;
+    //     $leave->approver_1_comments = $request->comment;
+    //     $leave->approver_1_approved_at = now();
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave approved successfully.');
+    // }
+
+    // public function managerReject(Request $request, Leave $leave)
+    // {
+    //     $request->validate(['comment' => 'required|string|max:1000']);
+
+    //     if (Auth::user()->employee_id !== optional($leave->user)->manager_id) {
+    //         return back()->with('error', 'Unauthorized.');
+    //     }
+
+    //     if ($leave->status !== 'pending') {
+    //         return back()->with('info', 'This leave has already been processed.');
+    //     }
+
+    //     // Revert leave balance if not comp-off
+    //     if ($leave->leave_type !== 'comp-off') {
+    //         $leave->user->leave_balance += $leave->leave_days;
+    //         $leave->user->save();
+    //     }
+
+    //     $leave->status = 'supervisor/ manager rejected';
+    //     $leave->approver_1_comments = $request->comment;
+    //     $leave->approver_1_approved_at = now();
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave rejected and balance reverted.');
+    // }
+
+    // public function hrApprove(Request $request, Leave $leave)
+    // {
+    //     $request->validate(['comment' => 'required|string|max:1000']);
+
+    //     if (!Auth::user()->hasRole('HR')) {
+    //         return back()->with('error', 'Unauthorized.');
+    //     }
+
+    //     if ($leave->status !== 'supervisor/ manager approved') {
+    //         return back()->with('info', 'Leave must be manager approved first.');
+    //     }
+
+    //     $leave->status = 'hr approved';
+    //     $leave->approver_2_comments = $request->comment;
+    //     $leave->approver_2_approved_at = now();
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave approved by HR.');
+    // }
+
+    // public function hrReject(Request $request, Leave $leave)
+    // {
+    //     $request->validate(['comment' => 'required|string|max:1000']);
+
+    //     if (!Auth::user()->hasRole('HR')) {
+    //         return back()->with('error', 'Unauthorized.');
+    //     }
+
+    //     if ($leave->status !== 'supervisor/ manager approved') {
+    //         return back()->with('info', 'Leave must be manager approved first.');
+    //     }
+
+    //     // Revert leave balance if not comp-off
+    //     if ($leave->leave_type !== 'comp-off') {
+    //         $leave->user->leave_balance += $leave->leave_days;
+    //         $leave->user->save();
+    //     }
+
+    //     $leave->status = 'hr rejected';
+    //     $leave->approver_2_comments = $request->comment;
+    //     $leave->approver_2_approved_at = now();
+    //     $leave->save();
+
+    //     return back()->with('success', 'Leave rejected by HR and balance reverted.');
+    // }
+
+    // MANAGER decision (approve or reject)
+    public function managerDecision(Request $request, Leave $leave)
+    {
+        $request->validate([
+            'comment' => 'required|string|max:1000',
+            'action'  => 'required|in:approve,reject',
+        ]);
+
+        if (Auth::user()->employee_id !== optional($leave->user)->manager_id) {
+            return back()->with('error', 'Unauthorized.');
+        }
+
+        if ($leave->status !== 'pending') {
+            return back()->with('info', 'This leave has already been processed.');
+        }
+
+        if ($request->action === 'approve') {
+            $leave->status = 'supervisor/ manager approved';
+        } else {
+            $leave->status = 'supervisor/ manager rejected';
+            // Revert leave balance if not comp-off
+            if ($leave->leave_type !== 'comp-off') {
+                $leave->user->leave_balance += $leave->leave_days;
+                $leave->user->save();
+            }
+        }
+
+        $leave->approver_1 = Auth::user()->employee_id;
+        $leave->approver_1_comments = $request->comment;
+        $leave->approver_1_approved_at = now();
+        $leave->save();
+
+        return back()->with('success', 'Leave ' . $request->action . 'd successfully by Manager.');
+    }
+
+    // HR decision (approve or reject)
+    public function hrDecision(Request $request, Leave $leave)
+    {
+        $request->validate([
+            'comment' => 'required|string|max:1000',
+            'action'  => 'required|in:approve,reject',
+        ]);
+
+        if (!Auth::user()->hasRole('HR')) {
+            return back()->with('error', 'Unauthorized.');
+        }
+
+        if ($leave->status !== 'supervisor/ manager approved') {
+            return back()->with('info', 'Leave must be manager approved first.');
+        }
+
+        if ($request->action === 'approve') {
+            $leave->status = 'hr approved';
+        } else {
+            $leave->status = 'hr rejected';
+            // Revert leave balance if not comp-off
+            if ($leave->leave_type !== 'comp-off') {
+                $leave->user->leave_balance += $leave->leave_days;
+                $leave->user->save();
+            }
+        }
+
+        $leave->approver_2 = Auth::user()->employee_id;
+        $leave->approver_2_comments = $request->comment;
+        $leave->approver_2_approved_at = now();
+        $leave->leave_type = $request->leave_type;
+        $leave->save();
+
+        return back()->with('success', 'Leave ' . $request->action . 'd successfully by HR.');
     }
 }

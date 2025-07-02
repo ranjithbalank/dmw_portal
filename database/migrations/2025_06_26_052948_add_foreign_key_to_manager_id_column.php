@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Clean invalid manager_id references
+    //     // Clean invalid manager_id references
         DB::statement('
         UPDATE users
         SET manager_id = NULL
