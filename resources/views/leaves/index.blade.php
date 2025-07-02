@@ -125,9 +125,11 @@
                                                         @if (request()->get('view') === 'team' &&
                                                                 auth()->user()->hasRole('Manager') &&
                                                                 $leave->status === 'pending' &&
-                                                                auth()->id() === optional($leave->user)->manager_id)
+                                                                auth()->user()->employee_id === optional($leave->user)->manager_id)
                                                             <form action="{{ route('leaves.approve', $leave->id) }}"
-                                                                method="POST" style="display:inline-block;" class="me-1">
+                                                                method="POST"
+                                                                onsubmit="return confirm('Do you really want to approve this record?');"
+                                                                style="display:inline-block;" class="me-1">
                                                                 @csrf
                                                                 <button type="submit" class="btn btn-sm btn-success"
                                                                     title="Approve">
@@ -135,7 +137,9 @@
                                                                 </button>
                                                             </form>
                                                             <form action="{{ route('leaves.reject', $leave->id) }}"
-                                                                method="POST" style="display:inline-block;" class="me-1">
+                                                                method="POST"
+                                                                onsubmit="return confirm('Do you really want to Reject this record?');"
+                                                                style="display:inline-block;" class="me-1">
                                                                 @csrf
                                                                 <button type="submit"
                                                                     class="btn btn-sm btn-warning text-white"

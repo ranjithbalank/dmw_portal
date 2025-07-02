@@ -18,7 +18,7 @@ class LeaveController extends Controller
         if ($user->hasRole('Admin')) {
             $pendingCount = Leave::where('status', 'pending')->count();
         } elseif ($user->hasRole('Manager')) {
-            $pendingCount = Leave::whereHas('user', fn($q) => $q->where('manager_id', $user->id))
+            $pendingCount = Leave::whereHas('user', fn($q) => $q->where('manager_id', $user->employee_id))
                 ->where('status', 'pending')
                 ->count();
         }
@@ -38,7 +38,7 @@ class LeaveController extends Controller
         // Manager: Only team leaves
         if ($view === 'team' && $user->hasRole('Manager')) {
             $teamLeaves = Leave::with('user')
-                ->whereHas('user', fn($q) => $q->where('manager_id', $user->id))
+                ->whereHas('user', fn($q) => $q->where('manager_id', $user->employee_id))
                 ->latest()
                 ->get();
 
@@ -51,7 +51,7 @@ class LeaveController extends Controller
         }
 
         // My leaves
-        $myLeaves = Leave::where('user_id', $user->id)->latest()->get();
+        $myLeaves = Leave::where('user_id', $user->employee_id)->latest()->get();
 
         return view('leaves.index', [
             'leaves' => $myLeaves,
@@ -68,7 +68,7 @@ class LeaveController extends Controller
         $minDate = now()->addDays(7)->toDateString();
         $availableLeaves = $user->leave_balance ?? 0;
 
-        return view('leaves.create', compact('availableLeaves','minDate'));
+        return view('leaves.create', compact('availableLeaves', 'minDate'));
     }
 
     // public function store(Request $request)
@@ -273,8 +273,9 @@ class LeaveController extends Controller
 
     public function approve($id)
     {
+        $user = Auth::user(); // get the currently logged-in user
         $leave = Leave::findOrFail($id);
-        if (Auth::id() === optional($leave->user)->manager_id) {
+        if ($user->employee_id === optional($leave->user)->manager_id) {
             $leave->status = 'approved';
             $leave->save();
             return back()->with('success', 'Leave approved successfully.');
@@ -287,8 +288,8 @@ class LeaveController extends Controller
         $leave = Leave::findOrFail($id);
 
         // Only allow the manager of the employee to reject
-        $managerId = Auth::id();
-        if ($leave->user->manager_id != $managerId) {
+        $managerEmployeeId = Auth::user()->employee_id;
+        if ($leave->user->manager_id != $managerEmployeeId) {
             return back()->with('error', 'You are not authorized to reject this leave.');
         }
 
