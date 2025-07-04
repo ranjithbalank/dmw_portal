@@ -71,27 +71,43 @@
 
                 {{-- ✅ Previous approvals/comments --}}
                 <div class="mb-3">
-                    @if ($leave->approver_1)
-                        <div class="card mb-2 border-success">
-                            <div class="card-body p-2">
-                                <strong>Manager:</strong> {{ $leave->approver_1 }} <br>
-                                <small class="text-muted">On
-                                    {{ \Carbon\Carbon::parse($leave->approver_1_approved_at)->format('d-m-Y H:i A') }}</small>
-                                <div class="mt-1">💬 {{ $leave->approver_1_comments }}</div>
+                    <div class="row g-3">
+                        @if ($leave->approver_1)
+                            <div class="col-md-6">
+                                <div class="card border-success h-100">
+                                    <div class="card-body text-start p-3">
+                                        <strong><em> Supervisor/Manager Name: </em></strong>
+                                        <b> Mr. / Ms. {{ $leave->approver1?->name ?? 'N/A' }}</b>
+                                        <small class="text-muted d-block mt-2">
+                                            Approved At:
+                                            <b>{{ \Carbon\Carbon::parse($leave->approver_1_approved_at)->format('d-m-Y H:i A') }}</b>
+                                        </small>
+                                        <div class="mt-1">
+                                            Approval Comments: <b>{{ $leave->approver_1_comments }}</b>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
 
-                    @if ($leave->approver_2)
-                        <div class="card mb-2 border-primary">
-                            <div class="card-body p-2">
-                                <strong>HR:</strong> {{ $leave->approver_2 }} <br>
-                                <small class="text-muted">On
-                                    {{ \Carbon\Carbon::parse($leave->approver_2_approved_at)->format('d-m-Y H:i A') }}</small>
-                                <div class="mt-1">💬 {{ $leave->approver_2_comments }}</div>
+                        @if ($leave->approver_2)
+                            <div class="col-md-6">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body text-start p-3">
+                                        <strong><em> HR Name: </em></strong>
+                                        <b> Mr. / Ms. {{ $leave->approver2?->name ?? 'N/A' }}</b>
+                                        <small class="text-muted d-block mt-2">
+                                            Approved At:
+                                            <b>{{ \Carbon\Carbon::parse($leave->approver_2_approved_at)->format('d-m-Y H:i A') }}</b>
+                                        </small>
+                                        <div class="mt-1">
+                                            Approval Comments: <b>{{ $leave->approver_2_comments }}</b>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
 
                 {{-- ✅ Manager approval form --}}

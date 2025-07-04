@@ -58,7 +58,7 @@
                                                 <th>Employee</th>
                                             @endif
                                             <th>Leave Type</th>
-                                            <th>Duration</th>
+                                            {{-- <th>Duration</th> --}}
                                             <th>From / Worked </th>
                                             <th>To / Comp off </th>
                                             <th>Days</th>
@@ -73,12 +73,12 @@
                                                 <td>{{ $index + 1 }}</td>
 
                                                 @if (request()->get('view') === 'team')
-                                                    <td class="text-primary">{{ $leave->user->name ?? '-' }}</td>
+                                                    <td class="text-primary">{{Str::ucfirst($leave->user->name ?? '-' )}}</td>
                                                 @endif
 
                                                 <td class="text-capitalize text-danger text-start">{{ $leave->leave_type }}
                                                 </td>
-                                                <td>{{ $leave->leave_duration }}</td>
+                                                {{-- <td>{{ $leave->leave_duration }}</td> --}}
                                                 <td>
                                                     {{ $leave->leave_type === 'comp-off' && $leave->comp_off_worked_date
                                                         ? \Carbon\Carbon::parse($leave->comp_off_worked_date)->format('d M Y')
@@ -121,16 +121,17 @@
                                                         @endif
 
                                                         {{-- View Button --}}
-                                                        <button type="button" class="btn btn-sm btn-info me-1"
+                                                        <button type="button" class="btn btn-sm btn-info me-2"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#leaveModal{{ $leave->id }}">
                                                             <i class="bi bi-eye"></i>
                                                         </button>
+
                                                         {{-- Delete: Only Admin --}}
                                                         @if (auth()->user()->hasRole('Admin'))
                                                             <form action="{{ route('leaves.destroy', $leave->id) }}"
                                                                 method="POST" onsubmit="return confirm('Are you sure?');"
-                                                                style="display:inline-block;">
+                                                                style="display:inline-block; margin:0; padding:0;">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="btn btn-sm btn-danger">

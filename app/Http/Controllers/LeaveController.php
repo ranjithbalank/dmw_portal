@@ -15,54 +15,57 @@ class LeaveController extends Controller
 
         // Pending count based on role
         $pendingCount = 0;
+
         if ($user->hasRole('Admin')) {
             $pendingCount = Leave::where('status', 'pending')->count();
         } elseif ($user->hasRole('Manager')) {
-            $pendingCount = Leave::whereHas('user', fn($q) => $q->where('manager_id', $user->employee_id))
+            $pendingCount = Leave::whereHas(
+                'user',
+                fn($q) =>
+                $q->where('manager_id', $user->employee_id)
+            )
                 ->where('status', 'pending')
                 ->count();
+        } elseif ($user->hasRole('HR')) {
+            // HR sees leaves waiting for HR approval
+            $pendingCount = Leave::where('status', 'supervisor/ manager approved')->count();
         }
 
-        if ($view === 'team' && $user->hasRole('HR')) {
-            $allLeaves = Leave::with('user')->latest()->get();
+        // Team view
+        if ($view === 'team') {
+            if ($user->hasRole('HR') || $user->hasRole('Admin')) {
+                // HR & Admin see all leaves
+                $allLeaves = Leave::with('user')->latest()->get();
 
-            return view('leaves.index', [
-                'leaves' => $allLeaves,
-                'user' => $user,
-                'view' => 'team',
-                'pendingCount' => $pendingCount,
-            ]);
+                return view('leaves.index', [
+                    'leaves' => $allLeaves,
+                    'user' => $user,
+                    'view' => 'team',
+                    'pendingCount' => $pendingCount,
+                ]);
+            } elseif ($user->hasRole('Manager')) {
+                // Manager sees only their team leaves
+                $teamLeaves = Leave::with('user')
+                    ->whereHas(
+                        'user',
+                        fn($q) =>
+                        $q->where('manager_id', $user->employee_id)
+                    )
+                    ->latest()
+                    ->get();
+
+                return view('leaves.index', [
+                    'leaves' => $teamLeaves,
+                    'user' => $user,
+                    'view' => 'team',
+                    'pendingCount' => $pendingCount,
+                ]);
+            }
         }
 
-        // Admin: All Leaves
-        if ($view === 'team' && $user->hasRole('Admin')) {
-            $allLeaves = Leave::with('user')->latest()->get();
-
-            return view('leaves.index', [
-                'leaves' => $allLeaves,
-                'user' => $user,
-                'view' => 'team',
-                'pendingCount' => $pendingCount,
-            ]);
-        }
-
-        // Manager: Only team leaves
-        if ($view === 'team' && $user->hasRole('Manager')) {
-            $teamLeaves = Leave::with('user')
-                ->whereHas('user', fn($q) => $q->where('manager_id', $user->employee_id))
-                ->latest()
-                ->get();
-
-            return view('leaves.index', [
-                'leaves' => $teamLeaves,
-                'user' => $user,
-                'view' => 'team',
-                'pendingCount' => $pendingCount,
-            ]);
-        }
-
-        // My leaves
+        // Default: My leaves
         $myLeaves = Leave::where('user_id', $user->id)->latest()->get();
+
         return view('leaves.index', [
             'leaves' => $myLeaves,
             'user' => $user,
@@ -70,6 +73,7 @@ class LeaveController extends Controller
             'pendingCount' => $pendingCount,
         ]);
     }
+
 
     public function create()
     {
