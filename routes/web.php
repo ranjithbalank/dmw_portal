@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\AssetTicketController;
 
 Route::get('/', function () {
     return Auth::check()
@@ -48,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Holidays
     Route::resource('holidays', HolidayController::class);
+
+    //Asset Ticket Management
+    Route::resource('asset-tickets', AssetTicketController::class);
 
     // ✅ Add more modules here: assets, attendance, payroll, etc.
 });

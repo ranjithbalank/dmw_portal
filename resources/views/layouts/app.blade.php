@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-     {{-- <meta http-equiv="refresh" content="30"> --}}
+    {{-- <meta http-equiv="refresh" content="30"> --}}
     <title>{{ 'DMW EMPLOYEE PORTAL' }}</title>
 
     <!-- Fonts -->
@@ -53,6 +53,11 @@
             width: 100% !important;
         }
     </style>
+    @section('styles')
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    @endsection
+
+
 
 
 </head>
@@ -114,6 +119,19 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    @section('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#ticketsTable').DataTable({
+                    // Optional: customize language, paging, etc.
+                });
+            });
+        </script>
+    @endsection
 
     {{-- Custom Scripts --}}
     @yield('scripts')
