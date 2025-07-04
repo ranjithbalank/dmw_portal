@@ -23,7 +23,7 @@
                                 </a>
                             </li>
 
-                            @if (auth()->user()->hasAnyRole(['Manager', 'Admin','HR']))
+                            @if (auth()->user()->hasAnyRole(['Manager', 'Admin', 'HR']))
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->get('view') === 'team' ? 'active' : '' }}"
                                         href="{{ route('leaves.index', ['view' => 'team']) }}">
@@ -126,111 +126,6 @@
                                                             data-bs-target="#leaveModal{{ $leave->id }}">
                                                             <i class="bi bi-eye"></i>
                                                         </button>
-
-                                                        {{-- Approve / Reject --}}
-                                                        {{-- @if (request()->get('view') === 'team' && auth()->user()->hasRole('Manager') && $leave->status === 'pending' && auth()->user()->employee_id === optional($leave->user)->manager_id)
-                                                            <form
-                                                                action="{{ route('leaves.manager.approve', $leave->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Do you really want to approve this record as Manager?');"
-                                                                style="display:inline-block;" class="me-1">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-sm btn-success"
-                                                                    title="Manager Approve">
-                                                                    <i class="bi bi-check-circle"></i>
-                                                                </button>
-                                                            </form>
-                                                            <form action="{{ route('leaves.hr.approve', $leave->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Do you really want to approve this record as HR?');"
-                                                                style="display:inline-block;" class="me-1">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-sm btn-primary"
-                                                                    title="HR Approve">
-                                                                    <i class="bi bi-check-circle-fill"></i>
-                                                                </button>
-                                                            </form>
-
-                                                            <form action="{{ route('leaves.manager.reject', $leave->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Do you really want to Reject this record?');"
-                                                                style="display:inline-block;" class="me-1">
-                                                                @csrf
-                                                                <button type="submit"
-                                                                    class="btn btn-sm btn-warning text-white"
-                                                                    title="Reject">
-                                                                    <i class="bi bi-x-circle"></i>
-                                                                </button>
-                                                            </form>
-                                                            <form action="{{ route('leaves.hr.reject', $leave->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Do you really want to Reject this record?');"
-                                                                style="display:inline-block;" class="me-1">
-                                                                @csrf
-                                                                <button type="submit"
-                                                                    class="btn btn-sm btn-warning text-white"
-                                                                    title="Reject">
-                                                                    <i class="bi bi-x-circle"></i>
-                                                                </button>
-                                                            </form>
-                                                        @endif --}}
-                                                        @if (request()->get('view') === 'team')
-                                                            {{-- Manager can approve/reject if status is pending and he is the manager --}}
-                                                            {{-- @if (auth()->user()->hasRole('Manager') &&
-                                                                    $leave->status === 'pending' &&
-                                                                    auth()->user()->employee_id === optional($leave->user)->manager_id) --}}
-                                                                {{-- <form
-                                                                    action="{{ route('leaves.manager.approve', $leave->id) }}"
-                                                                    method="POST"
-                                                                    onsubmit="return confirm('Approve as Manager?');"
-                                                                    style="display:inline-block;" class="me-1">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-sm btn-success"
-                                                                        title="Manager Approve">
-                                                                        <i class="bi bi-check-circle"></i>
-                                                                    </button>
-                                                                </form> --}}
-                                                                {{-- <form
-                                                                    action="{{ route('leaves.manager.reject', $leave->id) }}"
-                                                                    method="POST"
-                                                                    onsubmit="return confirm('Reject as Manager?');"
-                                                                    style="display:inline-block;" class="me-1">
-                                                                    @csrf
-                                                                    <button type="submit"
-                                                                        class="btn btn-sm btn-warning text-white"
-                                                                        title="Manager Reject">
-                                                                        <i class="bi bi-x-circle"></i>
-                                                                    </button>
-                                                                </form> --}}
-                                                            {{-- @endif --}}
-
-                                                            {{-- HR can approve/reject if status is supervisor/ manager approved --}}
-                                                            {{-- @if (auth()->user()->hasRole('HR') && $leave->status === 'supervisor/ manager approved')
-                                                                <form action="{{ route('leaves.hr.approve', $leave->id) }}"
-                                                                    method="POST"
-                                                                    onsubmit="return confirm('Approve as HR?');"
-                                                                    style="display:inline-block;" class="me-1">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-sm btn-primary"
-                                                                        title="HR Approve">
-                                                                        <i class="bi bi-check-circle-fill"></i>
-                                                                    </button>
-                                                                </form>
-                                                                <form action="{{ route('leaves.hr.reject', $leave->id) }}"
-                                                                    method="POST"
-                                                                    onsubmit="return confirm('Reject as HR?');"
-                                                                    style="display:inline-block;" class="me-1">
-                                                                    @csrf
-                                                                    <button type="submit"
-                                                                        class="btn btn-sm btn-warning text-white"
-                                                                        title="HR Reject">
-                                                                        <i class="bi bi-x-circle"></i>
-                                                                    </button>
-                                                                </form>
-                                                            @endif --}}
-                                                        @endif
-
-
                                                         {{-- Delete: Only Admin --}}
                                                         @if (auth()->user()->hasRole('Admin'))
                                                             <form action="{{ route('leaves.destroy', $leave->id) }}"
@@ -264,3 +159,8 @@
         </div>
     </div>
 @endsection
+<script>
+    setInterval(function() {
+        location.reload();
+    }, 30000);
+</script>

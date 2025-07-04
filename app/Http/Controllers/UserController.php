@@ -51,6 +51,8 @@ class UserController extends Controller
             'department'    => ['required', 'string', 'max:100'],
             'manager_id'    => ['required', 'string', 'max:255'],
             'designation'   => ['required', 'string', 'max:100'],
+            'doj'           => ['required', 'date'],
+            'type_emp'      => ['required', 'in:General,Shift'],
             'password'      => ['required', 'string', 'min:8', 'confirmed'],
             'roles'         => ['required', 'array'],
         ]);
@@ -64,6 +66,8 @@ class UserController extends Controller
             'department'   => $request->department,
             'manager_id'   => $request->manager_id,
             'designation'  => $request->designation,
+            "doj"        => $request->doj,
+            "type_emp"   => $request->type_emp,
             'password'     => Hash::make($request->password),
         ]);
 
@@ -123,6 +127,8 @@ class UserController extends Controller
         // Update user fields
         $user->name  = $request->name;
         $user->email = $request->email;
+        $user->doj = $request->doj;
+        $user->type_emp = $request->type_emp;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);

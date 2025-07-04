@@ -70,6 +70,34 @@
                                     <label for="designation" class="form-label">Designation</label>
                                     <input type="text" class="form-control" value="{{ $user->designation }}" disabled>
                                 </div>
+                                <div class="col-md-4">
+                                    <label for="doj" class="form-label">Date of Join <span
+                                            class="text-danger">*</span></label>
+                                    <input type="date" class="form-control @error('doj') is-invalid @enderror"
+                                        name="doj" id="doj" value="{{ $user->doj }}" required>
+                                    @error('doj')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="type_emp" class="form-label">
+                                        Type of Shift <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="type_emp" id="type_emp"
+                                        class="form-select @error('type_emp') is-invalid @enderror" required>
+                                        <option value="General"
+                                            {{ old('type_emp', $user->type_emp) == 'General' ? 'selected' : '' }}>
+                                            General
+                                        </option>
+                                        <option value="Shift"
+                                            {{ old('type_emp', $user->type_emp) == 'Shift' ? 'selected' : '' }}>
+                                            Shift
+                                        </option>
+                                    </select>
+                                    @error('type_emp')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
                                 <div class="col-md-4">
                                     <label for="roles" class="form-label">Role <span class="text-danger">*</span></label>

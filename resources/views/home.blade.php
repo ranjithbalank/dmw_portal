@@ -21,63 +21,57 @@
 
                     {{-- Admin Panel --}}
                     @hasrole('Admin')
-                        <div class="container py-2">
-                            <h6 class="text-muted fw-bold fst-italic mb-2">Admin Panel</h6>
-                            <hr class="mt-0 mb-2">
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-3">
-                                    <a href="{{ route('roles.index') }}"
-                                        class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                        <i class="bi bi-person-lock"></i> <span>Roles</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="{{ route('permissions.index') }}"
-                                        class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                        <i class="bi bi-shield-lock-fill"></i> <span>Role-Permissions</span>
-                                    </a>
-                                </div>
+                        <h6 class="text-muted fw-bold fst-italic mb-2">Admin Panel</h6>
+                        <hr class="mt-0 mb-2">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
+                            <div class="col">
+                                <a href="{{ route('roles.index') }}"
+                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                    <i class="bi bi-person-lock"></i> <span>Roles</span>
+                                </a>
                             </div>
-                        @endrole
+                            <div class="col">
+                                <a href="{{ route('permissions.index') }}"
+                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                    <i class="bi bi-shield-lock-fill"></i> <span>Role-Permissions</span>
+                                </a>
+                            </div>
+                        </div>
+                    @endhasrole
 
-                        {{-- General Section --}}
-                        @hasrole(['Manager', 'Admin', 'Employee'])
-                            <h6 class="text-muted fw-bold fst-italic mb-2">Human Resource Management</h6>
-                            <hr class="mt-0 mb-2">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <a href="{{ route('users.index') }}"
-                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                        <i class="bi bi-people-fill"></i> <span>Users</span>
-                                    </a>
-                                </div>
-                            @endrole
+                    {{-- General Section --}}
+                    @hasrole(['Manager', 'Admin', 'Employee'])
+                        <h6 class="text-muted fw-bold fst-italic mb-2">Human Resource Management</h6>
+                        <hr class="mt-0 mb-2">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
+                            <div class="col">
+                                <a href="{{ route('users.index') }}"
+                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                    <i class="bi bi-people-fill"></i> <span>Users</span>
+                                </a>
+                            </div>
+                        </div>
+                    @endhasrole
 
-                            <h6 class="text-muted fw-bold fst-italic mb-2">Leave Management</h6>
-                            <hr class="mt-0 mb-2">
-                            <div class="row"> {{-- Added missing .row --}}
-                                <div class="col-md-3">
-                                    <a href="{{ route('leaves.index') }}"
-                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                        <i class="bi bi-calendar-check-fill"></i> <span>Leaves</span>
-                                    </a>
-                                </div>
-                                {{-- check the redirection link  --}}
-                                <div class="col-md-3">
-                                    <a href="{{ route('holidays.index') }}"
-                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                        <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
-                                    </a>
-                                </div>
-                            </div> {{-- Closed .row --}}
-                        </div> {{-- Closed .container --}}
-
-                        <div class="container py-3">
-
+                    {{-- Leave Management --}}
+                    <h6 class="text-muted fw-bold fst-italic mb-2">Leave Management</h6>
+                    <hr class="mt-0 mb-2">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        <div class="col">
+                            <a href="{{ route('leaves.index') }}"
+                                class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                <i class="bi bi-calendar-check-fill"></i> <span>Leaves</span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{{ route('holidays.index') }}"
+                                class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
+                                <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
+                            </a>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                </div> {{-- End card-body --}}
+            </div> {{-- End card --}}
+        </div> {{-- End col --}}
+    </div> {{-- End row --}}
 @endsection
