@@ -73,31 +73,6 @@
                             </div>
                         </div>
                     @endhasanyrole
-                    <br>
-                    {{-- Asset Management --}}
-                    @hasanyrole(['Admin', 'HR', 'Manager', 'Employee'])
-                        <h6 class="text-muted fw-bold fst-italic mb-2">Asset Ticket Management</h6>
-                        <hr class="mt-0 mb-2">
-
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                            <div class="col">
-                                <a href="#
-                                {{-- {{ route('leaves.index') }} --}}
-                                 "
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-ticket-detailed"></i> <span>Create Ticket</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="#
-                                {{-- {{ route('holidays.index') }} --}}
-                                 "
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-clock-history"></i> <span>Ticket History </span>
-                                </a>
-                            </div>
-                        </div>
-                    @endhasanyrole
                 </div> {{-- End card-body --}}
             </div> {{-- End card --}}
         </div> {{-- End col --}}
