@@ -37,7 +37,7 @@ class AssetTicketController extends Controller
         }
 
         // Pass it to the view
-        return view('asset_tickets.create', compact('ticketNumber','users'));
+        return view('asset_tickets.create', compact('ticketNumber', 'users'));
     }
     /**
      * Store a newly created resource in storage.
@@ -46,35 +46,28 @@ class AssetTicketController extends Controller
     {
         // dd($request->all());
         $validated = $request->validate([
-            'ticket_no'     => 'required|string|max:255',
-            'created_on'    => 'required|date',
-            'category_id'   => 'required|numeric',
-            'unit'          => 'required|string|max:255',
-            'division'      => 'required|string|max:255',
-            'priority'      => 'required|string|max:50',
-            'title'         => 'required|string|max:255',
-            'description'   => 'required|string',
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'category_id' => 'required|numeric',
+            'priority'    => 'required|in:Very Urgent,Urgent,Very High,High,Medium,Low',
+            'unit'        => 'required|string|max:255',
+            'division'    => 'required|string|max:255',
         ]);
 
         AssetTicket::create([
-            'ticket_no'     => $validated['ticket_no'],
-            'created_by'    => Auth::id(),                 // 👈 fix here
-            'created_on'    => $validated['created_on'],
-            'category_id'   => $validated['category_id'],
-            'unit'          => $validated['unit'],
-            'division'      => $validated['division'],
-            'priority'      => $validated['priority'],
-            'title'         => $validated['title'],
-            'description'   => $validated['description'],
-            'status'        => 'Yet to Assigned',
+            'title'       => $validated['title'],
+            'description' => $validated['description'],
+            'category_id' => $validated['category_id'],
+            'priority'    => $validated['priority'],
+            'unit'        => $validated['unit'],
+            'division'    => $validated['division'],
+            'created_by'  => Auth::id(),
+            'status'      => 'Yet to Assigned',
         ]);
 
         return redirect()->route('asset-tickets.index')
             ->with('success', 'Ticket created successfully!');
     }
-
-
-
 
     /**
      * Display the specified resource.
@@ -90,36 +83,94 @@ class AssetTicketController extends Controller
     public function edit(AssetTicket $assetTicket)
     {
 
-        $users=User::all();
-        return view('asset_tickets.edit', compact('assetTicket',"users"));
+        $users = User::all();
+        return view('asset_tickets.edit', compact('assetTicket', "users"));
     }
 
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, AssetTicket $assetTicket)
+    // {
+    //     $validated = $request->validate([
+    //         'title'        => 'required|string|max:255',
+    //         'description'  => 'required',
+    //         'category_id'  => 'required|numeric',
+    //         'priority'     => 'required|in:Very Urgent,Urgent,Very High,High,Medium,Low',
+    //         'unit'         => 'required|string',
+    //         'division'     => 'required|string',
+    //         'assigned_to'  => 'nullable|exists:users,id',
+    //     ]);
+
+    //     $data = $validated;
+
+    //     // If assigned_to is filled, update assignment fields
+    //     if ($request->filled('assigned_to')) {
+    //         $data['assigned_to'] = $request->assigned_to; // store current user id
+    //         $data['assigned_on'] = now();
+    //         $data['status'] = 'Assigned';
+    //     }
+
+    //     // Always update changed_by and changed_on
+    //     $data['changed_by'] = Auth::id();
+    //     $data['changed_on'] = now();
+
+    //     $assetTicket->update($data);
+
+    //     return redirect()->route('asset-tickets.index')
+    //         ->with('success', 'Ticket updated successfully!');
+    // }
     public function update(Request $request, AssetTicket $assetTicket)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required',
-            'category_id' => 'required|numeric',
-            'priority' => 'required|in:Very Urgent,Urgent,Very High,High,Medium,Low',
-            'unit' => 'required|string',
-            'division' => 'required|string',
+        // dd($request->all());
+        $validated = $request->validate([
+            'title'        => 'required|string|max:255',
+            'description'  => 'required',
+            'category_id'  => 'required|numeric',
+            'priority'     => 'required|in:Very Urgent,Urgent,Very High,High,Medium,Low',
+            'unit'         => 'required|string',
+            'division'     => 'required|string',
+            'assigned_to'  => 'nullable|exists:users,id',
+            'status'       => 'nullable|string'
         ]);
 
-        $assetTicket->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'category_id' => $request->category_id,
-            'priority' => $request->priority,
-            'unit' => $request->unit,
-            'division' => $request->division,
-        ]);
+        $data = $validated;
 
-        return redirect()->route('asset-tickets.index')
-            ->with('success', 'Ticket updated successfully!');
+        // If first time assigning
+        if ($request->filled('assigned_to') && empty($assetTicket->assigned_to)) {
+            $data['assigned_by'] = Auth::user()->name;
+            $data['assigned_on'] = now();
+            $data['status'] = 'Assigned';
+        }
+
+        // Always accept status if filled
+        if ($request->filled('status')) {
+            $data['status'] = $request->status;
+
+            // If new status is Closed → set closed_by & closed_on
+            if ($request->status === 'Closed') {
+                $data['closed_by'] = Auth::id();
+                $data['closed_on'] = now();
+                $data['closed_reason'] = $request->closed_reason;
+            }
+            // If status is Reopen → set reopen fields
+            if ($request->status === 'Reopen') {
+                $data['reopened_by'] = Auth::id();
+                $data['reopened_on'] = now();
+                $data['reopened_reason'] = $request->reopened_reason;
+            }
+        }
+
+        // Track who changed
+        $data['changed_by'] = Auth::id();
+        $data['changed_on'] = now();
+
+        $assetTicket->update($data);
+
+        return redirect()->route('asset-tickets.index')->with('success', 'Ticket updated successfully!');
     }
+
+
 
     /**
      * Remove the specified resource from storage.

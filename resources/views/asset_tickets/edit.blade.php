@@ -41,8 +41,9 @@
                                         <span class="input-group-text text-danger-emphasis fw-semibold border-end-0">
                                             <i class="bi bi-person me-1"></i> Created By
                                         </span>
-                                        <input type="text" name="created_by" class="form-control border-start-0"
-                                            value="{{ old('created_by', $assetTicket->created_by) }}" readonly>
+                                        <input type="text" class="form-control border-start-0"
+                                            value="{{ $assetTicket->creator->name ?? 'N/A' }}" readonly>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-2">
@@ -51,7 +52,9 @@
                                             <i class="bi bi-calendar me-1"></i> Created On
                                         </span>
                                         <input type="date" name="created_on" class="form-control border-start-0"
-                                            value="{{ old('created_on', $assetTicket->created_on) }}" readonly>
+                                            value="{{ old('created_on', optional($assetTicket->created_at)->format('Y-m-d')) }}"
+                                            readonly>
+
                                     </div>
                                 </div>
                             </div>
@@ -106,10 +109,11 @@
                                 <div class="col-md-3 mb-2">
                                     <select name="priority" class="form-select select2" required>
                                         <option value="" disabled>Select Priority</option>
-                                        @foreach (['1' => 'Urgent', '2' => 'Very High', '3' => 'High', '4' => 'Medium', '5' => 'Low'] as $val => $label)
-                                            <option value="{{ $val }}"
-                                                {{ old('priority', $assetTicket->priority) == $val ? 'selected' : '' }}>
-                                                {{ $label }}</option>
+                                        @foreach (['Very Urgent', 'Urgent', 'Very High', 'High', 'Medium', 'Low'] as $label)
+                                            <option value="{{ $label }}"
+                                                {{ old('priority', $assetTicket->priority) == $label ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -136,7 +140,7 @@
                     </div>
 
                     {{-- Assignment Info if status is Yet to Assigned OR Assigned and data exists --}}
-                    @hasanyrole('Facility')
+                    {{-- @hasanyrole('Facility')
                         @if ($assetTicket->status == 'Yet to Assigned' || ($assetTicket->status == 'Assigned' && $assetTicket->assigned_to))
                             <div class="card mb-3 shadow-sm rounded-3 border-1">
                                 <div class="card-header bg-success text-white fw-semibold rounded-top-3">
@@ -181,7 +185,176 @@
                                 </div>
                             </div>
                         @endif
-                    @endhasanyrole
+                    @endhasanyrole --}}
+                    {{-- Assignment Info --}}
+                    {{-- Assignment Info --}}
+
+
+                    @php
+                        $isFacility = auth()->user()->hasRole('Facility');
+                        $isAdmin = auth()->user()->hasRole('Admin');
+                        $isAssignedUser = auth()->id() == $assetTicket->assigned_to;
+                    @endphp
+
+                    @php
+                        $isFacility = auth()->user()->hasRole('Facility');
+                        $isAdmin = auth()->user()->hasRole('Admin');
+                        $isAssignedUser = auth()->id() == $assetTicket->assigned_to;
+                        $isReopener = auth()->id() == $assetTicket->reopened_by;
+                    @endphp
+
+                    @if (empty($assetTicket->assigned_to) && empty($assetTicket->assigned_by))
+                        {{-- Show assign dropdown to Facility --}}
+                        @if ($isFacility)
+                            <div class="card mb-3 shadow-sm rounded-3 border-1">
+                                <div class="card-header bg-success text-white fw-semibold rounded-top-3">
+                                    <i class="bi bi-person-plus text-white me-2"></i> Assignment Info
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label text-success fw-semibold">Assign To</label>
+                                            <select name="assigned_to" class="form-select select2 shadow-sm" required>
+                                                <option value="" disabled selected>Select User</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}"
+                                                        {{ old('assigned_to') == $user->id ? 'selected' : '' }}>
+                                                        {{ $user->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        {{-- Show to everyone if already assigned --}}
+                        <div class="card mb-3 shadow-sm rounded-3 border-1">
+                            <div class="card-header bg-success text-white fw-semibold rounded-top-3">
+                                <i class="bi bi-person-plus text-white me-2"></i> Assignment Info
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="input-group shadow-sm">
+                                            <span
+                                                class="input-group-text bg-white text-success fw-semibold border-end-0">Assigned
+                                                By</span>
+                                            <input type="text" name="assigned_by" class="form-control border-start-0"
+                                                value="{{ old('assigned_by', $assetTicket->assigned_by) ?? Auth::user()->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="input-group shadow-sm">
+                                            <span
+                                                class="input-group-text bg-white text-success fw-semibold border-end-0">Assigned
+                                                On</span>
+                                            <input type="date" name="assigned_on" class="form-control border-start-0"
+                                                value="{{ old('assigned_on', $assetTicket->assigned_on ? \Carbon\Carbon::parse($assetTicket->assigned_on)->format('Y-m-d') : date('Y-m-d')) }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label text-success fw-semibold">Assigned To</label>
+                                        <select name="assigned_to" class="form-select select2 shadow-sm"
+                                            {{ $isFacility ? '' : 'disabled' }} required>
+                                            <option value="" disabled>Select User</option>
+                                            @foreach ($users as $user)
+                                                <option value="{{ $user->id }}"
+                                                    {{ old('assigned_to', $assetTicket->assigned_to) == $user->id ? 'selected' : '' }}>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    @if ($isAssignedUser || $isAdmin)
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label text-success fw-semibold">Status</label>
+                                            @php
+                                                $statusOptions = ['Assigned', 'In Progress', 'Closed', 'Reopen'];
+                                                if ($assetTicket->status == 'Closed') {
+                                                }
+                                            @endphp
+                                            <select name="status" class="form-select shadow-sm" required>
+                                                @foreach ($statusOptions as $status)
+                                                    <option value="{{ $status }}"
+                                                        {{ old('status', $assetTicket->status) == $status ? 'selected' : '' }}>
+                                                        {{ $status }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($assetTicket->status == 'Closed' || ($assetTicket->status == 'In Progress' && $isAssignedUser))
+                        <div class="card mb-3 shadow-sm rounded-3 border-1">
+                            <div class="card-header bg-danger text-white fw-semibold rounded-top-3">
+                                <i class="bi bi-x-circle text-white me-2"></i> Closure Info
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-danger fw-semibold">Closed By</label>
+                                        <input type="text" name="closed_by" class="form-control shadow-sm"
+                                            value="{{ old('closed_by', $assetTicket->closure->closed_by ?? Auth::user()->name) }}"
+                                            {{ $isAssignedUser ? '' : 'readonly' }}>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-danger fw-semibold">Closed On</label>
+                                        <input type="date" name="closed_on" class="form-control shadow-sm"
+                                            value="{{ old('closed_on', $assetTicket->closed_on ? \Carbon\Carbon::parse($assetTicket->closed_on)->format('Y-m-d') : now()->format('Y-m-d')) }}"
+                                            {{ $isAssignedUser ? '' : 'readonly' }}>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-danger fw-semibold">Closed Reason</label>
+                                        <input type="text" name="closed_reason" class="form-control shadow-sm"
+                                            value="{{ old('closed_reason', $assetTicket->closed_reason) }}"
+                                            {{ $isAssignedUser ? '' : 'readonly' }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($assetTicket->status == 'Reopen' || ($assetTicket->status == 'Closed' && $isAssignedUser))
+                        <div class="card mb-3 shadow-sm rounded-3 border-1">
+                            <div class="card-header bg-warning text-white fw-semibold rounded-top-3">
+                                <i class="bi bi-arrow-repeat text-white me-2"></i> Reopen Info
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-warning fw-semibold">Reopened By</label>
+                                        <input type="text" name="reopened_by" class="form-control shadow-sm"
+                                            value="{{ old('reopened_by', $assetTicket->reopener->name ?? Auth::user()->name) }}"
+                                            {{ $isReopener ? '' : 'readonly' }}>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-warning fw-semibold">Reopened On</label>
+                                        <input type="date" name="reopened_on" class="form-control shadow-sm"
+                                            value="{{ old('reopened_on', $assetTicket->reopened_on ? \Carbon\Carbon::parse($assetTicket->reopened_on)->format('Y-m-d') : now()->format('Y-m-d')) }}"
+                                            {{ $isReopener ? '' : 'readonly' }}>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-warning fw-semibold">Reopen Reason</label>
+                                        <input type="text" name="reopened_reason" class="form-control shadow-sm"
+                                            value="{{ old('reopened_reason', $assetTicket->reopened_reason) }}"
+                                            {{ $isReopener ? '' : 'readonly' }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- Buttons --}}
                     <div class="d-flex justify-content-end">

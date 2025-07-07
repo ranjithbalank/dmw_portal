@@ -113,14 +113,15 @@
                                         <span class="input-group-text text-danger-emphasis fw-semibold border-end-0">
                                             <i class="bi bi-clipboard-check"></i>
                                         </span>
-                                        <select name="priority" class="form-select select2status border-start-0" required>
-                                            <option value="" selected disabled>Select Priority</option>
-                                            <option value="1">Urgent</option>
-                                            <option value="2">Very High</option>
-                                            <option value="3">High</option>
-                                            <option value="4">Medium</option>
-                                            <option value="5">Low</option>
+                                        <select name="priority" class="form-control">
+                                            <option value="Very Urgent">Very Urgent</option>
+                                            <option value="Urgent">Urgent</option>
+                                            <option value="Very High">Very High</option>
+                                            <option value="High">High</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Low">Low</option>
                                         </select>
+
                                     </div>
                                 </div>
                             </div>
