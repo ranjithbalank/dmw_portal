@@ -4,11 +4,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-<<<<<<< HEAD
-            <div class="col-md-10">
-=======
             <div class="col-md-12">
->>>>>>> asset-ticket
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center"
                         style="background:#FC5C14; color: white;">
@@ -29,16 +25,6 @@
                         <table id="ticketsTable" class="table table-bordered">
                             <thead class='text-dark'>
                                 <tr>
-<<<<<<< HEAD
-                                    <th>S.No</th>
-                                    <th>Title</th>
-                                    <th>Category ID</th>
-                                    <th>Priority</th>
-                                    <th>Unit</th>
-                                    <th>Division</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-=======
                                     <th style="width: 50px;">S.No</th>
                                     <th style="width: 150px; word-wrap: break-word;">Title</th>
                                     <th style="width: 120px; word-wrap: break-word;">Category ID</th>
@@ -47,34 +33,11 @@
                                     <th style="width: 100px; word-wrap: break-word;">Division</th>
                                     <th style="width: 100px; word-wrap: break-word;">Status</th>
                                     <th style="width: 120px;">Actions</th>
->>>>>>> asset-ticket
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($tickets as $index => $ticket)
                                     <tr>
-<<<<<<< HEAD
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $ticket->title }}</td>
-                                        <td>{{ $ticket->category_id }}</td>
-                                        <td>{{ $ticket->priority }}</td>
-                                        <td>{{ $ticket->unit }}</td>
-                                        <td>{{ $ticket->division }}</td>
-                                        <td>{{ $ticket->status }}</td>
-                                        <td>
-                                            <a href="{{ route('asset-tickets.show', $ticket) }}"
-                                                class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
-                                            <a href="{{ route('asset-tickets.edit', $ticket) }}"
-                                                class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
-                                            <form action="{{ route('asset-tickets.destroy', $ticket) }}" method="POST"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Delete this ticket?')"
-                                                    class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                                            </form>
-                                        </td>
-=======
                                         <td class="text-wrap align-middle">{{ $index + 1 }}</td>
                                         <td class="text-wrap align-middle">{{ $ticket->title }}</td>
                                         <td class="text-wrap align-middle">{{ $ticket->category_id }}</td>
@@ -102,7 +65,6 @@
                                             </form>
                                         </td>
 
->>>>>>> asset-ticket
                                     </tr>
                                 @endforeach
                             </tbody>
