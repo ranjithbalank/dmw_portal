@@ -19,6 +19,7 @@ class AssetTicket extends Model
         'created_by',
         'assigned_to',
         'assigned_on',
+        'assigned_by',
         'changed_by',
         'changed_on',
         'closed_by',
@@ -43,7 +44,7 @@ class AssetTicket extends Model
      */
     public function assignee()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'assigned_by');
     }
 
     /**

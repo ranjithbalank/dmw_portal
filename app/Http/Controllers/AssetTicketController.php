@@ -138,7 +138,7 @@ class AssetTicketController extends Controller
 
         // If first time assigning
         if ($request->filled('assigned_to') && empty($assetTicket->assigned_to)) {
-            $data['assigned_by'] = Auth::user()->name;
+            $data['assigned_by'] = Auth::id();
             $data['assigned_on'] = now();
             $data['status'] = 'Assigned';
         }

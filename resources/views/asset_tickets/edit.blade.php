@@ -242,7 +242,7 @@
                                                 class="input-group-text bg-white text-success fw-semibold border-end-0">Assigned
                                                 By</span>
                                             <input type="text" name="assigned_by" class="form-control border-start-0"
-                                                value="{{ old('assigned_by', $assetTicket->assigned_by) ?? Auth::user()->name }}"
+                                                value="{{ old('assigned_by', $assetTicket->assignee->assigned_by) ?? Auth::user()->name }}"
                                                 readonly>
                                         </div>
                                     </div>

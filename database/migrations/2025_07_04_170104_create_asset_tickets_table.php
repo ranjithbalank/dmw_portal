@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->unsignedBigInteger('changed_by')->nullable();
+            $table->unsignedBigInteger('assigned_by')->nullable();
             $table->unsignedBigInteger('closed_by')->nullable();
             $table->unsignedBigInteger('reopened_by')->nullable();
 
@@ -38,6 +39,7 @@ return new class extends Migration {
             // Foreign key constraints
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('assigned_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('changed_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('closed_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('reopened_by')->references('id')->on('users')->onDelete('set null');
