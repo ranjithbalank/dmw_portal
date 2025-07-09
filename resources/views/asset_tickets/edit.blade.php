@@ -242,8 +242,7 @@
                                                 class="input-group-text bg-white text-success fw-semibold border-end-0">Assigned
                                                 By</span>
                                             <input type="text" name="assigned_by" class="form-control border-start-0"
-                                                value="{{ old('assigned_by', $assetTicket->assignee?->name) }}"
-                                                readonly>
+                                                value="{{ old('assigned_by', $assetTicket->assignee?->name) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -295,7 +294,7 @@
                             </div>
                         </div>
                     @endif
-
+                    {{-- @dd($assetTicket); --}}
                     @if ($assetTicket->status == 'Closed' || ($assetTicket->status == 'In Progress' && $isAssignedUser))
                         <div class="card mb-3 shadow-sm rounded-3 border-1">
                             <div class="card-header bg-danger text-white fw-semibold rounded-top-3">
@@ -305,9 +304,13 @@
                                 <div class="row mb-2">
                                     <div class="col-md-4 mb-2">
                                         <label class="form-label text-danger fw-semibold">Closed By</label>
-                                        <input type="text" name="closed_by" class="form-control shadow-sm"
+                                        {{-- <input type="text" name="closed_by" class="form-control shadow-sm"
                                             value="{{ old('closed_by', $assetTicket->closure->closed_by ?? Auth::user()->name) }}"
-                                            {{ $isAssignedUser ? '' : 'readonly' }}>
+                                            {{ $isAssignedUser ? '' : 'readonly' }}> --}}
+                                        <input type="text" name="closed_by" class="form-control border-start-0"
+                                            value="{{ old('closed_by', $assetTicket->closer?->name ?? Auth::user()->name) }}"
+                                            readonly>
+
                                     </div>
                                     <div class="col-md-4 mb-2">
                                         <label class="form-label text-danger fw-semibold">Closed On</label>
@@ -348,7 +351,7 @@
                                     <div class="col-md-4 mb-2">
                                         <label class="form-label text-warning fw-semibold">Reopen Reason</label>
                                         <input type="text" name="reopened_reason" class="form-control shadow-sm"
-                                            value="{{ old('reopened_reason', $assetTicket->reopened_reason) }}"
+                                              value="{{ old('closed_by', $assetTicket->reopener?->name ?? Auth::user()->name) }}"
                                             {{ $isReopener ? '' : 'readonly' }}>
                                     </div>
                                 </div>
