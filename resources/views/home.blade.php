@@ -20,7 +20,7 @@
                     @endif
 
                     {{-- Admin Panel --}}
-                    {{-- @hasrole('Admin') --}}
+                    @hasrole('Admin')
                         <h6 class="text-muted fw-bold fst-italic mb-2">Admin Panel</h6>
                         <hr class="mt-0 mb-2">
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
@@ -37,10 +37,10 @@
                                 </a>
                             </div>
                         </div>
-                    {{-- @endhasrole --}}
+                    @endhasrole
 
                     {{-- General Section --}}
-                    {{-- @hasrole(['Manager', 'Admin','HR']) --}}
+                    @hasrole(['Admin','HR'])
                         <h6 class="text-muted fw-bold fst-italic mb-2">Human Resource Management</h6>
                         <hr class="mt-0 mb-2">
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
@@ -51,7 +51,7 @@
                                 </a>
                             </div>
                         </div>
-                    {{-- @endhasrole --}}
+                    @endhasrole
 
                     {{-- @hasanyrole(['Admin', 'HR', 'Manager', 'Employee']) --}}
                         {{-- Leave Management --}}

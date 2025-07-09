@@ -57,15 +57,15 @@
                         <div class="table-responsive mb-4">
                             <table id="leaveTable"
                                 class="table table-bordered table-striped table-hover text-center align-middle">
-                                <thead>
+                                <thead class="text-center">
                                     <tr>
                                         <th>S.No</th>
                                         @if (request()->get('view') === 'team')
                                             <th>Employee</th>
                                         @endif
-                                        <th>Leave Type</th>
-                                        <th>From / Worked</th>
-                                        <th>To / Comp off</th>
+                                        <th>Leave</th>
+                                        <th>From Date</th>
+                                        <th>To Date</th>
                                         <th>Days</th>
                                         <th>Reason</th>
                                         <th>Status</th>
@@ -94,21 +94,21 @@
                                                         ? \Carbon\Carbon::parse($leave->to_date)->format('d M Y')
                                                         : '-') }}
                                             </td>
-                                            <td>{{ $leave->leave_days }}</td>
-                                            <td>{{ $leave->reason }}</td>
+                                            <td>{{ ($leave->leave_days) }}</td>
+                                            <td>{{ Ucfirst($leave->reason) }}</td>
                                             <td>
                                                 @if ($leave->status == 'hr approved')
-                                                    <span class="badge bg-success">HR Approved</span>
+                                                    <span class="badge badge-wrap bg-success">{{strtoupper('HR Approved')}}</span>
                                                 @elseif ($leave->status == 'hr rejected')
-                                                    <span class="badge bg-danger">HR Rejected</span>
+                                                    <span class="badge badge-wrap bg-danger">{{strtoupper('HR Rejected')}}</span>
                                                 @elseif ($leave->status == 'supervisor/ manager approved')
-                                                    <span class="badge bg-primary">Supervisor/ Manager Approved</span>
+                                                    <span class="badge badge-wrap bg-primary">{{strtoupper('Supervisor/ Manager Approved')}}</span>
                                                 @elseif ($leave->status == 'supervisor/ manager rejected')
-                                                    <span class="badge bg-danger">Supervisor/ Manager Rejected</span>
+                                                    <span class="badge badge-wrap bg-danger">{{strtoupper('Supervisor/ Manager Rejected')}}</span>
                                                 @elseif ($leave->status == 'pending')
-                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                    <span class="badge badge-wrap bg-warning text-dark">{{strtoupper('Pending')}}</span>
                                                 @else
-                                                    <span class="badge bg-secondary">Unknown</span>
+                                                    <span class="badge bg-secondary">{{strtoupper('Unknown')}}</span>
                                                 @endif
                                             </td>
                                             <td>

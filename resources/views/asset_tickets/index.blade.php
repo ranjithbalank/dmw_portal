@@ -39,17 +39,25 @@
                                 @foreach ($tickets as $index => $ticket)
                                     <tr>
                                         <td class="text-wrap align-middle">{{ $index + 1 }}</td>
-                                        <td class="text-wrap align-middle">{{ $ticket->title }}</td>
-                                        <td class="text-wrap align-middle">{{ $ticket->category_id }}</td>
+                                        <td class="text-wrap align-middle">{{ ucfirst($ticket->title) }}</td>
+                                        <td class="text-wrap align-middle">
+                                            @if ($ticket->category_id == '1')
+                                                {{ 'Electrical' }}
+                                            @elseif($ticket->category_id == '2')
+                                                {{ 'Plumbing' }}
+                                            @else
+                                                {{ 'Unknown' }}
+                                            @endif
+                                        </td>
                                         <td class="text-wrap align-middle">{{ $ticket->priority }}</td>
                                         <td class="text-wrap align-middle">{{ $ticket->unit }}</td>
                                         <td class="text-wrap align-middle">{{ $ticket->division }}</td>
-                                        <td class="text-wrap align-middle">{{ $ticket->status }}</td>
+                                        <td class="text-wrap align-middle text-primary ">{{ $ticket->status }}</td>
                                         <td class="text-center align-middle">
-                                            <a href="{{ route('asset-tickets.show', $ticket) }}"
+                                            {{-- <a href="{{ route('asset-tickets.show', $ticket) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="bi bi-eye"></i>
-                                            </a>
+                                            </a> --}}
                                             <a href="{{ route('asset-tickets.edit', $ticket) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="bi bi-pencil-square"></i>

@@ -19,20 +19,24 @@
                         </tr>
                         <tr>
                             <th>Role</th>
-                            <td>{{ $user->role ?? 'N/A' }}</td>
+                            <td>{{ $user->designation ?? 'N/A' }}</td>
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>{{ $user->status ?? 'N/A' }}</td>
+                            <td>{{ Str::ucfirst($user->status) ?? 'N/A' }}</td>
                         </tr>
                         <tr>
-                            <th>Division</th>
-                            <td>{{ $user->division ?? 'N/A' }}</td>
+                            <th>Unit</th>
+                            <td>{{ $user->unit ?? 'N/A' }}</td>
                         </tr>
-                        {{-- <tr>
-                            <th>Div Code</th>
-                            <td>{{ $users->divcode ?? 'N/A' }}</td>
-                        </tr> --}}
+                        <tr>
+                            <th>Department</th>
+                            <td>{{ $user->department ?? 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date of Join</th>
+                            <td>{{ $user->doj->format('d-m-Y') }}</td>
+                        </tr>
                         <tr>
                             <th>Created At</th>
                             <td>{{ $user->created_at->format('d-m-Y H:i A') }}</td>

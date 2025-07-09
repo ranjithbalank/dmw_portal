@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content shadow">
             <div class="modal-header text-white" style="background:#FC5C14;">
-                <h5 class="modal-title" id="leaveModalLabel{{ $leave->id }}">Leave Request - #{{ $leave->id }}</h5>
+                <h5 class="modal-title" id="leaveModalLabel{{ $leave->id }}">Leave Request - {{ $leave->id }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -24,23 +24,29 @@
                         </tr>
                         <tr>
                             <th>Leave Type</th>
-                            <td>{{ ucfirst($leave->leave_type) }}</td>
+                            <td>
+                                @if ($leave->leave_type == 'N/A')
+                                    <span class="text-danger">{{ 'Waiting For HR Decision' }}</span>
+                                @else
+                                    {{ ucfirst($leave->leave_type) }}
+                                @endif
+                            </td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <th>Duration</th>
                             <td>{{ $leave->leave_duration }}</td>
-                        </tr>
+                        </tr> --}}
                         <tr>
-                            <th>From / For Date</th>
+                            <th>From Date</th>
                             <td style="color:blue">{{ \Carbon\Carbon::parse($leave->from_date)->format('d-m-Y') }}</td>
                         </tr>
                         <tr>
-                            <th>To / Comp-Off Date</th>
+                            <th>To Date</th>
                             <td style="color:blue">{{ \Carbon\Carbon::parse($leave->to_date)->format('d-m-Y') }}</td>
                         </tr>
                         <tr>
                             <th>Leave Days</th>
-                            <td>{{ $leave->leave_days }}</td>
+                            <td>{{ $leave->leave_days }} </td>
                         </tr>
                         <tr>
                             <th>Leave Balance</th>
@@ -54,13 +60,13 @@
                                     @if (str_contains($leave->status, 'approved')) bg-success
                                     @elseif(str_contains($leave->status, 'rejected')) bg-danger
                                     @else bg-warning text-dark @endif">
-                                    {{ ucfirst($leave->status) }}
+                                    {{ strtoupper($leave->status) }}
                                 </span>
                             </td>
                         </tr>
                         <tr>
                             <th>Reason</th>
-                            <td>{{ $leave->reason }}</td>
+                            <td>{{ Str::ucfirst($leave->reason) }}</td>
                         </tr>
                         <tr>
                             <th>Requested On</th>
@@ -77,7 +83,7 @@
                                 <div class="card border-success h-100">
                                     <div class="card-body text-start p-3">
                                         <strong><em> Supervisor/Manager Name: </em></strong>
-                                        <b> Mr. / Ms. {{ $leave->approver1?->name ?? 'N/A' }}</b>
+                                        <b> <span class="text-primary">Mr. / Ms. {{ $leave->approver1?->name ?? 'N/A' }}</span></b>
                                         <small class="text-muted d-block mt-2">
                                             Approved At:
                                             <b>{{ \Carbon\Carbon::parse($leave->approver_1_approved_at)->format('d-m-Y H:i A') }}</b>
@@ -95,7 +101,7 @@
                                 <div class="card border-primary h-100">
                                     <div class="card-body text-start p-3">
                                         <strong><em> HR Name: </em></strong>
-                                        <b> Mr. / Ms. {{ $leave->approver2?->name ?? 'N/A' }}</b>
+                                        <b> <span class="text-primary">Mr. / Ms. {{ $leave->approver2?->name ?? 'N/A' }}</span></b>
                                         <small class="text-muted d-block mt-2">
                                             Approved At:
                                             <b>{{ \Carbon\Carbon::parse($leave->approver_2_approved_at)->format('d-m-Y H:i A') }}</b>

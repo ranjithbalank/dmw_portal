@@ -74,10 +74,12 @@
                                     <label for="doj" class="form-label">Date of Join <span
                                             class="text-danger">*</span></label>
                                     <input type="date" class="form-control @error('doj') is-invalid @enderror"
-                                        name="doj" id="doj" value="{{ $user->doj }}" required>
+                                        name="doj" id="doj"
+                                        value="{{ $user->doj ? $user->doj->format('Y-m-d') : '' }}" required>
                                     @error('doj')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+
                                 </div>
                                 <div class="col-md-4">
                                     <label for="type_emp" class="form-label">
