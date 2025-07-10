@@ -83,7 +83,7 @@
                                 <div class="card border-success h-100">
                                     <div class="card-body text-start p-3">
                                         <strong><em> Supervisor/Manager Name: </em></strong>
-                                        <b> <span class="text-primary">Mr. / Ms. {{ $leave->approver1?->name ?? 'N/A' }}</span></b>
+                                        <b> <span class="text-primary">Mr. / Ms. {{ $leave->approver1->name }}</span></b>
                                         <small class="text-muted d-block mt-2">
                                             Approved At:
                                             <b>{{ \Carbon\Carbon::parse($leave->approver_1_approved_at)->format('d-m-Y H:i A') }}</b>

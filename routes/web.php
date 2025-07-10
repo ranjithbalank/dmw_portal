@@ -15,7 +15,10 @@ Route::get('/', function () {
         ? redirect()->route('home')
         : redirect()->route('login');
 });
+// GET: show the import form
+Route::get('/users/import', [UserController::class, 'import_csv'])->name('users.import_form');
 
+Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
 Auth::routes();
 
 // ✅ Everything below requires login
@@ -54,4 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('asset-tickets', AssetTicketController::class);
 
     // ✅ Add more modules here: assets, attendance, payroll, etc.
+
+
 });

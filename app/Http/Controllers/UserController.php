@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Imports\EmployeesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -155,5 +157,23 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User Deleted successfully.');
+    }
+    public function import_csv()
+    {
+        return view('users.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            Excel::import(new EmployeesImport, $request->file('file'));
+            return back()->with('success', 'Employees imported successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error during import: ' . $e->getMessage());
+        }
     }
 }

@@ -28,10 +28,10 @@ class Leave extends Model
     // app/Models/Leave.php
     public function approver1()
     {
-        return $this->belongsTo(User::class, 'approver_1');
+        return $this->belongsTo(User::class,  'approver_1', 'employee_id');
     }
     public function approver2()
     {
-        return $this->belongsTo(User::class, 'approver_2');
+        return $this->belongsTo(User::class, 'approver_2', "employee_id");
     }
 }
