@@ -20,8 +20,8 @@ return new class extends Migration
         $table->unsignedBigInteger('approver_1')->nullable();
         $table->unsignedBigInteger('approver_2')->nullable();
 
-        $table->foreign('approver_1')->references('id')->on('users')->nullOnDelete();
-        $table->foreign('approver_2')->references('id')->on('users')->nullOnDelete();
+        $table->foreign('approver_1')->references('employee_id')->on('users')->nullOnDelete();
+        $table->foreign('approver_2')->references('employee_id')->on('users')->nullOnDelete();
     });
     }
 
