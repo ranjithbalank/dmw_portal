@@ -6,8 +6,8 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header text-white d-flex justify-content-between align-items-center"
-                        style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background:#FC5C14; color: white;">
                         {{ 'Facility Ticket History' }}
                         <a href="{{ route('home') }}" class="btn btn-light btn-sm text-dark shadow-sm">
                             ← Back
@@ -18,7 +18,7 @@
                         <div class="d-flex justify-content-end mb-3">
                             {{-- @can('Create') --}}
                             <a href="{{ route('asset-tickets.create') }}" class="btn btn-success shadow-sm">
-                                <i class="bi bi-person-plus"></i> Create New Ticket
+                                <i class="bi bi-person-plus"></i> Create New Job
                             </a>
                             {{-- @endcan --}}
                         </div>
@@ -26,7 +26,7 @@
                             <thead class='text-dark'>
                                 <tr>
                                     <th style="width: 50px;">S.No</th>
-                                    <th style="width: 150px; word-wrap: break-word;">Title</th>
+                                    <th style="width: 150px; word-wrap: break-word;">Job Title</th>
                                     <th style="width: 120px; word-wrap: break-word;">Category ID</th>
                                     <th style="width: 100px; word-wrap: break-word;">Priority</th>
                                     <th style="width: 100px; word-wrap: break-word;">Unit</th>

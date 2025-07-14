@@ -3,93 +3,122 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-sm">
-                <div class="card-header text-start fw-bold fs-5" style="background: #FC5C14; color: white;">
-                    Dashboard
+<div class="container py-4">
+
+    {{-- Dashboard Sections --}}
+    <div class="row g-4">
+
+        {{-- Admin Panel --}}
+        @hasrole('Admin')
+        <div class="col-12">
+            <div class="rounded-4 overflow-hidden shadow">
+                <div class="px-4 py-2 text-white fw-bold fs-6" style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
+                    <i class="bi bi-person-gear me-2"></i> Admin Panel
                 </div>
-
-                <div class="card-body">
-                    {{-- Flash Success Message --}}
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show fw-semibold" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="bg-glass p-3 rounded-bottom-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('roles.index') }}" class="glass-card">
+                                <i class="bi bi-person-lock fs-2 mb-1 text-primary"></i>
+                                <span class="fw-semibold small">Roles</span>
+                            </a>
                         </div>
-                    @endif
-
-                    {{-- Admin Panel --}}
-                    @hasrole('Admin')
-                        <h6 class="text-muted fw-bold fst-italic mb-2">Admin Panel</h6>
-                        <hr class="mt-0 mb-2">
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
-                            <div class="col">
-                                <a href="{{ route('roles.index') }}"
-                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-person-lock"></i> <span>Roles</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="{{ route('permissions.index') }}"
-                                    class="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-shield-lock-fill"></i> <span>Role-Permissions</span>
-                                </a>
-                            </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('permissions.index') }}" class="glass-card">
+                                <i class="bi bi-shield-lock-fill fs-2 mb-1 text-primary"></i>
+                                <span class="fw-semibold small">Role-Permissions</span>
+                            </a>
                         </div>
-                    @endhasrole
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endhasrole
 
-                    {{-- General Section --}}
-                    @hasrole(['Admin','HR'])
-                        <h6 class="text-muted fw-bold fst-italic mb-2">Human Resource Management</h6>
-                        <hr class="mt-0 mb-2">
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
-                            <div class="col">
-                                <a href="{{ route('users.index') }}"
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-people-fill"></i> <span>Users</span>
-                                </a>
-                            </div>
+        {{-- HR Section --}}
+        @hasrole(['Admin','HR'])
+        <div class="col-12">
+            <div class="rounded-4 overflow-hidden shadow">
+                <div class="px-4 py-2 text-white fw-bold fs-6" style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
+                    <i class="bi bi-people-fill me-2"></i> Human Resource Management
+                </div>
+                <div class="bg-glass p-3 rounded-bottom-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('users.index') }}" class="glass-card">
+                                <i class="bi bi-people-fill fs-2 mb-1 text-info"></i>
+                                <span class="fw-semibold small">Users</span>
+                            </a>
                         </div>
-                    @endhasrole
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endhasrole
 
-                    {{-- @hasanyrole(['Admin', 'HR', 'Manager', 'Employee']) --}}
-                        {{-- Leave Management --}}
-                        <h6 class="text-muted fw-bold fst-italic mb-2">Leave Management</h6>
-                        <hr class="mt-0 mb-2">
-
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                            <div class="col">
-                                <a href="{{ route('leaves.index') }}"
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-calendar-check-fill"></i> <span>Leaves</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="{{ route('holidays.index') }}"
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-calendar-check-fill"></i> <span>Holiday List</span>
-                                </a>
-                            </div>
+        {{-- Leave Management --}}
+        <div class="col-12">
+            <div class="rounded-4 overflow-hidden shadow">
+                <div class="px-4 py-2 text-white fw-bold fs-6" style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
+                    <i class="bi bi-calendar-week me-2"></i> Leave Management
+                </div>
+                <div class="bg-glass p-3 rounded-bottom-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('leaves.index') }}" class="glass-card">
+                                <i class="bi bi-calendar-check-fill fs-2 mb-1 text-warning"></i>
+                                <span class="fw-semibold small">Leaves</span>
+                            </a>
                         </div>
-                    {{-- @endhasanyrole --}}
-                    <br>
-                    {{-- Asset Management --}}
-                    {{-- @hasanyrole(['Admin', 'HR', 'Manager', 'Facility']) --}}
-                        <h6 class="text-muted fw-bold fst-italic mb-2">Asset Ticket Management</h6>
-                        <hr class="mt-0 mb-2">
-
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                            <div class="col">
-                                <a href="{{ route('asset-tickets.index') }}"
-                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 small shadow-sm fw-semibold">
-                                    <i class="bi bi-clock-history"></i> <span>Tickets </span>
-                                </a>
-                            </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('holidays.index') }}" class="glass-card">
+                                <i class="bi bi-calendar3 fs-2 mb-1 text-warning"></i>
+                                <span class="fw-semibold small">Holiday List</span>
+                            </a>
                         </div>
-                    {{-- @endhasanyrole --}}
-                </div> {{-- End card-body --}}
-            </div> {{-- End card --}}
-        </div> {{-- End col --}}
-    </div> {{-- End row --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Asset Ticket Management --}}
+        <div class="col-12">
+            <div class="rounded-4 overflow-hidden shadow">
+                <div class="px-4 py-2 text-white fw-bold fs-6" style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
+                    <i class="bi bi-tools me-2"></i> Asset Ticket Management
+                </div>
+                <div class="bg-glass p-3 rounded-bottom-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('asset-tickets.index') }}" class="glass-card">
+                                <i class="bi bi-clock-history fs-2 mb-1 text-success"></i>
+                                <span class="fw-semibold small">Tickets</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Internal Job Posting --}}
+        <div class="col-12">
+            <div class="rounded-4 overflow-hidden shadow">
+                <div class="px-4 py-2 text-white fw-bold fs-6" style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
+                    <i class="bi bi-megaphone-fill me-2"></i> Internal Job Posting
+                </div>
+                <div class="bg-glass p-3 rounded-bottom-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('asset-tickets.index') }}" class="glass-card">
+                                <i class="bi bi-plus-circle fs-2 mb-1 text-danger"></i>
+                                <span class="fw-semibold small">Create Job Posting</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 @endsection

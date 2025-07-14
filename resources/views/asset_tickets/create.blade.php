@@ -9,8 +9,8 @@
     <div class="container">
         <div class="card shadow-sm rounded-4 border-1">
             <div class="card-header d-flex justify-content-between align-items-center  bg-tertiary"
-                style="background:#FC5C14; color:white;">
-                <span class="fw-semibold">
+                style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
+                <span class="fw-semibold text-white">
                     <i class="bi bi-plus-circle text-white me-2"></i> Create Facility Ticket
                 </span>
                 <a href="{{ route('asset-tickets.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">

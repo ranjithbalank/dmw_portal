@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content shadow">
             <div class="modal-header text-white"
-            style="background:#FC5C14; color: white;">
+            style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
                 <h5 class="modal-title" id="userModalLabel{{ $user->id }}">User Profile - {{ $user->name }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

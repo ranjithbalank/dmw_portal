@@ -7,8 +7,8 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card shadow-sm">
-                    <div class="card-header d-flex justify-content-between align-items-center"
-                        style="background:#FC5C14; color: white;">
+                    <div class="card-header text-white d-flex justify-content-between align-items-center"
+                        style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
                         Roles
                         <a href="{{ route('home') }}" class="btn btn-light btn-sm text-dark shadow-sm">
                             ← Back
@@ -62,7 +62,7 @@
                                                         <i class="bi bi-eye"></i>
                                                     </button>
 
-                                                   
+
                                                 </td>
                                             </tr>
                                         @endforeach
