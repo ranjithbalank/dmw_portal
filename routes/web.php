@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InternalJobPostingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -55,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
 
     //Asset Ticket Management
     Route::resource('asset-tickets', AssetTicketController::class);
+
+    // Internal Job Posting
+    Route::resource('internal-jobs',InternalJobPostingController::class);
 
     // ✅ Add more modules here: assets, attendance, payroll, etc.
 

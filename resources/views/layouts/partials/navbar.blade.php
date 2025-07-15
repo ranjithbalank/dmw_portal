@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg" style="background-color: #FC5C14;">
+<nav class="navbar navbar-expand-lg"  style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
     <div class="container">
         <a href="{{ url('/') }}" class="d-flex align-items-center text-decoration-none">
 
