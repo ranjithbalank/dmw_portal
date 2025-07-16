@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\InternalJobPostingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -10,7 +9,9 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
+use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
+use App\Http\Controllers\InternalJobPostingController;
 
 Route::get('/', function () {
     return Auth::check()
@@ -41,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leaves', LeaveController::class)->parameters(['leaves' => 'leave']);
     Route::post('leaves/{leave}/manager-decision', [LeaveController::class, 'managerDecision'])->name('leaves.manager.decision');
     Route::post('leaves/{leave}/hr-decision', [LeaveController::class, 'hrDecision'])->name('leaves.hr.decision');
+    Route::get('/leaves/export/excel', [LeaveExportController::class, 'exportExcel'])->name('leaves.export.excel');
+    Route::get('/leaves/export/pdf', [LeaveExportController::class, 'exportPDF'])->name('leaves.export.pdf');
 
     // Holidays
     Route::resource('holidays', HolidayController::class);
