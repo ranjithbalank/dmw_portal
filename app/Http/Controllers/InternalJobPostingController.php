@@ -36,7 +36,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $request->validate([
             'job_title' => 'required|string|max:255',
             'job_description' => 'required|string',
