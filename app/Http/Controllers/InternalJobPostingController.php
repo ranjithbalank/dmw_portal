@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InternalJobPostings; // ✅ correct import
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\InternalJobApplications;
+use App\Notifications\NewJobApplication;
+use App\Models\InternalJobPostings; // ✅ correct import
 
 class InternalJobPostingController extends Controller // ✅ correct class name
 {
@@ -32,6 +36,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'job_title' => 'required|string|max:255',
             'job_description' => 'required|string',
@@ -109,6 +114,36 @@ class InternalJobPostingController extends Controller // ✅ correct class name
 
         return redirect()->route('internal-jobs.index')
                         ->with('success', 'Job deleted successfully!');
+    }
+
+    public function apply(Request $request, $job)
+    {
+        // dd($request->all());
+        $request->validate([
+            'emp_qualifications' => 'required|string|max:255',
+            'emp_experience' => 'required|string|max:255',
+        ]);
+
+        $existing = InternalJobApplications::where('employee_id', Auth::id())
+            ->where('job_id', $job)
+            ->first();
+
+        if ($existing) {
+            return redirect()->route('internal-jobs.index')
+                ->with('error', 'You have already applied for this position!');
+        }
+
+        InternalJobApplications::create([
+            'employee_id' => Auth::id(),
+            'job_id' => $job,
+            'emp_qualifications' => $request->emp_qualifications,
+            'emp_experience' => $request->emp_experience,
+            'is_interested' => $request->is_interested,
+        ]);
+
+
+        return redirect()->route('internal-jobs.index')
+            ->with('success', 'You have successfully applied for the position! HR will reach out soon!');
     }
 
 }

@@ -69,25 +69,42 @@
                     <h5 class="mb-0">Apply for this Job</h5>
                 </div>
                 <div class="card-body">
-                    <form action="#" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="applicant_name_{{ $job->id }}" class="form-label">Your Name</label>
-                            <input type="text" name="applicant_name" id="applicant_name_{{ $job->id }}"
-                                class="form-control" required>
+                    @if ($job->status == 'active')
+                        <form action="{{ route('internal-jobs.apply', $job->id) }}" method="POST">
+                            @csrf
+                            <div hidden>{{ $job->id }} </div>
+                            <div class="mb-3">
+                                <label for="applicant_name_{{ $job->id }}" class="form-label">Applicant
+                                    Name</label>
+                                <input type="text" name="applicant_name" id="applicant_name_{{ $job->id }}"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emp_qualifications{{ $job->id }}" class="form-label">Qualification
+                                </label>
+                                <input type="text" name="emp_qualifications"
+                                    id="emp_qualifications{{ $job->id }}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emp_experience{{ $job->id }}" class="form-label">Experience </label>
+                                <input type="text" name="emp_experience" id="emp_experience{{ $job->id }}"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Are you really Interested?</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="is_interested"
+                                        id="is_interested{{ $job->id }}" value="yes" required>
+                                    <label class="form-check-label" for="is_interested{{ $job->id }}">Yes</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Submit Application</button>
+                        </form>
+                    @elseif($job->status != 'active')
+                        <div class="alert alert-danger" role="alert">
+                            Opps! This job is currently not active. You cannot apply.😒
                         </div>
-                        <div class="mb-3">
-                            <label for="applicant_email_{{ $job->id }}" class="form-label">Your Email</label>
-                            <input type="email" name="applicant_email" id="applicant_email_{{ $job->id }}"
-                                class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="applicant_resume_{{ $job->id }}" class="form-label">Resume (brief)</label>
-                            <textarea name="applicant_resume" id="applicant_resume_{{ $job->id }}" class="form-control" rows="3"
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success">Submit Application</button>
-                    </form>
+                    @endif
                 </div>
             </div>
 

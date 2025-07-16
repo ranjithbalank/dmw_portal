@@ -39,53 +39,52 @@
 
                             <tbody>
                                 @foreach ($jobs as $index => $job)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ ucfirst($job->job_title) }}</td>
-                                        <td>{{ $job->qualifications }}</td>
-                                        <td class="text-center">{{ $job->work_experience }}</td>
-                                        <td>{{ $job->unit }}</td>
-                                        <td>{{ $job->slot_available }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($job->end_date)->format('d-m-Y') }}</td>
-                                        <td class="text-center py-2">
-                                            @if ($job->status == 'active')
-                                                <button class="btn btn-success btn-sm">
-                                                    {{ ucfirst(strtolower($job->status)) }}
+                                    @if ($job->status == 'active')
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ ucfirst($job->job_title) }}</td>
+                                            <td>{{ $job->qualifications }}</td>
+                                            <td class="text-center">{{ $job->work_experience }}</td>
+                                            <td>{{ $job->unit }}</td>
+                                            <td>{{ $job->slot_available }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($job->end_date)->format('d-m-Y') }}</td>
+                                            <td class="text-center py-2">
+                                                @if ($job->status == 'active')
+                                                    <button class="btn btn-success btn-sm">
+                                                        {{ ucfirst(strtolower($job->status)) }}
+                                                    </button>
+                                                @endif
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{-- View button opens offcanvas --}}
+                                                <button class="btn btn-info btn-sm" type="button"
+                                                    data-bs-toggle="offcanvas"
+                                                    data-bs-target="#offcanvasBottom{{ $job->id }}"
+                                                    aria-controls="offcanvasBottom{{ $job->id }}">
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
-                                            @else
-                                                <button class="btn btn-danger btn-sm">
-                                                    {{ ucfirst(strtolower($job->status)) }}
-                                                </button>
-                                            @endif
-                                        </td>
 
-                                        <td class="text-center">
-                                            {{-- View button opens offcanvas --}}
-                                            <button class="btn btn-info btn-sm" type="button" data-bs-toggle="offcanvas"
-                                                data-bs-target="#offcanvasBottom{{ $job->id }}"
-                                                aria-controls="offcanvasBottom{{ $job->id }}">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
+                                                <a href="{{ route('internal-jobs.edit', $job->id) }}"
+                                                    class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
 
-                                            <a href="{{ route('internal-jobs.edit', $job->id) }}"
-                                                class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                                <form action="{{ route('internal-jobs.destroy', $job->id) }}"
+                                                    method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" onclick="return confirm('Delete this job?')"
+                                                        class="btn btn-danger btn-sm">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
 
-                                            <form action="{{ route('internal-jobs.destroy', $job->id) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Delete this job?')"
-                                                    class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-
-                                    {{-- Include the offcanvas partial --}}
-                                    @include('internal_jobs.show', ['job' => $job])
+                                        {{-- Include the offcanvas partial --}}
+                                        @include('internal_jobs.show', ['job' => $job])
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
