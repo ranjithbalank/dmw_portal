@@ -15,7 +15,8 @@ class LeaveExportController extends Controller
         if (!Auth::user()->hasAnyRole(['Admin', 'HR'])) {
             abort(403, 'Unauthorized');
         }
-        return Excel::download(new LeavesExport, 'leaves.xlsx');
+       return Excel::download(new LeavesExport, 'leaves_' . now()->format('d-m-Y_H-i') . '.xlsx');
+
     }
 
     public function exportPDF()
@@ -28,6 +29,7 @@ class LeaveExportController extends Controller
 
         $pdf = PDF::loadView('leaves.export', compact('leaves'))->setPaper('a4', 'landscape');
 
-        return $pdf->download('leaves.pdf');
+       return $pdf->download('leaves_' . now()->format('d-m-Y_H-i') . '.pdf');
+
     }
 }
