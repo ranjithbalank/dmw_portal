@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->string('emp_qualifications');
             $table->string('emp_experience');
+            $table->string('resume_path');
+            $table->string('status')->default('applied'); // Add status column
             $table->timestamps();
 
             $table->foreign('job_id')

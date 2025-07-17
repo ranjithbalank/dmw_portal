@@ -12,15 +12,25 @@
                             ← Back
                         </a>
                     </div>
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
                     <div class="card-body">
 
                         <div class="d-flex justify-content-end mb-3">
-                            {{-- @can('Create') --}}
-                            <a href="{{ route('internal-jobs.create') }}" class="btn btn-success shadow-sm">
-                                <i class="bi bi-person-plus"></i> Create New Job
-                            </a>
-                            {{-- @endcan --}}
+                            @hasanyrole(['HR', 'Admin'])
+                                <a href="{{ route('internal-jobs.create') }}" class="btn btn-success shadow-sm">
+                                    <i class="bi bi-person-plus"></i> Create New Job
+                                </a>
+                            @else
+                                <span class="text-muted mt-2"></span>
+                            @endhasanyrole
                         </div>
+
 
                         <table id="ticketsTable" class="table table-bordered">
                             <thead class="text-dark">
@@ -39,7 +49,7 @@
 
                             <tbody>
                                 @foreach ($jobs as $index => $job)
-                                    @if ($job->status == 'active')
+                                    @if ($job->status === 'active' || Auth::user()->hasAnyRole(['HR','Admin']))
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ ucfirst($job->job_title) }}</td>
@@ -49,11 +59,11 @@
                                             <td>{{ $job->slot_available }}</td>
                                             <td>{{ \Carbon\Carbon::parse($job->end_date)->format('d-m-Y') }}</td>
                                             <td class="text-center py-2">
-                                                @if ($job->status == 'active')
-                                                    <button class="btn btn-success btn-sm">
-                                                        {{ ucfirst(strtolower($job->status)) }}
-                                                    </button>
-                                                @endif
+                                                <span
+                                                    class="btn btn-sm
+                                                    {{ $job->status == 'active' ? 'btn-success' : 'btn-secondary' }}">
+                                                    {{ ucfirst($job->status) }}
+                                                </span>
                                             </td>
 
                                             <td class="text-center">
@@ -65,20 +75,23 @@
                                                     <i class="bi bi-eye"></i>
                                                 </button>
 
-                                                <a href="{{ route('internal-jobs.edit', $job->id) }}"
-                                                    class="btn btn-warning btn-sm">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
+                                                @hasanyrole(['Admin'])
+                                                    {{-- Edit and Delete buttons --}}
+                                                    <a href="{{ route('internal-jobs.edit', $job->id) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
 
-                                                <form action="{{ route('internal-jobs.destroy', $job->id) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" onclick="return confirm('Delete this job?')"
-                                                        class="btn btn-danger btn-sm">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                                                    {{-- <form action="{{ route('internal-jobs.destroy', $job->id) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" onclick="return confirm('Delete this job?')"
+                                                            class="btn btn-danger btn-sm">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form> --}}
+                                                @endhasanyrole
                                             </td>
                                         </tr>
 
@@ -87,6 +100,7 @@
                                     @endif
                                 @endforeach
                             </tbody>
+
                         </table>
                     </div>
                 </div>

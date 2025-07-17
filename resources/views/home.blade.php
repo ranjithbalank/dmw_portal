@@ -124,8 +124,17 @@
                                     <span class="fw-semibold small">Job Posting</span>
                                 </a>
                             </div>
+                            @hasrole(['Admin', 'HR'])
                             <div class="col-md-3 col-6">
-                                <a href="#" {{-- {{ route('circulars.index') }}" --}}
+                                <a href="{{ route('internal-jobs.index') }}"
+                                    class="glass-card border border-1 border-dark text-decoration-none d-flex flex-column align-items-center p-2">
+                                    <i class="bi bi-briefcase fs-2 mb-1 text-danger"></i>
+                                    <span class="fw-semibold small">Internal Job Posting Application</span>
+                                </a>
+                            </div>
+                            @endhasrole
+                            <div class="col-md-3 col-6">
+                                <a href={{ route('circulars.index') }}
                                     class="glass-card border border-1 border-dark text-decoration-none d-flex flex-column align-items-center p-2">
                                     <i class="bi bi-file-earmark-text fs-2 mb-1 text-primary"></i>
                                     <span class="fw-semibold small">Circulars</span>

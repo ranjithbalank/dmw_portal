@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\CircularController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
@@ -55,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('internal-jobs', InternalJobPostingController::class);
     Route::post('/internal-jobs/apply/{job}', [InternalJobPostingController::class, 'apply'])
         ->name('internal-jobs.apply');
+
+    // Circulars
+    Route::resource('/circulars',CircularController::class);
 
         // ✅ Add more modules here: assets, attendance, payroll, etc.
 });

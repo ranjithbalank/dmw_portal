@@ -12,5 +12,7 @@ class InternalJobApplications extends Model
         "emp_qualifications",
         "emp_experience",
         "job_id",
+        "resume_path", // Ensure this matches the column in your migration
+        "is_interested",
     ];
 }

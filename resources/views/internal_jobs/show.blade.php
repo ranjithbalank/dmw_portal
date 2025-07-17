@@ -69,8 +69,10 @@
                     <h5 class="mb-0">Apply for this Job</h5>
                 </div>
                 <div class="card-body">
-                    @if ($job->status == 'active')
-                        <form action="{{ route('internal-jobs.apply', $job->id) }}" method="POST">
+                    {{-- @if ($job->status == 'active')
+                        <form action="{{ route('internal-jobs.apply', $job->id) }}" method="POST"
+                            enctype="multipart/form-data">
+
                             @csrf
                             <div hidden>{{ $job->id }} </div>
                             <div class="mb-3">
@@ -91,6 +93,12 @@
                                     class="form-control" required>
                             </div>
                             <div class="mb-3">
+                                <label for="resume{{ $job->id }}" class="form-label">Upload Resume /
+                                    Certificate</label>
+                                <input type="file" name="emp_file" id="resume{{ $job->id }}"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Are you really Interested?</label>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" name="is_interested"
@@ -104,7 +112,57 @@
                         <div class="alert alert-danger" role="alert">
                             Opps! This job is currently not active. You cannot apply.😒
                         </div>
+                    @endif --}}
+                    @if (in_array($job->id, $applications))
+                        <div class="alert alert-warning" role="alert">
+                            You have already applied for this job. ✅
+                        </div>
+                    @elseif ($job->status == 'active')
+                        <form action="{{ route('internal-jobs.apply', $job->id) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <!-- Your form fields here -->
+                            <div hidden>{{ $job->id }} </div>
+                            <div class="mb-3">
+                                <label for="applicant_name_{{ $job->id }}" class="form-label">Applicant
+                                    Name</label>
+                                <input type="text" name="applicant_name" class="form-control"
+                                    value="{{ $user->name }}" readonly>
+
+                            </div>
+                            <div class="mb-3">
+                                <label for="emp_qualifications{{ $job->id }}"
+                                    class="form-label">Qualification</label>
+                                <input type="text" name="emp_qualifications"
+                                    id="emp_qualifications{{ $job->id }}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emp_experience{{ $job->id }}" class="form-label">Experience</label>
+                                <input type="text" name="emp_experience" id="emp_experience{{ $job->id }}"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="resume{{ $job->id }}" class="form-label">Upload Resume /
+                                    Certificate</label>
+                                <input type="file" name="emp_file" id="resume{{ $job->id }}"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Are you really Interested?</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="is_interested"
+                                        id="is_interested{{ $job->id }}" value="yes" required>
+                                    <label class="form-check-label" for="is_interested{{ $job->id }}">Yes</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Submit Application</button>
+                        </form>
+                    @else
+                        <div class="alert alert-danger" role="alert">
+                            Opps! This job is currently not active. You cannot apply. 😒
+                        </div>
                     @endif
+
                 </div>
             </div>
 

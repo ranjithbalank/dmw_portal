@@ -17,8 +17,9 @@ class InternalJobPostingController extends Controller // ✅ correct class name
     public function index()
     {
         $jobs = InternalJobPostings::all();
-
-        return view('internal_jobs.index', compact('jobs'));
+        $applications = InternalJobApplications::where('employee_id', Auth::id())->pluck('job_id')->toArray();
+        $user = Auth::user(); // Get full user object
+        return view('internal_jobs.index', compact('jobs','applications','user'));
     }
 
     /**
@@ -70,7 +71,8 @@ class InternalJobPostingController extends Controller // ✅ correct class name
     public function show(string $id)
     {
         $jobs = InternalJobPostings::find($id);
-        return view('internal_jobs.show');
+        $applications = InternalJobApplications::where('employee_id', Auth::id())->pluck('job_id')->toArray();
+        return view('internal_jobs.show',compact('jobs', 'applications'));
     }
 
     public function edit(string $id)
@@ -118,12 +120,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
 
     public function apply(Request $request, $job)
     {
-        // dd($request->all());
-        $request->validate([
-            'emp_qualifications' => 'required|string|max:255',
-            'emp_experience' => 'required|string|max:255',
-        ]);
-
+        // Check if user already applied BEFORE validating the file
         $existing = InternalJobApplications::where('employee_id', Auth::id())
             ->where('job_id', $job)
             ->first();
@@ -133,17 +130,36 @@ class InternalJobPostingController extends Controller // ✅ correct class name
                 ->with('error', 'You have already applied for this position!');
         }
 
+        // Validate input
+        $request->validate([
+            'emp_qualifications' => 'required|string|max:255',
+            'emp_experience' => 'required|string|max:255',
+            'emp_file' => 'required|file|mimes:pdf|max:2048',
+            'is_interested' => 'required',
+        ]);
+
+        // Check file size warning
+        $file = $request->file('emp_file');
+        $sizeInMB = $file->getSize() / 1024 / 1024;
+
+        if ($sizeInMB > 2) {
+            session()->flash('warning', 'Your uploaded file is large (over 2MB). Uploading may take longer.');
+        }
+
+        // Store file
+        $path = $file->store('resumes', 'public');
+
         InternalJobApplications::create([
             'employee_id' => Auth::id(),
             'job_id' => $job,
             'emp_qualifications' => $request->emp_qualifications,
             'emp_experience' => $request->emp_experience,
-            'is_interested' => $request->is_interested,
+            'resume_path' => $path,
         ]);
-
 
         return redirect()->route('internal-jobs.index')
             ->with('success', 'You have successfully applied for the position! HR will reach out soon!');
     }
+
 
 }
