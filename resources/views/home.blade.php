@@ -124,7 +124,7 @@
                                     <span class="fw-semibold small">Job Posting</span>
                                 </a>
                             </div>
-                            @hasrole(['Admin', 'HR'])
+                            {{-- @hasrole(['Admin', 'HR'])
                             <div class="col-md-3 col-6">
                                 <a href="{{ route('internal-jobs.index') }}"
                                     class="glass-card border border-1 border-dark text-decoration-none d-flex flex-column align-items-center p-2">
@@ -132,7 +132,7 @@
                                     <span class="fw-semibold small">Internal Job Posting Application</span>
                                 </a>
                             </div>
-                            @endhasrole
+                            @endhasrole --}}
                             <div class="col-md-3 col-6">
                                 <a href={{ route('circulars.index') }}
                                     class="glass-card border border-1 border-dark text-decoration-none d-flex flex-column align-items-center p-2">
