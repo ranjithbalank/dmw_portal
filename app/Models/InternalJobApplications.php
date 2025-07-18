@@ -15,4 +15,15 @@ class InternalJobApplications extends Model
         "resume_path", // Ensure this matches the column in your migration
         "is_interested",
     ];
+
+    public function job()
+    {
+        return $this->belongsTo(InternalJobpostings::class, 'job_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
 }
