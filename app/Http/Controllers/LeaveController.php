@@ -165,6 +165,7 @@ class LeaveController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd($request->all());
         $user = Auth::user();
         $leave = Leave::findOrFail($id);
 
@@ -387,7 +388,7 @@ class LeaveController extends Controller
 
         if ($request->action === 'approve') {
             $leave->status = 'supervisor/ manager approved';
-        } else {
+        } elseif ($request->action === 'reject') {
             $leave->status = 'supervisor/ manager rejected';
             // Revert leave balance if not comp-off
             if ($leave->leave_type !== 'comp-off') {
