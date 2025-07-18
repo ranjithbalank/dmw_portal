@@ -168,7 +168,7 @@
                                                             @if ($applicant->resume_path)
                                                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                                     data-bs-target="#resumeModal{{ $applicant->id }}">
-                                                                    View Resume
+                                                                    <i class="bi bi-file-earmark-text"></i>
                                                                 </button>
 
                                                                 <div class="modal fade" id="resumeModal{{ $applicant->id }}"
