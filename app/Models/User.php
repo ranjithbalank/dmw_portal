@@ -34,6 +34,8 @@ class User extends Authenticatable
         "doj",
         "type_emp",
         'status',
+        'last_login_at',
+        'last_logout_at',
     ];
 
     /**
