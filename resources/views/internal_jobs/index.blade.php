@@ -75,7 +75,7 @@
                                                     <i class="bi bi-eye"></i>
                                                 </button>
 
-                                                @hasanyrole(['Admin'])
+                                                @hasanyrole(['Admin|HR'])
                                                     {{-- Edit and Delete buttons --}}
                                                     <a href="{{ route('internal-jobs.edit', $job->id) }}"
                                                         class="btn btn-warning btn-sm">

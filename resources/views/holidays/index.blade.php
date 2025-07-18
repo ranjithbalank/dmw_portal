@@ -17,7 +17,7 @@
                         @hasrole(['Employee', 'Manager'])
                             <h5><em>List of the Public Holidays: </em></h5>
                         @endhasrole
-                        @hasrole('Admin')
+                        @hasrole('Admin|HR')
                             <div class="d-flex justify-content-end mb-3">
                                 <a href="{{ route('holidays.create') }}" class="btn btn-success shadow-sm">
                                     <i class="bi bi-plus-circle"></i> Add Holiday
