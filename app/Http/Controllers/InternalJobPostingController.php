@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InternalJobApplications;
 use App\Notifications\NewJobApplication;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\InternalJobPostings; // ✅ correct import
 
 class InternalJobPostingController extends Controller // ✅ correct class name
@@ -166,6 +167,13 @@ class InternalJobPostingController extends Controller // ✅ correct class name
 
         return redirect()->route('internal-jobs.index')
             ->with('success', 'You have successfully applied for the position! HR will reach out soon!');
+    }
+
+    public function exportApplicantsPdf()
+    {
+        $applications = InternalJobApplications::with('job', 'user')->get();
+        $pdf = Pdf::loadView('internal_jobs.export', compact('applications'))->setPaper('A4', 'landscape');
+        return $pdf->download('internal_job_applicants.pdf');
     }
 
 

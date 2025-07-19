@@ -115,6 +115,35 @@
                             {{-- Job Applicants --}}
                             @hasanyrole(['HR', 'Admin'])
                                 <div class="tab-pane fade" id="applicants-tab-pane">
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <div class="d-flex justify-content-end mb-3">
+                                            <form method="GET" action="{{ route('export.applicants') }}">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        ⬇️ Export
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li>
+                                                            <button type="submit" class="dropdown-item text-success">
+                                                                <i class="bi bi-file-earmark-excel"></i> Download as Excel
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button type="submit"
+                                                                formaction="{{ route('export.applicants.pdf') }}"
+                                                                class="dropdown-item text-danger">
+                                                                <i class="bi bi-file-earmark-pdf"></i> Download as PDF
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+
+
                                     <div class="table-responsive">
                                         <table id="applicantsTable"
                                             class="table table-bordered table-light align-middle text-center w-100">
@@ -175,9 +204,13 @@
                                                                     tabindex="-1" aria-hidden="true">
                                                                     <div class="modal-dialog modal-xl modal-dialog-centered">
                                                                         <div class="modal-content">
-                                                                            <div class="modal-header text-white" style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
+                                                                            <div class="modal-header text-white"
+                                                                                style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
                                                                                 <h5 class="modal-title">
-                                                                                Resume – {{ $applicant->user->name ?? '' }} - For the {{ $applicant->job->job_title ?? '' }} position
+                                                                                    Resume – {{ $applicant->user->name ?? '' }}
+                                                                                    - For the
+                                                                                    {{ $applicant->job->job_title ?? '' }}
+                                                                                    position
                                                                                 </h5>
                                                                                 <button type="button" class="btn-close"
                                                                                     data-bs-dismiss="modal"></button>

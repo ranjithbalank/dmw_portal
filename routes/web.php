@@ -13,6 +13,8 @@ use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
+use App\Exports\JobApplicantsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/', function () {
     return Auth::check()
@@ -56,6 +58,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('internal-jobs', InternalJobPostingController::class);
     Route::post('/internal-jobs/apply/{job}', [InternalJobPostingController::class, 'apply'])
         ->name('internal-jobs.apply');
+    Route::get('/export-applicants', function () {
+        return Excel::download(new JobApplicantsExport, 'internal_job_applicants.xlsx');
+    })->name('export.applicants');
+    Route::get('/export-applicants-pdf', [InternalJobPostingController::class, 'exportApplicantsPdf'])->name('export.applicants.pdf');
+
 
     // Circulars
     Route::resource('/circulars',CircularController::class);
