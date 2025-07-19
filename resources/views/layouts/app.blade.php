@@ -66,14 +66,14 @@
             padding: 1rem;
             text-decoration: none;
             display: block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
         }
+
         .glass-card:hover {
             transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-
     </style>
     @section('styles')
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -93,11 +93,32 @@
 
                 {{-- Flash Success Message --}}
                 @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="toast align-items-end text-bg-success border-0 show mb-2" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ session('success') }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Close"></button>
+                        </div>
                     </div>
                 @endif
+
+                {{-- Error Toast --}}
+                @if (session('error'))
+                    <div class="toast align-items-end text-bg-danger border-0 show" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ session('error') }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
+
 
                 {{-- Main Content --}}
                 @yield('content')
@@ -135,6 +156,15 @@
             $('.select2').select2({
                 width: 'style'
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let toastEl = document.querySelector('.toast');
+            if (toastEl) {
+                let toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
         });
     </script>
 
