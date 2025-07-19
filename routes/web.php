@@ -29,7 +29,7 @@ Route::post('/users/import', [UserController::class, 'import'])->name('users.imp
 Auth::routes();
 
 // ✅ Everything below requires login
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 

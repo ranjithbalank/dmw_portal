@@ -131,7 +131,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->doj = $request->doj;
         $user->type_emp = $request->type_emp;
-
+        $user->status = $request->status;
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
