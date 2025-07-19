@@ -20,7 +20,7 @@
             <!-- Right Side -->
             <ul class="navbar-nav ms-auto">
                 @guest
-                    @if (Route::has('login'))
+                    {{-- @if (Route::has('login'))
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
                         </li>
@@ -29,7 +29,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
                         </li>
-                    @endif
+                    @endif --}}
                 @else
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button"
