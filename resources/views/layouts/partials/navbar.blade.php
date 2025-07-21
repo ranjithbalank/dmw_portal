@@ -111,13 +111,40 @@
                         </div>
                         <div class="col-md-4">
                             <div class="bg-light p-3 rounded shadow-sm h-100">
+                                <p class="text-muted mb-1">Manager</p>
+                                <b>{{ Auth::user()->manager?->name ?? 'N/A' }}</b>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-3 rounded shadow-sm h-100">
                                 <p class="text-muted mb-1">Last Login</p>
                                 <b>
                                     {{ Auth::user()->last_login_at
                                         ? \Carbon\Carbon::parse(Auth::user()->last_login_at)->format('d M Y, h:i A')
                                         : 'N/A' }}
                                 </b>
-
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-3 rounded shadow-sm h-100">
+                                <p class="text-muted mb-1">Last Logout</p>
+                                <b>
+                                    {{ Auth::user()->last_logout_at
+                                        ? \Carbon\Carbon::parse(Auth::user()->last_logout_at)->format('d M Y, h:i A')
+                                        : 'N/A' }}
+                                </b>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-3 rounded shadow-sm h-100">
+                                <p class="text-muted mb-1">Status</p>
+                                <b>
+                                @if (Auth::user()->status == 'active')
+                                    <span class="text-success">Active</span>
+                                @else
+                                    <span class="text-danger">Inactive</span>
+                                @endif
+                                </b>
                             </div>
                         </div>
                     </div>

@@ -126,76 +126,76 @@
                 }]
             });
 
-            yadcf.init(table, [
-                // adjust column_number based on your actual table
-                @if (request()->get('view') === 'team')
-                    {
-                        column_number: 1,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Employee"
-                    }, {
-                        column_number: 2,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Leave Type"
-                    }, {
-                        column_number: 3,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Duration"
-                    }, {
-                        column_number: 4,
-                        filter_type: "text",
-                        filter_default_label: "Filter From / Worked"
-                    }, {
-                        column_number: 5,
-                        filter_type: "text",
-                        filter_default_label: "Filter To / Comp off"
-                    }, {
-                        column_number: 6,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Days"
-                    }, {
-                        column_number: 7,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Reason"
-                    }, {
-                        column_number: 8,
-                        filter_type: "multi_select",
-                        select_type: 'select2',
-                        filter_default_label: "Filter by Status"
-                    }
-                @else
-                    {
-                        column_number: 1,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Leave Type"
-                    }, {
-                        column_number: 2,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Duration"
-                    }, {
-                        column_number: 3,
-                        filter_type: "text",
-                        filter_default_label: "Filter From / Worked"
-                    }, {
-                        column_number: 4,
-                        filter_type: "text",
-                        filter_default_label: "Filter To / Comp off"
-                    }, {
-                        column_number: 5,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Days"
-                    }, {
-                        column_number: 6,
-                        filter_type: "text",
-                        filter_default_label: "Filter by Reason"
-                    }, {
-                        column_number: 7,
-                        filter_type: "multi_select",
-                        select_type: 'select2',
-                        filter_default_label: "Filter by Status"
-                    }
-                @endif
-            ]);
+            // yadcf.init(table, [
+            //     // adjust column_number based on your actual table
+            //     @if (request()->get('view') === 'team')
+            //         {
+            //             column_number: 1,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Employee"
+            //         }, {
+            //             column_number: 2,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Leave Type"
+            //         }, {
+            //             column_number: 3,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Duration"
+            //         }, {
+            //             column_number: 4,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter From / Worked"
+            //         }, {
+            //             column_number: 5,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter To / Comp off"
+            //         }, {
+            //             column_number: 6,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Days"
+            //         }, {
+            //             column_number: 7,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Reason"
+            //         }, {
+            //             column_number: 8,
+            //             filter_type: "multi_select",
+            //             select_type: 'select2',
+            //             filter_default_label: "Filter by Status"
+            //         }
+            //     @else
+            //         {
+            //             column_number: 1,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Leave Type"
+            //         }, {
+            //             column_number: 2,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Duration"
+            //         }, {
+            //             column_number: 3,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter From / Worked"
+            //         }, {
+            //             column_number: 4,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter To / Comp off"
+            //         }, {
+            //             column_number: 5,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Days"
+            //         }, {
+            //             column_number: 6,
+            //             filter_type: "text",
+            //             filter_default_label: "Filter by Reason"
+            //         }, {
+            //             column_number: 7,
+            //             filter_type: "multi_select",
+            //             select_type: 'select2',
+            //             filter_default_label: "Filter by Status"
+            //         }
+            //     @endif
+            // ]);
         });
     </script>
 @endsection

@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserDetails::class, 'user_id');
     }
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id', 'employee_id');
+    }
+
 }
