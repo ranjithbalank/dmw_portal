@@ -1,6 +1,9 @@
 <?php
 
+use  App\Http\Controllers\EventController;
+use App\Exports\JobApplicantsExport;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
@@ -13,15 +16,12 @@ use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
-use App\Exports\JobApplicantsExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('home')
         : redirect()->route('login');
 });
-
 // GET: show the import form
 Route::get('/users/import', [UserController::class, 'import_csv'])->name('users.import_form');
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
@@ -66,6 +66,12 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     // Circulars
     Route::resource('/circulars',CircularController::class);
+
+    // Calendar Events
+    Route::resource('events', EventController::class);
+    Route::get('/events-data', [EventController::class, 'fetchEvents'])->name('events.data');
+
+
 
         // ✅ Add more modules here: assets, attendance, payroll, etc.
 });

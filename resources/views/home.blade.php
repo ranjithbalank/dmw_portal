@@ -158,7 +158,7 @@
                             </a>
                         </div>
                         <div class="col-md-3 col-6">
-                            <a href="#" {{-- {{ route('events.index') }}" --}}
+                            <a href={{ route('events.index') }}
                                 class="glass-card
                                     border border-1 border-dark text-decoration-none d-flex flex-column align-items-center
                                     p-2">
