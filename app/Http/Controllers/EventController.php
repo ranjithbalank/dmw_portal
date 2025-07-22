@@ -59,8 +59,8 @@ public function index()
         Event::create([
             'title' => $request->title,
             'description' => $request->description,
-            'start' => $request->start,
-            'end' => $request->end,
+            'start' => $request->start_date,
+            'end' => $request->end_date,
             'color' => $request->color,
         ]);
 
@@ -69,8 +69,24 @@ public function index()
 
     public function update(Request $request, Event $event)
     {
-        $event->update($request->all());
-        return response()->json(['success' => true]);
+        $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'color' => 'nullable|string',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $event->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'color' => $validated['color'],
+            'start' => $validated['start_date'],
+            'end' => $validated['end_date'],
+        ]);
+
+    return redirect()->route('events.index')->with('success', 'Event added successfully!');
+
     }
 
     public function destroy(Event $event)
