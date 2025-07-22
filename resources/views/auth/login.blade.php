@@ -3,26 +3,26 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-
+            <div class="col-md-8 py-6" style="margin-top: 100px;">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center"
-                        style="background:#FC5C14; color: white;">{{ 'Login' }}</div>
+                    <div class="card-header d-flex justify-content-center align-items-center"
+                        style="background:#FC5C14; color: white;font-size:150%"><b>{{ 'MyDMW Login ' }}</b></div>
 
                     <div class="card-body">
                         {{-- Logo --}}
                         <div class="text-center mb-4">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 80px;">
-                            {{-- Adjust height or path as needed --}}
+                            <img src="{{ asset('images/logo.png') }}" alt="My DMW Portal Logo" class="img-fluid mb-2"
+                                style="max-height: 140px;">
                         </div>
+
 
                         {{-- Login Form --}}
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
                             <div class="row mb-3">
-                                <label for="email"
-                                    class="col-md-4 col-form-label text-md-end">{{ 'Email Address' }} <span class="text-danger">*</span></label>
+                                <label for="email" class="col-md-4 col-form-label text-md-end">{{ 'Email Address' }}
+                                    <span class="text-danger">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="email" type="email"
@@ -38,8 +38,8 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="password"
-                                    class="col-md-4 col-form-label text-md-end">  {{ 'Password' }} <span class="text-danger">*</span></label>
+                                <label for="password" class="col-md-4 col-form-label text-md-end"> {{ 'Password' }} <span
+                                        class="text-danger">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="password" type="password"
