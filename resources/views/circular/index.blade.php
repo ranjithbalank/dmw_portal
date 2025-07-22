@@ -1,5 +1,8 @@
 @extends('layouts.app')
-
+{{-- DataTables CSS --}}
+@section('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.min.css">
+@endsection
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -29,7 +32,7 @@
                             @endhasanyrole
                         </div>
 
-                        <table id="ticketsTable" class="table table-bordered">
+                        <table id="circularsTable" class="table table-bordered">
                             <thead class="text-dark">
                                 <tr>
                                     <th style="width: 10px;">S.No</th>
@@ -89,4 +92,16 @@
             </div>
         </div>
     @endforeach
+@endsection
+@section('scripts')
+    <script src="https://cdn.datatables.net/2.3.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#circularsTable').DataTable({
+                "order": [], // disable initial ordering
+                "pageLength": 10
+            });
+        });
+    </script>
 @endsection

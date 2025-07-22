@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.min.css">
+@endsection
 
 @section('content')
     <div class="container">
@@ -82,4 +85,16 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="https://cdn.datatables.net/2.3.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#ticketsTable').DataTable({
+                "order": [], // disable initial ordering
+                "pageLength": 10
+            });
+        });
+    </script>
 @endsection

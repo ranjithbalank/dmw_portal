@@ -15,31 +15,48 @@
 
 @section('content')
     <div class="container">
-        <h3 class="mb-4">DMW Calendar</h3>
-        <div id="calendar"></div>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header text-white d-flex justify-content-between align-items-center"
+                        style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
+                        {{ 'Calendar' }}
+                        <a href="{{ route('home') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    {{-- Add Event Modal --}}
     @role('HR')
-        {{-- Add Event Modal --}}
         <div class="modal fade" id="addEventModal" tabindex="-1">
             <div class="modal-dialog">
                 <form method="POST" action="{{ route('events.store') }}">
                     @csrf
                     <div class="modal-content">
-                        <div class="modal-header" style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
-                            <h5 class="modal-title text-white">Add Event</h5>
+                        <div class="modal-header text-white"  style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
+                            <h5 class="modal-title">Add Event</h5>
                         </div>
                         <div class="modal-body">
-                            <label for="title" class="form-label">Event Title</label>
-                            <input type="text" name="title" class="form-control mb-2" placeholder="Event Title" required>
-                            <label for="description" class="form-label">Description</label>
-                            <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
-                            <label for="start_date" class="form-label">Start Date & Time</label>
+                            <label>Title</label>
+                            <input type="text" name="title" class="form-control mb-2" required>
+
+                            <label>Description</label>
+                            <textarea name="description" class="form-control mb-2"></textarea>
+
+                            <label>Start Date & Time</label>
                             <input type="datetime-local" name="start_date" id="start_date" class="form-control mb-2" required>
-                            <label for="end_date" class="form-label">End Date & Time</label>
+
+                            <label>End Date & Time</label>
                             <input type="datetime-local" name="end_date" id="end_date" class="form-control mb-2" required>
-                            <label for="color" class="form-label">Color</label>
-                            <input type="color" name="color" class="form-control form-control-color mb-2" value="#3788d8">
+
+                            <label>Color</label>
+                            <input type="color" name="color" value="#3788d8" class="form-control form-control-color mb-2">
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -57,17 +74,24 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header text-white"  style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
                             <h5 class="modal-title">Edit Event</h5>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="id" id="edit_id">
+                            <label>Title</label>
                             <input type="text" name="title" id="edit_title" class="form-control mb-2" required>
+                            <label>Description</label>
                             <textarea name="description" id="edit_description" class="form-control mb-2"></textarea>
-                            <input type="color" name="color" id="edit_color" class="form-control form-control-color mb-2">
+
+                            <label>Start Date & Time</label>
                             <input type="datetime-local" name="start_date" id="edit_start_date" class="form-control mb-2"
                                 required>
+                            <label>End Date & Time</label>
                             <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control mb-2" required>
+                             <label>Color</label>
+                            <input type="color" name="color" id="edit_color" class="form-control form-control-color mb-2">
+
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-danger" type="button" id="deleteEventBtn">Delete</button>
@@ -79,23 +103,26 @@
         </div>
     @endrole
 
-    {{-- View Modal for All Users --}}
+    {{-- View Modal for Everyone --}}
     <div class="modal fade" id="dailyEventModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-white" style="background: linear-gradient(90deg, #fc4a1a, #f7b733);">
                     <h5 class="modal-title">Events on <span id="eventDateTitle"></span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <table class="table table-bordered">
-                        <thead class="table-dark">
+                        <thead class="table-white">
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
-                                <th>Color</th>
+                                {{-- <th>Color</th> --}}
+                                <th>Start Time</th>
+                                <th>End Time</th>
                             </tr>
                         </thead>
+
                         <tbody id="dailyEventTable"></tbody>
                     </table>
                 </div>
@@ -131,28 +158,29 @@
                         fetch('{{ route('events.data') }}')
                             .then(res => res.json())
                             .then(events => {
-                                const dayStr = info.dateStr;
-                                const filtered = events.filter(e => e.start.startsWith(dayStr));
+                                const filtered = events.filter(e => e.start.startsWith(info
+                                    .dateStr));
                                 const tbody = document.getElementById('dailyEventTable');
                                 const title = document.getElementById('eventDateTitle');
-                                tbody.innerHTML = '';
-                                title.innerText = dayStr;
+                                title.innerText = info.dateStr;
+                                tbody.innerHTML = filtered.length ?
+                                    filtered.map(e => {
+                                        const formatDateTime = dateStr => {
+                                            const d = new Date(dateStr);
+                                            return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                                        };
+                                        return `
+                                            <tr>
+                                                <td>${e.title}</td>
+                                                <td>${e.description || ''}</td>
 
-                                if (filtered.length === 0) {
-                                    tbody.innerHTML =
-                                        '<tr><td colspan="3" class="text-center">No events</td></tr>';
-                                } else {
-                                    filtered.forEach(event => {
-                                        tbody.insertAdjacentHTML('beforeend', `
-                                    <tr>
-                                        <td>${event.title}</td>
-                                        <td>${event.description || ''}</td>
-                                        <td><span style="display:inline-block;width:20px;height:20px;background:${event.color}"></span></td>
-                                    </tr>
-                                `);
-                                    });
-                                }
+                                                 <td>${new Date(e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                                 <td>${new Date(e.end || e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                            </tr>`;
+                                    }).join('')
 
+                                    :
+                                    '<tr><td colspan="3" class="text-center">No events</td></tr>';
                                 new bootstrap.Modal(document.getElementById('dailyEventModal'))
                                     .show();
                             });
@@ -169,15 +197,12 @@
                             .description || '';
                         document.getElementById('edit_color').value = event.backgroundColor;
 
-                        let start = new Date(event.start);
-                        let end = event.end ? new Date(event.end) : start;
-                        let startStr = new Date(start.getTime() - (start.getTimezoneOffset() * 60000))
+                        const offset = (d) => new Date(d.getTime() - (d.getTimezoneOffset() * 60000))
                             .toISOString().slice(0, 16);
-                        let endStr = new Date(end.getTime() - (end.getTimezoneOffset() * 60000))
-                            .toISOString().slice(0, 16);
-
-                        document.getElementById('edit_start_date').value = startStr;
-                        document.getElementById('edit_end_date').value = endStr;
+                        document.getElementById('edit_start_date').value = offset(new Date(event
+                            .start));
+                        document.getElementById('edit_end_date').value = offset(event.end ? new Date(
+                            event.end) : new Date(event.start));
 
                         document.getElementById('editEventForm').action = `/events/${event.id}`;
                         new bootstrap.Modal(document.getElementById('editEventModal')).show();
@@ -198,11 +223,8 @@
                                 'Accept': 'application/json'
                             }
                         }).then(response => {
-                            if (response.ok) {
-                                location.reload();
-                            } else {
-                                alert('Error deleting event.');
-                            }
+                            if (response.ok) location.reload();
+                            else alert('Error deleting event.');
                         });
                     }
                 });

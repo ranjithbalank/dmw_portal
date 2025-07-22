@@ -48,10 +48,10 @@
                             <th>Leave Days</th>
                             <td>{{ $leave->leave_days }} </td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <th>Leave Balance</th>
                             <td class="text-danger fw-bold">{{ $user->leave_balance }}</td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <th>Status</th>
                             <td>

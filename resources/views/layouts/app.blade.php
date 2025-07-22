@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    {{-- <meta http-equiv="refresh" content="30"> --}}
     <title>{{ 'DMW EMPLOYEE PORTAL' }}</title>
 
     <!-- Fonts -->
@@ -18,15 +17,11 @@
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <!-- Bootstrap 5 Bundle JS (with Popper.js included) -->
 
-    <!-- DataTables Bootstrap 5 CSS -->
+    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-
-
-
-
 
     <!-- Custom CSS -->
     <style>
@@ -75,13 +70,8 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
     </style>
-    @section('styles')
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    @endsection
-
 
     @stack('styles')
-
 </head>
 
 <body>
@@ -93,8 +83,8 @@
 
                 {{-- Flash Success Message --}}
                 @if (session('success'))
-                    <div class="toast align-items-end text-bg-success border-0 show mb-2" role="alert"
-                        aria-live="assertive" aria-atomic="true">
+                    <div class="toast align-items-end text-bg-success border-0 show mb-2" role="alert" aria-live="assertive"
+                        aria-atomic="true">
                         <div class="d-flex">
                             <div class="toast-body">
                                 {{ session('success') }}
@@ -119,7 +109,6 @@
                     </div>
                 @endif
 
-
                 {{-- Main Content --}}
                 @yield('content')
 
@@ -127,39 +116,32 @@
         </main>
     </div>
 
-    {{-- jQuery (First!) --}}
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    {{-- Bootstrap Bundle JS --}}
+    <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 
-
-    {{-- Select2 JS --}}
+    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    {{-- SweetAlert2 --}}
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- Reusable CSRF for AJAX --}}
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Select2 Init -->
     <script>
-        window.csrfToken = "{{ csrf_token() }}";
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': window.csrfToken
-            }
+        $(document).ready(function () {
+            $('.select2').select2({ width: 'style' });
         });
     </script>
 
-    {{-- Select2 Init (only for .select2) --}}
+    <!-- Toast Auto Show -->
     <script>
-        $(document).ready(function() {
-            $('.select2').select2({
-                width: 'style'
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             let toastEl = document.querySelector('.toast');
             if (toastEl) {
                 let toast = new bootstrap.Toast(toastEl);
@@ -168,26 +150,9 @@
         });
     </script>
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
-    @section('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#ticketsTable').DataTable({
-                    // Optional: customize language, paging, etc.
-                });
-            });
-        </script>
-    @endsection
-
-    {{-- Custom Scripts --}}
+    <!-- Page Specific Scripts -->
+    @yield('scripts')
     @stack('scripts')
-
 </body>
 
 </html>
