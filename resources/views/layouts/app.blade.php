@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ 'DMW EMPLOYEE PORTAL' }}</title>
+    <title>{{ 'My DMW PORTAL' }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -69,9 +69,36 @@
             transform: translateY(-4px) scale(1.02);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
+
+        /* ✅ Hide scrollbar but allow scroll */
+        body {
+            overflow-y: scroll;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari */
+        }
     </style>
 
     @stack('styles')
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function(registration) {
+                    console.log('ServiceWorker registered:', registration);
+                })
+                .catch(function(error) {
+                    console.error('ServiceWorker registration failed:', error);
+                });
+        }
+    </script>
 </head>
 
 <body>
@@ -83,8 +110,8 @@
 
                 {{-- Flash Success Message --}}
                 @if (session('success'))
-                    <div class="toast align-items-end text-bg-success border-0 show mb-2" role="alert" aria-live="assertive"
-                        aria-atomic="true">
+                    <div class="toast align-items-end text-bg-success border-0 show mb-2" role="alert"
+                        aria-live="assertive" aria-atomic="true">
                         <div class="d-flex">
                             <div class="toast-body">
                                 {{ session('success') }}
@@ -134,14 +161,16 @@
 
     <!-- Select2 Init -->
     <script>
-        $(document).ready(function () {
-            $('.select2').select2({ width: 'style' });
+        $(document).ready(function() {
+            $('.select2').select2({
+                width: 'style'
+            });
         });
     </script>
 
     <!-- Toast Auto Show -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             let toastEl = document.querySelector('.toast');
             if (toastEl) {
                 let toast = new bootstrap.Toast(toastEl);
