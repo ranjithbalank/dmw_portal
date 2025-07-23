@@ -49,12 +49,12 @@
                                         <td>{{ \Carbon\Carbon::parse($circular->circular_date)->format('d-m-Y') }}</td>
                                         <td>{{ $circular->circular_no }}</td>
                                         <td class="text-center">
-                                            @hasanyrole(['HR', 'Admin'])
+
                                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                     data-bs-target="#pdfModal{{ $circular->id }}">
                                                     <i class="bi bi-eye"></i> View
                                                 </button>
-                                            @endhasanyrole
+
                                         </td>
                                     </tr>
                                 @endforeach
