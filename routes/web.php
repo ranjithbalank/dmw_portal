@@ -95,6 +95,10 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
         return Excel::download(new JobApplicantsExport, 'internal_job_applicants.xlsx');
     })->name('export.applicants');
     Route::get('/export-applicants-pdf', [InternalJobPostingController::class, 'exportApplicantsPdf'])->name('export.applicants.pdf');
+    // ✅ Correct route method for file upload
+    Route::post('/import-applicants-pdf', [InternalJobPostingController::class, 'uploadFinalStatus'])
+        ->name('import.applicants.pdf');
+
 
 
     // Circulars

@@ -41,6 +41,12 @@
                                         Job Applicants
                                     </button>
                                 </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="results-tab" data-bs-toggle="tab"
+                                        data-bs-target="#results-tab-pane" type="button" role="tab">
+                                        Final Job Status
+                                    </button>
+                                </li>
                             @endhasanyrole
                         </ul>
 
@@ -243,6 +249,72 @@
                                     </div>
                                 </div>
                             @endhasanyrole
+
+                            {{-- Final Job Status Results Tab --}}
+                            <div class="tab-pane fade" id="results-tab-pane">
+                                <div class="mb-3 d-flex justify-content-between">
+                                    <h5>Upload Final Job Status (Excel)</h5>
+                                    <form action="{{ route('import.applicants.pdf') }}" method="POST"
+                                        enctype="multipart/form-data" class="d-flex">
+                                        @csrf
+                                        <input type="file" name="excel_file" class="form-control me-2" required>
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </form>
+
+                                </div>
+
+                                @if (session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show">
+                                        {{ session('success') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                @elseif (session('error'))
+                                    <div class="alert alert-danger alert-dismissible fade show">
+                                        {{ session('error') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                @endif
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover align-middle text-center">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>IJP ID</th>
+                                                <th>Job Title</th>
+                                                <th>Applicant</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>Qualifications</th>
+                                                <th>Experience</th>
+                                                <th>Interview Panel</th>
+                                                <th>Result</th>
+                                                <th>Joining Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php $count = 1; @endphp
+                                            @foreach ($results as $result)
+                                                <tr>
+                                                    <td>{{ $count++ }}</td>
+                                                    <td>IJP - {{ $result->ijp_id }}</td>
+                                                    <td>{{ $result->job_title }}</td>
+                                                    <td>{{ $result->applicant }}</td>
+                                                    <td>{{ $result->email }}</td>
+                                                    <td>{{ ucfirst($result->status) }}</td>
+                                                    <td>{{ $result->qualifications }}</td>
+                                                    <td>{{ $result->experience }}</td>
+                                                    <td>{{ $result->interview_panel }}</td>
+                                                    <td>{{ $result->result }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($result->joining_date)->format('d-m-Y') }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

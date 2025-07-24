@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\InternalJobApplications;
 use App\Notifications\NewJobApplication;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\InternalJobPostings; // ✅ correct import
+use App\Imports\FinalStatusImport;
+use App\Models\FinalJobStatus;
 
 class InternalJobPostingController extends Controller // ✅ correct class name
 {
@@ -20,6 +24,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
         $jobs = InternalJobPostings::all();
         $applications = InternalJobApplications::where('employee_id', Auth::id())->pluck('job_id')->toArray();
         $user = Auth::user();
+        $results = FinalJobStatus::all();
 
         // Load applicants only if user has HR/Admin role
         $applicants = [];
@@ -27,7 +32,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
             $applicants = InternalJobApplications::with(['user', 'job'])->get();
         }
 
-        return view('internal_jobs.index', compact('jobs', 'applications', 'user', 'applicants'));
+        return view('internal_jobs.index', compact('jobs', 'applications', 'user', 'applicants','results'));
     }
 
     /**
@@ -171,9 +176,23 @@ class InternalJobPostingController extends Controller // ✅ correct class name
 
     public function exportApplicantsPdf()
     {
-        $applications = InternalJobApplications::with('job', 'user')->get();
+        $applications = FinalJobStatus::with('job', 'user')->get();
         $pdf = Pdf::loadView('internal_jobs.export', compact('applications'))->setPaper('A4', 'landscape');
         return $pdf->download('internal_job_applicants.pdf');
+    }
+
+    public function uploadFinalStatus(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        try {
+            Excel::import(new FinalStatusImport, $request->file('excel_file'));
+            return back()->with('success', 'Final Job Status imported successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Import failed: ' . $e->getMessage());
+        }
     }
 
 
