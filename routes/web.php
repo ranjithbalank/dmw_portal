@@ -1,14 +1,17 @@
 <?php
 
-use  App\Http\Controllers\EventController;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 use App\Exports\JobApplicantsExport;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LeaveController;
+use  App\Http\Controllers\EventController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\CircularController;
 use App\Http\Controllers\PermissionController;
@@ -16,15 +19,45 @@ use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
+use Spatie\Permission\Models\Permission;
+
+Route::get('/setup-super-admin', function () {
+    if (User::where('email', 'admin@example.com')->exists()) {
+        return '⚠️ Super Admin already exists.';
+    }
+
+    $admin = User::create([
+        'name' => 'Super Admin',
+        'email' => 'admin@example.com',
+        'password' => Hash::make('password123'),
+        'employee_id' => 1, // must be integer
+        'designation' => 'Administrator',
+        'doj' => now(),
+        'type_emp' => 'General',
+        'status' => 'active',
+    ]);
+
+    // Create the super-admin role if it doesn't exist
+    $role = Role::firstOrCreate(['name' => 'Admin']);
+    $permission = Permission::findOrCreate('create');
+    $admin->assignRole($role);
+
+    return '✅ Super Admin created successfully.';
+});
+
 
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('home')
         : redirect()->route('login');
 });
-// GET: show the import form
-Route::get('/users/import', [UserController::class, 'import_csv'])->name('users.import_form');
-Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
+
+// Only users with "Admin" role can access these routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users/import', [UserController::class, 'import_csv'])->name('users.import_form');
+    Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
+});
+
 
 Auth::routes();
 

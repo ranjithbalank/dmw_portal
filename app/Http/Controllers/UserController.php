@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+ use Illuminate\Support\Facades\Auth;
 use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -16,14 +17,20 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
     public function index()
     {
-        $users = User::all();
+        $user = Auth::user();
 
-        // $user_details = UserDetails::all();
+        if ($user->hasRole('Admin') || $user->hasRole('HR')) {
+            $users = User::all(); // show everyone
+        } else {
+            $users = User::where('id', $user->id)->get(); // show only self
+        }
+
         return view("users.index", [
             "users" => $users,
-            // "user_details" => $user_details
         ]);
     }
 
