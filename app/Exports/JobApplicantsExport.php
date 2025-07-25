@@ -19,6 +19,7 @@ class JobApplicantsExport implements FromCollection, WithHeadings, WithStyles
                 "End Date" => $application->job->end_date ?? '',
                 "Unit" => $application->job->unit ?? '',
                 'Job Title'  => $application->job->job_title ?? '',
+                'Applicant_id' => $application->user->id ?? '',
                 'Applicant'  => $application->user->name ?? '',
                 'Email'      => $application->user->email ?? '',
                 'Status'     => $application->status ?? 'Pending',
@@ -31,7 +32,7 @@ class JobApplicantsExport implements FromCollection, WithHeadings, WithStyles
     public function headings(): array
     {
         return [
-            'IJP ID','Release Date','End Date','Unit','Job Title', 'Applicant', 'Email', 'Status',
+            'IJP ID','Release Date','End Date','Unit','Job Title','Applicant_id','Applicant', 'Email', 'Status',
             'Qualifications', 'Experience','New/ Replacement','Interview panel','Date of interview',
             'Interview result', 'Communication regarding result','Communication regarding movement',
             'Salary increase (if any)','Date of joining in new role','Required position'

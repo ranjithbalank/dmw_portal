@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('final_job_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('ijp_id');
+            $table->string("applicant_id")->nullable();
+            $table->string('applicant')->nullable();
             $table->date('release_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('unit')->nullable();
             $table->string('job_title')->nullable();
-            $table->string('applicant')->nullable();
             $table->string('email')->nullable();
             $table->string('status')->nullable();
             $table->text('qualifications')->nullable();

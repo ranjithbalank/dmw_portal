@@ -13,12 +13,12 @@ return new class extends Migration
     public function up(): void
     {
     //     // Clean invalid manager_id references
-        DB::statement('
-        UPDATE users
-        SET manager_id = NULL
-        WHERE manager_id IS NOT NULL
-        AND manager_id NOT IN (SELECT id FROM (SELECT id FROM users) AS valid_ids)
-    ');
+    //     DB::statement('
+    //     UPDATE users
+    //     SET manager_id = NULL
+    //     WHERE manager_id IS NOT NULL
+    //     AND manager_id NOT IN (SELECT id FROM (SELECT id FROM users) AS valid_ids)
+    // ');
 
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('manager_id')->references('employee_id')->on('users')->onDelete('set null');

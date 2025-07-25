@@ -25,13 +25,16 @@ class InternalJobPostingController extends Controller // ✅ correct class name
         $applications = InternalJobApplications::where('employee_id', Auth::id())->pluck('job_id')->toArray();
         $user = Auth::user();
         $results = FinalJobStatus::all();
-
-        // Load applicants only if user has HR/Admin role
-        $applicants = [];
+        // Load applicants
         if ($user->hasAnyRole(['HR', 'Admin'])) {
             $applicants = InternalJobApplications::with(['user', 'job'])->get();
+        } else {
+            // 👇 Only load the current user's own applications
+            $applicants = InternalJobApplications::with(['user', 'job'])
+                ->where('employee_id', $user->id)
+                ->get();
         }
-
+        // dd($applicants);
         return view('internal_jobs.index', compact('jobs', 'applications', 'user', 'applicants','results'));
     }
 

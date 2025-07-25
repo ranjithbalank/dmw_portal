@@ -1,9 +1,11 @@
 <?php
 namespace App\Imports;
 use App\Models\FinalJobStatus;
+use Illuminate\Support\Facades\Log;
+use App\Models\InternalJobApplications;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class FinalStatusImport implements ToModel, WithHeadingRow
 {
@@ -32,23 +34,42 @@ class FinalStatusImport implements ToModel, WithHeadingRow
     //         'required_position' => $row['required position'] ?? null,
     //     ]);
     // }
-    public function model(array $row)
+public function model(array $row)
 {
-    // Extract integer from "IJP - 1"
+    // ✅ Extract and sanitize job ID
     preg_match('/\d+/', $row['ijp_id'], $matches);
-    $ijpId = $matches[0] ?? null;
+    $ijpId = isset($matches[0]) ? (int)$matches[0] : null;
 
-    // If no valid ID found, skip
     if (!$ijpId) {
+        Log::warning('❌ Invalid IJP ID in Excel row', $row);
         return null;
     }
 
-    return new FinalJobStatus([
-        'ijp_id' => $ijpId, // Must be integer
+    // ✅ Sanitize applicant ID
+    $employeeId = (int) trim($row['applicant_id']);
+    // dd([$ijpId,$employeeId]);
+    // ✅ Update internal_job_applications
+    $application = \App\Models\InternalJobApplications::where('job_id', $ijpId)
+        ->where('employee_id', $employeeId)
+        ->first();
+
+    if ($application) {
+        $application->status = $row['status'] ?? 'Pending';
+        $application->save();
+
+        Log::info("✅ Updated application for job_id=$ijpId, employee_id=$employeeId, status={$application->status}");
+    } else {
+            Log::warning("🚫 No match in internal_job_applications for job_id=$ijpId and employee_id=$employeeId");
+    }
+
+    // ✅ Create FinalJobStatus record
+    return new \App\Models\FinalJobStatus([
+        'ijp_id' => $ijpId,
         'release_date' => $this->transformDate($row['release_date']),
         'end_date' => $this->transformDate($row['end_date']),
         'unit' => $row['unit'],
         'job_title' => $row['job_title'],
+        'applicant_id'=> $employeeId,
         'applicant' => $row['applicant'],
         'email' => $row['email'],
         'status' => $row['status'],
@@ -65,6 +86,8 @@ class FinalStatusImport implements ToModel, WithHeadingRow
         'required_position' => $row['required_position'],
     ]);
 }
+
+
 
 // Convert Excel numeric date to Carbon
 private function excelDate($excelDate)
