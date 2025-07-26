@@ -450,11 +450,11 @@
                                                     <td>{{ $result->experience }}</td>
                                                     <td>{{ ucfirst($result->interview_panel) }}</td>
                                                     <td>
-                                                        @if ($applicant->status == 'applied')
+                                                        @if ($result->status == 'applied')
                                                             <span class="text-white btn btn-primary">Applied</span>
-                                                        @elseif($applicant->status == 'selected' || $applicant->status == 'Selected')
+                                                        @elseif($result->status == 'selected' || $result->status == 'Selected')
                                                             <span class="text-white btn btn-success">Selected</span>
-                                                        @elseif($applicant->status == 'rejected' || $applicant->status == 'Rejected')
+                                                        @elseif($result->status == 'rejected' || $result->status == 'Rejected')
                                                             <span class="text-white btn btn-danger ">Rejected</span>
                                                         @endif
                                                     </td>

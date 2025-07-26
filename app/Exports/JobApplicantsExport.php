@@ -12,22 +12,29 @@ class JobApplicantsExport implements FromCollection, WithHeadings, WithStyles
 {
     public function collection()
     {
-        return InternalJobApplications::with('job', 'user')->get()->map(function ($application) {
-            return [
-                'IJP ID'     => 'IJP - ' . ($application->job->id ?? ''),
-                "Release Date" => $application->job->passing_date ?? '',
-                "End Date" => $application->job->end_date ?? '',
-                "Unit" => $application->job->unit ?? '',
-                'Job Title'  => $application->job->job_title ?? '',
-                'Applicant_id' => $application->user->id ?? '',
-                'Applicant'  => $application->user->name ?? '',
-                'Email'      => $application->user->email ?? '',
-                'Status'     => $application->status ?? 'Pending',
-                'Qualifications' => $application->emp_qualifications ?? '',
-                'Experience' => $application->emp_experience ?? '',
-            ];
-        });
+        return InternalJobApplications::with('job', 'user')
+            ->get()
+            ->filter(function ($application) {
+                $status = strtolower($application->status);
+                return $status !== 'selected' && $status !== 'rejected';
+            })
+            ->map(function ($application) {
+                return [
+                    'IJP ID'     => 'IJP - ' . ($application->job->id ?? ''),
+                    'Release Date' => $application->job->passing_date ?? '',
+                    'End Date' => $application->job->end_date ?? '',
+                    'Unit' => $application->job->unit ?? '',
+                    'Job Title'  => $application->job->job_title ?? '',
+                    'Applicant_id' => $application->user->id ?? '',
+                    'Applicant'  => $application->user->name ?? '',
+                    'Email'      => $application->user->email ?? '',
+                    'Status'     => $application->status ?? 'Pending',
+                    'Qualifications' => $application->emp_qualifications ?? '',
+                    'Experience' => $application->emp_experience ?? '',
+                ];
+            });
     }
+
 
     public function headings(): array
     {
