@@ -22,30 +22,40 @@ use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
 
+
+
 Route::get('/setup-super-admin', function () {
+    // Avoid duplicate user
     if (User::where('email', 'admin@example.com')->exists()) {
         return '⚠️ Super Admin already exists.';
     }
 
+    // 1️⃣ Create Super Admin User
     $admin = User::create([
         'name' => 'Super Admin',
         'email' => 'admin@example.com',
         'password' => Hash::make('password123'),
-        'employee_id' => 1, // must be integer
+        'employee_id' => 1,
         'designation' => 'Administrator',
         'doj' => now(),
         'type_emp' => 'General',
         'status' => 'active',
     ]);
 
-    // Create the super-admin role if it doesn't exist
-    $role = Role::firstOrCreate(['name' => 'Admin']);
-    $permission = Permission::findOrCreate('create');
-    $admin->assignRole($role);
+    // 2️⃣ Create All Roles (only store)
+    $roles = ['Admin', 'HR', 'Manager', 'Technician', 'Employee'];
+    foreach ($roles as $roleName) {
+        Role::firstOrCreate(['name' => $roleName]);
+    }
 
-    return '✅ Super Admin created successfully.';
+    // 3️⃣ Create a permission (optional)
+    Permission::firstOrCreate(['name' => 'create']);
+
+    // 4️⃣ Assign only the 'Admin' role to Super Admin
+    $admin->assignRole('Admin');
+
+    return '✅ Super Admin created and all roles stored.';
 });
-
 
 Route::get('/', function () {
     return Auth::check()
@@ -92,22 +102,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('internal-jobs', InternalJobPostingController::class);
     Route::post('/internal-jobs/apply/{job}', [InternalJobPostingController::class, 'apply'])
         ->name('internal-jobs.apply');
-
-
-    // Route::get('/export-applicants', function (Request $request) {
-    //     $jobId = $request->query('job_id');
-    //     dd($jobId);
-    //     // return Excel::download(new JobApplicantsExport($jobId), 'internal_job_applicants.xlsx');
-    // })->name('export.applicants');
-    // Route::get('/export-applicants', function (Request $request) {
-    //     $jobId = $request->input('job_id'); // Correct way to get query parameter
-    //     dd($jobId);
-    //     // return Excel::download(new JobApplicantsExport($jobId), 'internal_job_applicants.xlsx');
-    // })->name('export.applicants');
-
     Route::get('/export-applicants', [InternalJobPostingController::class, 'exportApplicants'])->name('export.applicants');
-
-
     Route::get('/export-applicants-pdf', [InternalJobPostingController::class, 'exportApplicantsPdf'])->name('export.applicants.pdf');
     // ✅ Correct route method for file upload
     Route::post('/import-applicants-pdf', [InternalJobPostingController::class, 'uploadFinalStatus'])
