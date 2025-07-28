@@ -9,8 +9,11 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class FinalStatusImport implements ToModel, WithHeadingRow
 {
+        protected $warnings = [];
+
     public function model(array $row)
     {
+
         // ✅ Extract and sanitize job ID
         preg_match('/\d+/', $row['ijp_id'], $matches);
         $ijpId = isset($matches[0]) ? (int)$matches[0] : null;
@@ -44,6 +47,7 @@ class FinalStatusImport implements ToModel, WithHeadingRow
 
         if ($exists) {
             Log::info("⚠️ Skipping duplicate FinalJobStatus for job_id=$ijpId, employee_id=$employeeId");
+            $this->warnings[] = "⚠️ Skipped duplicate FinalJobStatus for job_id=$ijpId, employee_id=$employeeId";
             return null;
         }
 
@@ -57,7 +61,7 @@ class FinalStatusImport implements ToModel, WithHeadingRow
             'applicant_id'=> $employeeId,
             'applicant' => $row['applicant'],
             'email' => $row['email'],
-            'status' => $row['status'],
+            'status' => $row['interview_result'],
             'qualifications' => $row['qualifications'],
             'experience' => $row['experience'],
             'new_or_replacement' => $row['new_replacement'],
@@ -83,5 +87,10 @@ class FinalStatusImport implements ToModel, WithHeadingRow
     private function transformDate($date)
     {
         return \Carbon\Carbon::parse($date);
+    }
+
+     public function getWarnings()
+    {
+        return $this->warnings;
     }
 }

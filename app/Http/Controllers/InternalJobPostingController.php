@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\FinalJobStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Imports\FinalStatusImport;
+use App\Exports\JobApplicantsExport;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\InternalJobApplications;
 use App\Notifications\NewJobApplication;
 use App\Models\InternalJobPostings; // ✅ correct import
-use App\Imports\FinalStatusImport;
-use App\Models\FinalJobStatus;
 
 class InternalJobPostingController extends Controller // ✅ correct class name
 {
@@ -183,6 +184,15 @@ class InternalJobPostingController extends Controller // ✅ correct class name
         $pdf = Pdf::loadView('internal_jobs.export', compact('applications'))->setPaper('A4', 'landscape');
         return $pdf->download('internal_job_applicants.pdf');
     }
+
+
+    public function exportApplicants(Request $request)
+    {
+        $jobId = $request->query('job_id');
+        // dd($jobId);
+        return Excel::download(new JobApplicantsExport($jobId), 'internal_job_applicants.xlsx');
+    }
+
 
     public function uploadFinalStatus(Request $request)
     {

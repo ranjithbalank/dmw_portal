@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\LeaveController;
 use  App\Http\Controllers\EventController;
 use App\Http\Controllers\HolidayController;
@@ -19,7 +21,6 @@ use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
-use Spatie\Permission\Models\Permission;
 
 Route::get('/setup-super-admin', function () {
     if (User::where('email', 'admin@example.com')->exists()) {
@@ -91,9 +92,22 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('internal-jobs', InternalJobPostingController::class);
     Route::post('/internal-jobs/apply/{job}', [InternalJobPostingController::class, 'apply'])
         ->name('internal-jobs.apply');
-    Route::get('/export-applicants', function () {
-        return Excel::download(new JobApplicantsExport, 'internal_job_applicants.xlsx');
-    })->name('export.applicants');
+
+
+    // Route::get('/export-applicants', function (Request $request) {
+    //     $jobId = $request->query('job_id');
+    //     dd($jobId);
+    //     // return Excel::download(new JobApplicantsExport($jobId), 'internal_job_applicants.xlsx');
+    // })->name('export.applicants');
+    // Route::get('/export-applicants', function (Request $request) {
+    //     $jobId = $request->input('job_id'); // Correct way to get query parameter
+    //     dd($jobId);
+    //     // return Excel::download(new JobApplicantsExport($jobId), 'internal_job_applicants.xlsx');
+    // })->name('export.applicants');
+
+    Route::get('/export-applicants', [InternalJobPostingController::class, 'exportApplicants'])->name('export.applicants');
+
+
     Route::get('/export-applicants-pdf', [InternalJobPostingController::class, 'exportApplicantsPdf'])->name('export.applicants.pdf');
     // ✅ Correct route method for file upload
     Route::post('/import-applicants-pdf', [InternalJobPostingController::class, 'uploadFinalStatus'])
