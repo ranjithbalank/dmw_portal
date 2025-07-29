@@ -32,7 +32,7 @@ class FinalStatusImport implements ToModel, WithHeadingRow
             ->first();
 
         if ($application) {
-            $application->status = $row['status'] ?? 'Pending';
+            $application->status = $row['interview_result'] ?? 'Pending';
             $application->save();
 
             Log::info("✅ Updated application for job_id=$ijpId, employee_id=$employeeId, status={$application->status}");

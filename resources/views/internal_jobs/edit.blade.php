@@ -7,7 +7,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header text-white d-flex justify-content-between align-items-center"
                         style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
-                        <span>{{ 'Create Job Posting' }}</span>
+                        <span>{{ 'Edit Job Posting' }}</span>
 
                         <a href="{{ route('internal-jobs.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">←
                             Back</a>
@@ -110,6 +110,9 @@
                                         <option value="">-- Select --</option>
                                         <option value="active"
                                             {{ old('status', $jobs->first()->status) == 'active' ? 'selected' : '' }}>Open
+                                        </option>
+                                        <option value="closed" {{ old('status', $jobs->first()->status) == 'closed' ? 'selected' : '' }}>
+                                            Registration Closed
                                         </option>
                                         <option value="inactive"
                                             {{ old('status', $jobs->first()->status) == 'inactive' ? 'selected' : '' }}>

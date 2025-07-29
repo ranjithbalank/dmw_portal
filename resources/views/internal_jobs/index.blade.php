@@ -281,13 +281,17 @@
                                     {{-- Blade: Export Form + Job Filter --}}
                                     <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap">
                                         <!-- 🔍 Left: Filter -->
+                                        <span class="text-warning">*This section will only show the Applied Status</span>
                                         <div class="input-group me-2" style="max-width: 400px;">
                                             <select class="form-select" id="jobFilter">
-                                                <option value="">Filter by Job ID</option>
+                                                <option value="">Filter by Job (Only for Applied Status)</option>
                                                 @foreach ($jobs as $job)
-                                                    <option value="{{ $job->id }}">IJP - {{ $job->id }} |
-                                                        {{ $job->job_title }}</option>
+                                                    @if ($job->status !== 'inactive' )
+                                                        <option value="{{ $job->id }}">IJP - {{ $job->id }} |
+                                                            {{ $job->job_title }}</option>
+                                                    @endif
                                                 @endforeach
+
                                             </select>
                                             <button class="btn btn-outline-primary" type="button"
                                                 onclick="filterApplicants()">Search</button>
@@ -321,9 +325,13 @@
 
 
                                             <tbody>
-                                                @php $counter = 1; @endphp
+                                                @php
+                                                    $counter = 1;
+                                                    $hasApplied = $applicants->where('status', 'applied')->count() > 0;
+                                                @endphp
                                                 @foreach ($applicants as $applicant)
-                                                    @if ($applicant->status == 'applied')
+                                                    {{-- @if ($applicant->status == 'applied') --}}
+                                                    @if ($hasApplied && $applicant->status == 'applied')
                                                         <tr>
                                                             <td>{{ $counter++ }}</td>
                                                             <td>IJP - {{ $applicant->job->id ?? '-' }}</td>
@@ -443,7 +451,7 @@
                                                     <td>{{ ucfirst($result->job_title) }}</td>
                                                     <td>{{ $result->applicant }}</td>
                                                     <td>{{ $result->email }}</td>
-                                                    <td>{{$result->interview_date}}</td>
+                                                    <td>{{ $result->interview_date }}</td>
                                                     {{-- <td>{{ $result->qualifications }}</td> --}}
                                                     {{-- <td>{{ $result->experience }}</td> --}}
                                                     <td>{{ ucfirst($result->interview_panel) }}</td>

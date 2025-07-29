@@ -107,6 +107,9 @@
                                         <option value="">-- Select --</option>
                                         <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Open
                                         </option>
+                                        <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>
+                                            Registration Closed
+                                        </option>
                                         <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>
                                             Closed
                                         </option>

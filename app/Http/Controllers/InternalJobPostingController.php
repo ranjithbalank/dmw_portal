@@ -112,7 +112,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
             'division' => 'required|string|max:255',
             'passing_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:passing_date',
-            'status' => 'required|string|in:active,inactive',
+            'status' => 'required|string|in:active,inactive,closed',
         ]);
 
         // Find the job by ID
