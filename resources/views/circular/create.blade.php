@@ -37,7 +37,7 @@
                                 <div class="row">
                                     {{-- Circular Number --}}
                                     <div class="col-md-4 mb-3">
-                                        <label for="circular_number" class="form-label">Circular Number</label>
+                                        <label for="circular_number" class="form-label">Circular Number / Name </label>
                                         <input type="text" name="circular_number" id="circular_number"
                                             class="form-control @error('circular_number') is-invalid @enderror"
                                             value="{{ old('circular_number') }}" required>

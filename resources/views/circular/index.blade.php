@@ -37,7 +37,7 @@
                                 <tr>
                                     <th style="width: 10px;">S.No</th>
                                     <th style="width: 30px;">Created Date</th>
-                                    <th style="width: 300px;">Circular Name</th>
+                                    <th style="width: 300px;">Circular Number / Name </th>
                                     <th style="width: 70px;">Actions</th>
                                 </tr>
                             </thead>

@@ -64,6 +64,7 @@
                                                     <i class="bi bi-eye"></i>
                                                 </button>
                                                 @include('users.partials.show-modal', ['user' => $user])
+                                                @hasanyrole(['Admin'])
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST"
                                                     style="display:inline;"
                                                     onsubmit="return confirm('Are you sure, Do you Really Want to Delete the Employee?');">
@@ -73,6 +74,7 @@
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
+                                                @endhasanyrole
                                             </td>
                                         </tr>
                                     @endforeach

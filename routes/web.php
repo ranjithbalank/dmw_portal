@@ -1,29 +1,31 @@
 <?php
-
+//  namespaces - live
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use App\Exports\JobApplicantsExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\LeaveController;
-use  App\Http\Controllers\EventController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\CircularController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
-use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\InternalJobPostingController;
 
+// commented NAMESPACES
+// use App\Exports\JobApplicantsExport;
+// use Maatwebsite\Excel\Facades\Excel;
+// use Illuminate\Support\Facades\Request;
+// use Illuminate\Notifications\DatabaseNotification;
 
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/setup-super-admin', function () {
     // Avoid duplicate user
     if (User::where('email', 'admin@example.com')->exists()) {
@@ -56,7 +58,7 @@ Route::get('/setup-super-admin', function () {
 
     return '✅ Super Admin created and all roles stored.';
 });
-
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('home')
