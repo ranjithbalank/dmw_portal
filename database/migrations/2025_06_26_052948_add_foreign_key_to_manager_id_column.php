@@ -20,9 +20,9 @@ return new class extends Migration
     //     AND manager_id NOT IN (SELECT id FROM (SELECT id FROM users) AS valid_ids)
     // ');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreign('manager_id')->references('employee_id')->on('users')->onDelete('set null');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->foreign('manager_id')->references('employee_id')->on('users')->onDelete('set null');
+        // });
     }
 
     /**

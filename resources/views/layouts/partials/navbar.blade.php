@@ -80,10 +80,16 @@
                     <!-- Info Grid -->
                     <div class="row g-3">
                         <div class="col-md-4">
+
                             <div class="bg-light p-3 rounded shadow-sm h-100">
                                 <p class="text-muted mb-1">Designation</p>
-                                <h6 class="mb-0">{{ Auth::user()->designation ?? 'N/A' }}</h6>
+                                <h6 class="mb-0  text-primary text-break text-wrap"
+                                    style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                    <B>{{ $user->designation ?? 'N/A' }}</B>
+                                </h6>
+
                             </div>
+
                         </div>
                         <div class="col-md-4">
                             <div class="bg-light p-3 rounded shadow-sm h-100">
@@ -93,7 +99,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="bg-light p-3 rounded shadow-sm h-100">
-                                <p class="text-muted mb-1">Division</p>
+                                <p class="text-muted mb-1">Department</p>
                                 <h6 class="mb-0">{{ Auth::user()->department ?? 'N/A' }}</h6>
                             </div>
                         </div>
@@ -139,11 +145,11 @@
                             <div class="bg-light p-3 rounded shadow-sm h-100">
                                 <p class="text-muted mb-1">Status</p>
                                 <b>
-                                @if (Auth::user()->status == 'active')
-                                    <span class="text-success">Active</span>
-                                @else
-                                    <span class="text-danger">Inactive</span>
-                                @endif
+                                    @if (Auth::user()->status == 'active')
+                                        <span class="text-success">Active</span>
+                                    @else
+                                        <span class="text-danger">Inactive</span>
+                                    @endif
                                 </b>
                             </div>
                         </div>

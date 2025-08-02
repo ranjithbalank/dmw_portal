@@ -42,10 +42,16 @@
 
                     <!-- Designation -->
                     <div class="col-md-4">
+
                         <div class="bg-light p-3 rounded shadow-sm h-100">
                             <p class="text-muted mb-1">Designation</p>
-                            <h6 class="mb-0">{{ $user->designation ?? 'N/A' }}</h6>
+                            <h6 class="mb-0  text-primary text-break text-wrap"
+                                style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                <B>{{ $user->designation ?? 'N/A' }}</B>
+                            </h6>
+
                         </div>
+
                     </div>
 
                     <!-- Unit -->
