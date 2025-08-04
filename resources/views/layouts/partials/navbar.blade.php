@@ -85,7 +85,7 @@
                                 <p class="text-muted mb-1">Designation</p>
                                 <h6 class="mb-0  text-primary text-break text-wrap"
                                     style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                    <B>{{ $user->designation ?? 'N/A' }}</B>
+                                    <B>{{ Auth::user()->designation ?? 'N/A' }}</b>
                                 </h6>
 
                             </div>
