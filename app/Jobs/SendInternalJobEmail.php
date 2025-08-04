@@ -33,8 +33,14 @@ class SendInternalJobEmail implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->user->email)->send(
-            new NewInternalJobPosted($this->internalJob, $this->user)
-        );
+        // Step 1: Get all user emails
+        $emails = \App\Models\User::pluck('email')->toArray();
+
+        // Step 2: Chunk the emails (max 500 per BCC message per Microsoft SMTP)
+        collect($emails)->chunk(500)->each(function ($chunk) {
+            Mail::to('noreply@yourdomain.com') // dummy "To" address
+                ->bcc($chunk->toArray())
+                ->send(new NewInternalJobPosted($this->internalJob));
+        });
     }
 }
