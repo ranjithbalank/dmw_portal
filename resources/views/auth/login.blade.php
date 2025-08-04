@@ -6,7 +6,7 @@
             <div class="col-md-8 py-6" style="margin-top: 100px;">
                 <div class="card">
                     <div class="card-header d-flex justify-content-center align-items-center"
-                        style="background:#FC5C14; color: white;font-size:150%"><b>{{ 'MyDMW Login ' }}</b></div>
+                        style="background:#FC5C14; color: white;font-size:150%"><b>{{ 'MyDMW Login Dev ' }}</b></div>
 
                     <div class="card-body">
                         {{-- Logo --}}

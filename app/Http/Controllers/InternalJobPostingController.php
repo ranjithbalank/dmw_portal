@@ -1,19 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
+use App\Models\InternalJobPostings;
+use App\Models\FinalJobStatus;
+use App\Models\InternalJobApplications;
 
+use App\Jobs\SendInternalJobEmail;
 
 use Illuminate\Http\Request;
-
-use App\Models\FinalJobStatus;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Imports\FinalStatusImport;
-use App\Exports\JobApplicantsExport;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\InternalJobApplications;
+
+use App\Exports\JobApplicantsExport;
+use App\Imports\FinalStatusImport;
 use App\Notifications\NewJobApplication;
-use App\Models\InternalJobPostings; // ✅ correct import
+
 
 class InternalJobPostingController extends Controller // ✅ correct class name
 {
@@ -52,9 +57,10 @@ class InternalJobPostingController extends Controller // ✅ correct class name
     /**
      * Store a newly created resource in storage.
      */
+
+
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'job_title' => 'required|string|max:255',
             'job_description' => 'required|string',
@@ -68,7 +74,7 @@ class InternalJobPostingController extends Controller // ✅ correct class name
             'status' => 'required|string|in:active,inactive',
         ]);
 
-        InternalJobPostings::create([
+        $job = InternalJobPostings::create([
             'job_title' => $request->job_title,
             'job_description' => $request->job_description,
             'qualifications' => $request->qualification,
@@ -81,9 +87,21 @@ class InternalJobPostingController extends Controller // ✅ correct class name
             'status' => $request->status,
         ]);
 
+        $users = User::all();
+        $jobs = [];
+
+        foreach ($users as $user) {
+            $jobs[] = new SendInternalJobEmail($user, $job);
+        }
+
+        Bus::batch($jobs)
+            ->name('Notify users about IJP: ' . $job->job_title)
+            ->dispatch();
+
         return redirect()->route('internal-jobs.index')
-                         ->with('success', 'Job posting created successfully!');
+                        ->with('success', 'Job posting created successfully and email notifications sent.');
     }
+
 
     public function show(string $id)
     {
