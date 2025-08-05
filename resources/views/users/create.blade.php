@@ -26,7 +26,8 @@
                             <div class="row g-3 mb-3">
                                 {{-- Full Name --}}
                                 <div class="col-md-4">
-                                    <label for="name" class="form-label">Full Name<span class="text-danger">*</span></label>
+                                    <label for="name" class="form-label">Full Name<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         name="name" id="name" value="{{ old('name') }}" required>
                                     @error('name')
@@ -36,7 +37,8 @@
 
                                 {{-- Employee ID --}}
                                 <div class="col-md-4">
-                                    <label for="employee_id" class="form-label">Employee ID <span class="text-danger">*</span></label>
+                                    <label for="employee_id" class="form-label">Employee ID <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('employee_id') is-invalid @enderror"
                                         name="employee_id" id="employee_id" value="{{ old('employee_id') }}" required>
                                     @error('employee_id')
@@ -46,7 +48,8 @@
 
                                 {{-- Email --}}
                                 <div class="col-md-4">
-                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                    <label for="email" class="form-label">Email <span
+                                            class="text-danger">*</span></label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
                                         name="email" id="email" value="{{ old('email') }}" required>
                                     @error('email')
@@ -71,7 +74,8 @@
 
                                 {{-- Department --}}
                                 <div class="col-md-4">
-                                    <label for="department" class="form-label">Department <span class="text-danger">*</span></label>
+                                    <label for="department" class="form-label">Department <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('department') is-invalid @enderror"
                                         name="department" id="department" value="{{ old('department') }}" required>
                                     @error('department')
@@ -81,7 +85,8 @@
 
                                 {{-- Reporting Manager ID --}}
                                 <div class="col-md-4">
-                                    <label for="manager_id" class="form-label">Reporting Manager ID <span class="text-danger">*</span></label>
+                                    <label for="manager_id" class="form-label">Reporting Manager ID <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('manager_id') is-invalid @enderror"
                                         name="manager_id" id="manager_id" value="{{ old('manager_id') }}" required>
                                     @error('manager_id')
@@ -97,7 +102,8 @@
 
                                 {{-- Designation --}}
                                 <div class="col-md-4">
-                                    <label for="designation" class="form-label">Work Designation <span class="text-danger">*</span></label>
+                                    <label for="designation" class="form-label">Work Designation <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('designation') is-invalid @enderror"
                                         name="designation" id="designation" value="{{ old('designation') }}" required>
                                     @error('designation')
@@ -107,7 +113,8 @@
 
                                 {{-- Date of Joining --}}
                                 <div class="col-md-4">
-                                    <label for="doj" class="form-label">Date of Join <span class="text-danger">*</span></label>
+                                    <label for="doj" class="form-label">Date of Join <span
+                                            class="text-danger">*</span></label>
                                     <input type="date" class="form-control @error('doj') is-invalid @enderror"
                                         name="doj" id="doj" value="{{ old('doj') }}" required>
                                     @error('doj')
@@ -117,12 +124,15 @@
 
                                 {{-- Shift Type --}}
                                 <div class="col-md-4">
-                                    <label for="type_emp" class="form-label">Type of Shift <span class="text-danger">*</span></label>
+                                    <label for="type_emp" class="form-label">Type of Shift <span
+                                            class="text-danger">*</span></label>
                                     <select name="type_emp" id="type_emp"
                                         class="form-select @error('type_emp') is-invalid @enderror" required>
                                         <option value="">-- Select --</option>
-                                        <option value="General" {{ old('type_emp') == 'General' ? 'selected' : '' }}>General</option>
-                                        <option value="Shift" {{ old('type_emp') == 'Shift' ? 'selected' : '' }}>Shift</option>
+                                        <option value="General" {{ old('type_emp') == 'General' ? 'selected' : '' }}>
+                                            General</option>
+                                        <option value="Shift" {{ old('type_emp') == 'Shift' ? 'selected' : '' }}>Shift
+                                        </option>
                                     </select>
                                     @error('type_emp')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -131,8 +141,10 @@
 
                                 {{-- Role Selection --}}
                                 <div class="col-md-4">
-                                    <label for="roles" class="form-label">Role <span class="text-danger">*</span></label>
-                                    <select id="roles" name="roles[]" class="form-select select2" required>
+                                    <label for="roles" class="form-label">Role <span
+                                            class="text-danger">*</span></label>
+                                    <select name="roles[]" id="type_emp"
+                                        class="form-select @error('type_emp') is-invalid @enderror" required>
                                         @foreach ($roles as $role)
                                             <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
                                         @endforeach
@@ -149,7 +161,8 @@
                             <div class="row g-3 mb-4">
                                 {{-- Password --}}
                                 <div class="col-md-6">
-                                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                    <label for="password" class="form-label">Password <span
+                                            class="text-danger">*</span></label>
                                     <input type="password" class="form-control @error('password') is-invalid @enderror"
                                         name="password" id="password" required>
                                     @error('password')
@@ -159,7 +172,8 @@
 
                                 {{-- Confirm Password --}}
                                 <div class="col-md-6">
-                                    <label for="password-confirm" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                    <label for="password-confirm" class="form-label">Confirm Password <span
+                                            class="text-danger">*</span></label>
                                     <input type="password" class="form-control" name="password_confirmation"
                                         id="password-confirm" required>
                                 </div>

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-10">
+            <div class="col-md-12">
 
                 {{-- Card Wrapper --}}
                 <div class="card shadow-sm">
@@ -11,7 +11,7 @@
                     {{-- Card Header --}}
                     <div class="card-header text-white d-flex justify-content-between align-items-center"
                         style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
-                        <span>Edit User</span>
+                        <span>My Profile</span>
                         <a href="{{ route('users.index') }}" class="btn btn-light btn-sm text-dark shadow-sm">← Back</a>
                     </div>
 
@@ -137,12 +137,12 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
                                 {{-- Roles (Editable by Admin/HR only) --}}
                                 <div class="col-md-4">
                                     <label for="roles" class="form-label">Role <span class="text-danger">*</span></label>
                                     @hasrole(['Admin', 'HR'])
-                                        <select name="roles[]" id="roles" class="form-select select2" required>
+                                        <select name="roles[]" id="type_emp"
+                                            class="form-select @error('type_emp') is-invalid @enderror" required>
                                             @foreach ($roles as $role)
                                                 <option value="{{ $role->name }}"
                                                     {{ $user->roles->pluck('name')->contains($role->name) ? 'selected' : '' }}>
@@ -151,16 +151,17 @@
                                             @endforeach
                                         </select>
                                     @else
-                                        <input type="text" class="form-control"
-                                            value="{{ $user->roles->pluck('name')->first() }}" disabled>
+                                        <input type="text" class="form-control" value="{{ $user->type_emp }}" disabled>
                                     @endhasrole
-                                    @error('roles')
+                                    @error('type_emp')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+
                                 {{-- Status (Editable by Admin/HR only) --}}
                                 <div class="col-md-4">
+
                                     <label for="status" class="form-label">Status <span
                                             class="text-danger">*</span></label>
                                     @hasrole(['Admin', 'HR'])

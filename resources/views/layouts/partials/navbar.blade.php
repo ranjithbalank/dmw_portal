@@ -17,18 +17,14 @@
                     {{-- Add login/register if needed --}}
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ Auth::user()->name }}
+                        {{-- <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false"> --}}
+                             <i class="bi bi-person-circle text-white" style="font-size: 1.5rem;"></i>
+                            <span class="text-white"> {{Auth::user()->name }}</span>
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#profileModal">
-                                    <i class="bi bi-person-circle"></i> Profile
-                                </a>
-                            </li>
+                        {{-- <ul class="dropdown-menu dropdown-menu-end">
+
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -38,10 +34,10 @@
                                     <i class="bi bi-box-arrow-right text-danger"> Logout</i>
                                 </a>
                             </li>
-                        </ul>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        </ul> --}}
+                        {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
-                        </form>
+                        </form> --}}
                     </li>
                 @endguest
             </ul>

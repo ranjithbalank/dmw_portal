@@ -6,14 +6,20 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class EmployeesImport implements ToModel, WithHeadingRow
+class EmployeesImport implements ToModel, WithHeadingRow, WithChunkReading
 {
     /**
      * @param array $row
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
+     public function chunkSize(): int
+    {
+        return 1000; // You can increase if needed
+    }
+
     public function model(array $row)
     {
         // Get employee ID from Excel heading 'employee_id'

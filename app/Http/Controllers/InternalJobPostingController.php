@@ -90,13 +90,14 @@ class InternalJobPostingController extends Controller // ✅ correct class name
         $users = User::all();
         $jobs = [];
 
-        foreach ($users as $user) {
-            $jobs[] = new SendInternalJobEmail($user, $job);
-        }
+        // mail sending promt
+        // foreach ($users as $user) {
+        //     $jobs[] = new SendInternalJobEmail($user, $job);
+        // }
 
-        Bus::batch($jobs)
-            ->name('Notify users about IJP: ' . $job->job_title)
-            ->dispatch();
+        // Bus::batch($jobs)
+        //     ->name('Notify users about IJP: ' . $job->job_title)
+        //     ->dispatch();
 
         return redirect()->route('internal-jobs.index')
                         ->with('success', 'Job posting created successfully and email notifications sent.');

@@ -11,7 +11,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header text-white d-flex justify-content-between align-items-center"
                         style="background: linear-gradient(90deg,  #fc4a1a, #f7b733);">
