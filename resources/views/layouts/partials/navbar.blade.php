@@ -22,22 +22,6 @@
                              <i class="bi bi-person-circle text-white" style="font-size: 1.5rem;"></i>
                             <span class="text-white"> {{Auth::user()->name }}</span>
                         </a>
-
-                        {{-- <ul class="dropdown-menu dropdown-menu-end">
-
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right text-danger"> Logout</i>
-                                </a>
-                            </li>
-                        </ul> --}}
-                        {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form> --}}
                     </li>
                 @endguest
             </ul>

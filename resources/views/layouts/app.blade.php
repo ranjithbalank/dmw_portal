@@ -160,25 +160,50 @@
                     @auth
 
                         <ul class="nav flex-column">
+                            {{-- Dashboard --}}
                             <li class="nav-item mb-2">
                                 <a href="{{ route('home') }}"
                                     class="nav-link {{ request()->is('dashboard') ? 'text-warning fw-bold' : 'text-white' }}">
                                     <i class="bi bi-speedometer2 me-2"></i> Dashboard
                                 </a>
                             </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('users.edit', auth()->user()->id) }}"
-                                    class="nav-link {{ request()->is('dashboard') ? 'text-warning fw-bold' : 'text-white' }}">
-                                    <i class="bi bi-person-circle me-2"></i> Profile
-                                </a>
-                            </li>
-
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('leaves.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-calendar-check-fill me-2"></i> Leaves
-                                </a>
-                            </li>
+                            {{-- Admin Section --}}
                             @hasrole('Admin')
+                                {{-- Masters (Collapsible) --}}
+                                <li class="nav-item mb-2">
+                                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                                        data-bs-toggle="collapse" href="#mastersMenu" role="button" aria-expanded="false"
+                                        aria-controls="mastersMenu">
+                                        <span><i class="bi bi-gear-fill me-2"></i> Masters</span>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </a>
+                                    <div class="collapse ps-3" id="mastersMenu">
+                                        <ul class="nav flex-column mt-2">
+                                            <li class="nav-item mb-1">
+                                                <a href="{{ route("unit.index") }}" class="nav-link text-white">
+                                                    ▸ Unit Master
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{{route("departments.index") }}" class="nav-link text-white">
+                                                    ▸ Department Master
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{{ route('roles.index') }}" class="nav-link text-white">
+                                                    ▸ Roles Master
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{{ route('permissions.index') }}" class="nav-link text-white">
+                                                    ▸ Permissions Master
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {{-- User Management --}}
                                 <li class="nav-item mb-2">
                                     <a href="{{ route('users.index') }}" class="nav-link text-white">
                                         <i class="bi bi-people-fill me-2"></i> Users
@@ -186,43 +211,47 @@
                                 </li>
 
                                 <li class="nav-item mb-2">
-                                    <a href="{{ route('roles.index') }}" class="nav-link text-white">
-                                        <i class="bi bi-people-fill me-2"></i> Roles
-                                    </a>
-                                </li>
-
-                                <li class="nav-item mb-2">
-                                    <a href="{{ route('permissions.index') }}" class="nav-link text-white">
-                                        <i class="bi bi-people-fill me-2"></i> Permissions
-                                    </a>
-                                </li>
-
-                                <li class="nav-item mb-2">
                                     <a href="{{ route('users.import_form') }}" class="nav-link text-white">
-                                        <i class="bi bi-people-fill me-2"></i> Bulk Import Users
+                                        <i class="bi bi-upload me-2"></i> Bulk Import Users
                                     </a>
                                 </li>
                             @endhasrole
+                            {{-- Profile --}}
+                            <li class="nav-item mb-2">
+                                <a href="{{ route('users.edit', auth()->user()->id) }}" class="nav-link text-white">
+                                    <i class="bi bi-person-circle me-2"></i> Profile
+                                </a>
+                            </li>
+
+                            {{-- Leaves --}}
+                            <li class="nav-item mb-2">
+                                <a href="{{ route('leaves.index') }}" class="nav-link text-white">
+                                    <i class="bi bi-calendar-check-fill me-2"></i> Leaves
+                                </a>
+                            </li>
+
+                            {{-- Jobs --}}
                             <li class="nav-item mb-2">
                                 <a href="{{ route('internal-jobs.index') }}" class="nav-link text-white">
                                     <i class="bi bi-briefcase me-2"></i> Jobs
                                 </a>
                             </li>
 
+                            {{-- Circulars --}}
                             <li class="nav-item mb-2">
                                 <a href="{{ route('circulars.index') }}" class="nav-link text-white">
                                     <i class="bi bi-file-earmark-text me-2"></i> Circulars
                                 </a>
                             </li>
 
+                            {{-- Events --}}
                             <li class="nav-item mb-2">
                                 <a href="{{ route('events.index') }}" class="nav-link text-white">
                                     <i class="bi bi-calendar-event me-2"></i> Events
                                 </a>
                             </li>
 
-
-                            <!-- Logout Button -->
+                            {{-- Logout --}}
                             <form method="POST" action="{{ route('logout') }}" class="mt-auto">
                                 @csrf
                                 <button type="submit" class="btn btn-outline-light w-100 rounded-pill mt-4">
@@ -230,6 +259,7 @@
                                 </button>
                             </form>
                         </ul>
+
                     @endauth
                 </aside>
 

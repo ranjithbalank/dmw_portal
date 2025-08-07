@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
-use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\CircularController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
 use App\Http\Controllers\LeaveExportController;
@@ -78,7 +80,10 @@ Auth::routes();
 Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+    // Departments
+    Route::resource('departments', DepartmentController::class);
+    // Units
+    Route::resource('unit', UnitController::class);
     // Users
     Route::resource('users', UserController::class);
 
