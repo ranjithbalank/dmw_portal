@@ -86,79 +86,6 @@
             {{-- 🔶 Navbar --}}
             @include('layouts.partials.navbar')
 
-            {{-- 🔶 Offcanvas Toggle Button (Mobile Only) --}}
-            <div class="d-md-none p-2 bg-dark text-white">
-                <button class="btn btn-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
-                    aria-controls="offcanvasSidebar">
-                    <i class="bi bi-list"></i> Menu
-                </button>
-            </div>
-
-            {{-- 🔶 Offcanvas Sidebar --}}
-            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
-                aria-labelledby="offcanvasSidebarLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Menu</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-                        aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    @auth
-                        <div class="text-center mb-4">
-                            <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
-                            <h6 class="mt-2">{{ Auth::user()->name }}</h6>
-                            <small class="text-muted d-block">{{ Auth::user()->email }}</small>
-                            <hr class="bg-light">
-                        </div>
-                        <ul class="nav flex-column">
-
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('users.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-people-fill me-2"></i> Users
-                                </a>
-                            </li>
-
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('home') }}"
-                                    class="nav-link {{ request()->is('dashboard') ? 'text-warning fw-bold' : 'text-white' }}">
-                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('roles.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-people-fill me-2"></i> Roles
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('users.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-people-fill me-2"></i> Users
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('leaves.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-calendar-check-fill me-2"></i> Leaves
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('internal-jobs.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-briefcase me-2"></i> Jobs
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('circulars.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-file-earmark-text me-2"></i> Circulars
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a href="{{ route('events.index') }}" class="nav-link text-white">
-                                    <i class="bi bi-calendar-event me-2"></i> Events
-                                </a>
-                            </li>
-                        </ul>
-                    @endauth
-                </div>
-            </div>
-
             {{-- 🔶 Layout for Desktop --}}
             <div class="d-none d-md-flex">
                 {{-- Sidebar for Desktop --}}
@@ -204,21 +131,20 @@
                                                     ▸ Permissions Master
                                                 </a>
                                             </li>
+
+                                            {{-- User Management --}}
+                                            <li class="nav-item mb-2">
+                                                <a href="{{ route('users.index') }}" class="nav-link text-warning">
+                                                    ▸ Users
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-2">
+                                                <a href="{{ route('users.import_form') }}" class="nav-link text-warning">
+                                                    ▸ Bulk Import Users
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
-                                </li>
-
-                                {{-- User Management --}}
-                                <li class="nav-item mb-2">
-                                    <a href="{{ route('users.index') }}" class="nav-link text-white">
-                                        <i class="bi bi-people-fill me-2"></i> Users
-                                    </a>
-                                </li>
-
-                                <li class="nav-item mb-2">
-                                    <a href="{{ route('users.import_form') }}" class="nav-link text-white">
-                                        <i class="bi bi-upload me-2"></i> Bulk Import Users
-                                    </a>
                                 </li>
                             @endhasrole
                             {{-- Profile --}}
