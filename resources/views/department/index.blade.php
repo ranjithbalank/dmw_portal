@@ -22,55 +22,44 @@
                             </a>
                         </div>
 
-                        {{-- @if ($roles->isEmpty()) --}}
-                            {{-- <div class="alert alert-warning text-center">No Roles records found.</div> --}}
-                        {{-- @else --}}
-                            <div class="table-responsive mb-4">
-                                <table class="table table-bordered text-center align-middle">
-                                    <thead class="table-dark">
+                        <div class="table-responsive mb-4">
+                            <table id="departmentTable" class="table table-bordered text-center align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Code</th>
+                                        <th>Department Name</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($department as $index => $departments)
                                         <tr>
-                                            <th>S.No</th>
-                                            <th>Role</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td class="text-start">{{ ucfirst($departments->code) }}</td>
+                                            <td class="text-start">{{ ucfirst($departments->name) }}</td>
+                                            <td class="text-center">
+                                                @if ($departments->status == 'inactive')
+                                                    <span class="btn btn-sm btn-danger fw-bold">{{ ucfirst($departments->status) }}</span>
+                                                @else
+                                                    <span class="btn btn-sm btn-success fw-bold">{{ ucfirst($departments->status) }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('roles.edit', $departments->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                {{-- <button type="button" class="btn btn-info btn-sm view-role-btn"
+                                                    data-role-id="{{ $departments->id }}">
+                                                    <i class="bi bi-eye"></i>
+                                                </button> --}}
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    {{-- <tbody>
-                                        @foreach ($roles as $index => $role)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td class="text-start">{{ ucfirst($role->name) }}</td>
-                                                <td class="text-center">
-                                                    @if ($role->status == 'inactive')
-                                                        <span
-                                                            class="btn btn-sm btn-danger fw-bold">{{ ucfirst($role->status) }}</span>
-                                                    @else
-                                                        <span
-                                                            class="btn btn-sm btn-success fw-bold">{{ ucfirst($role->status) }}</span>
-                                                    @endif
-                                                </td>
-
-                                                <td class="text-center">
-                                                    <a href="{{ route('roles.edit', $role->id) }}"
-                                                        class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </a>
-
-                                                    <!-- Eye Button to Trigger Dynamic Modal -->
-                                                    <button type="button" class="btn btn-info btn-sm view-role-btn"
-                                                        data-role-id="{{ $role->id }}">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-
-
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody> --}}
-                                </table>
-                            </div>
-                        {{-- @endifs --}}
-
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,66 +86,49 @@
 @endsection
 
 @section('scripts')
+    {{-- Bootstrap --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('.view-role-btn');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const roleId = this.getAttribute('data-role-id');
 
-                    // Show modal with loading state
-                    const modal = new bootstrap.Modal(document.getElementById('roleModal'));
-                    modal.show();
+    {{-- jQuery + DataTables --}}
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-                    document.getElementById('roleModalLabel').textContent = 'Loading...';
-                    document.getElementById('roleModalBody').innerHTML = `
-                    <div class="text-center p-3">
-                        <span class="spinner-border text-warning"></span> Fetching data...
-                    </div>`;
+    <style>
+        /* Add spacing under the search bar */
+        div.dataTables_filter {
+            margin-bottom: 1rem;
+        }
+    </style>
 
-                    // Fetch role data
-                    fetch(`/roles/${roleId}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            document.getElementById('roleModalLabel').textContent =
-                                'Role Info - ' + data.name;
-                            document.getElementById('roleModalBody').innerHTML = `
-                            <table class="table table-bordered table-striped text-start">
-                                <tr><th>Name</th><td>${data.name}</td></tr>
-                                <tr><th>Guard</th><td>${data.guard_name}</td></tr>
-                                <tr><th>Status</th><td>${data.status}</td></tr>
-
-                            </table>`;
-                        })
-                        .catch(err => {
-                            document.getElementById('roleModalBody').innerHTML = `
-                            <div class="alert alert-danger">Error loading data.</div>`;
-                        });
-                });
+    <script>
+        $(document).ready(function () {
+            $('#departmentTable').DataTable({
+                responsive: true,
+                language: {
+                    searchPlaceholder: "Search departments...",
+                    search: "",
+                }
             });
         });
-    </script> --}}
-    <script>
+
+        // Modal logic
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.view-role-btn');
             buttons.forEach(button => {
                 button.addEventListener('click', function() {
                     const roleId = this.getAttribute('data-role-id');
 
-                    // Set loading content before showing modal
                     document.getElementById('roleModalLabel').textContent = 'Loading...';
                     document.getElementById('roleModalBody').innerHTML = `
                     <div class="text-center p-3">
                         <span class="spinner-border text-warning"></span> Fetching data...
                     </div>`;
 
-                    // Fetch data first, then show modal
                     fetch(`/roles/${roleId}`)
                         .then(res => res.json())
                         .then(data => {
-                            document.getElementById('roleModalLabel').textContent =
-                                'Role Info - ' + data.name;
+                            document.getElementById('roleModalLabel').textContent = 'Role Info - ' + data.name;
                             document.getElementById('roleModalBody').innerHTML = `
                             <table class="table table-bordered table-striped text-start">
                                 <tr><th>Name</th><td>${data.name}</td></tr>
@@ -164,23 +136,18 @@
                                 <tr><th>Status</th><td>${data.status ?? 'Active'}</td></tr>
                             </table>`;
 
-                            // Now show modal
-                            const modal = new bootstrap.Modal(document.getElementById(
-                                'roleModal'));
+                            const modal = new bootstrap.Modal(document.getElementById('roleModal'));
                             modal.show();
                         })
                         .catch(err => {
                             document.getElementById('roleModalBody').innerHTML = `
                             <div class="alert alert-danger">Error loading data.</div>`;
-                            // Show modal anyway to display error
-                            const modal = new bootstrap.Modal(document.getElementById(
-                                'roleModal'));
+
+                            const modal = new bootstrap.Modal(document.getElementById('roleModal'));
                             modal.show();
                         });
                 });
             });
         });
     </script>
-
-
 @endsection

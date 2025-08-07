@@ -19,7 +19,7 @@
 
     {{-- Custom Styles --}}
     <style>
-            @auth .sidebar {
+        @auth .sidebar {
                 width: 250px;
                 min-height: 100vh;
                 background: #343a40;
@@ -53,6 +53,12 @@
                 display: block;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s;
+            }
+
+            /* Add space between search input and table */
+            div.dataTables_filter {
+                margin-bottom: 1rem;
+                /* or use 16px / 20px if needed */
             }
 
             .glass-card:hover {
@@ -184,8 +190,7 @@
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{ route('departments.index') }}"
-                                                    class="nav-link text-warning">
+                                                <a href="{{ route('departments.index') }}" class="nav-link text-warning">
                                                     ▸ Department Master
                                                 </a>
                                             </li>

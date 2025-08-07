@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('unit.store') }}">
+                        <form method="POST" action="{{ route('departments.store') }}">
                             @csrf
                             <div class="row mb-4">
                                 <!-- Unit Name -->

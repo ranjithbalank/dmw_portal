@@ -31,9 +31,18 @@ class DepartmentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-        dd(request()->all());
+    { // Validate input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:departments,name',
+            'code' => 'required|string|max:10|unique:departments,code',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        // Save to database
+        Department::create($validated);
+
+        // Redirect back with success message
+        return redirect()->route('departments.index')->with('success', 'Department created successfully.');
     }
 
     /**
