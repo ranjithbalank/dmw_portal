@@ -19,7 +19,7 @@
 
     {{-- Custom Styles --}}
     <style>
-        @auth .sidebar {
+            @auth .sidebar {
                 width: 250px;
                 min-height: 100vh;
                 background: #343a40;
@@ -158,7 +158,6 @@
                 {{-- Sidebar for Desktop --}}
                 <aside class="sidebar d-flex flex-column p-3">
                     @auth
-
                         <ul class="nav flex-column">
                             {{-- Dashboard --}}
                             <li class="nav-item mb-2">
@@ -180,22 +179,23 @@
                                     <div class="collapse ps-3" id="mastersMenu">
                                         <ul class="nav flex-column mt-2">
                                             <li class="nav-item mb-1">
-                                                <a href="{{ route("unit.index") }}" class="nav-link text-white">
+                                                <a href="{{ route('unit.index') }}" class="nav-link text-warning">
                                                     ▸ Unit Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{route("departments.index") }}" class="nav-link text-white">
+                                                <a href="{{ route('departments.index') }}"
+                                                    class="nav-link text-warning">
                                                     ▸ Department Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{ route('roles.index') }}" class="nav-link text-white">
+                                                <a href="{{ route('roles.index') }}" class="nav-link text-warning">
                                                     ▸ Roles Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{ route('permissions.index') }}" class="nav-link text-white">
+                                                <a href="{{ route('permissions.index') }}" class="nav-link text-warning">
                                                     ▸ Permissions Master
                                                 </a>
                                             </li>

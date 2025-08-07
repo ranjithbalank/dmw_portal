@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-end mb-3">
                             <a href="{{ route('unit.create') }}" class="btn btn-success shadow-sm">
-                                <i class="bi bi-plus-circle"></i> Create Role
+                                <i class="bi bi-plus-circle"></i> Create Units
                             </a>
                         </div>
 
