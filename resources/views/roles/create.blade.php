@@ -35,7 +35,7 @@
                             <!-- Guard Name -->
                             <div class="col-md-6">
                                 <label for="guardname" class="form-label fw-bold">Guard Name</label>
-                                <select id="guardname" name="guardname"
+                                <select id="type_emp" name="guardname"
                                     class="form-select select2 @error('guardname') is-invalid @enderror" required>
                                     <option value="">-- Select --</option>
                                     <option value="web" {{ old('guardname') == 'web' ? 'selected' : '' }}>web</option>
@@ -47,9 +47,9 @@
                             </div>
 
                             <!-- Status -->
-                            <div class="col-md-6 mt-3">
+                            <div class="col-md-6 ">
                                 <label for="status" class="form-label fw-bold">Status</label>
-                                <select name="status" id="status"
+                                <select id="type_emp" name="status"
                                     class="form-select select2 @error('status') is-invalid @enderror" required>
                                     <option value="">-- Select Status --</option>
                                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>

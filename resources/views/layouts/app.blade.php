@@ -291,6 +291,16 @@
 
         @yield('scripts')
         @stack('scripts')
+
+        <script>
+            $(document).ready(function() {
+                $('.select2').select2({
+                    placeholder: '-- Select Status --',
+                    allowClear: true,
+                    width: '100%' // Ensures it matches Bootstrap width
+                });
+            });
+        </script>
     </body>
 
     </html>
