@@ -17,6 +17,7 @@ use App\Http\Controllers\CircularController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
+use App\Http\Controllers\AssignUnitPermissionController;
 use App\Http\Controllers\LeaveExportController;
 use App\Http\Controllers\InternalJobPostingController;
 
@@ -80,6 +81,9 @@ Auth::routes();
 Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // Assign Unit Permissions
+    Route::resource('assign-unit-permissions', AssignUnitPermissionController::class);
+    Route::post('/assign-unit-permissions/fetch', [AssignUnitPermissionController::class, 'fetch'])->name('assign-unit-permissions.fetch');
     // Departments
     Route::resource('departments', DepartmentController::class);
     // Units

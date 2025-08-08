@@ -113,34 +113,44 @@
                                         <ul class="nav flex-column mt-2">
                                             <li class="nav-item mb-1">
                                                 <a href="{{ route('unit.index') }}" class="nav-link text-warning">
-                                                    ▸ Unit Master
+                                                    Unit Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
                                                 <a href="{{ route('departments.index') }}" class="nav-link text-warning">
-                                                    ▸ Department Master
+                                                    Department Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
                                                 <a href="{{ route('roles.index') }}" class="nav-link text-warning">
-                                                    ▸ Roles Master
+                                                    Roles Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
                                                 <a href="{{ route('permissions.index') }}" class="nav-link text-warning">
-                                                    ▸ Permissions Master
+                                                    Permissions Master
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{{ '#' }}" class="nav-link text-warning">
+                                                   Module Master
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{{ route('assign-unit-permissions.index') }}" class="nav-link text-warning">
+                                                    Unit-Role Permissions
                                                 </a>
                                             </li>
 
                                             {{-- User Management --}}
                                             <li class="nav-item mb-2">
                                                 <a href="{{ route('users.index') }}" class="nav-link text-warning">
-                                                    ▸ Users
+                                                    Users
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-2">
                                                 <a href="{{ route('users.import_form') }}" class="nav-link text-warning">
-                                                    ▸ Bulk Import Users
+                                                    Bulk Import Users
                                                 </a>
                                             </li>
                                         </ul>
