@@ -23,7 +23,7 @@
                         <div class="d-flex justify-content-end mb-3">
                             @hasanyrole(['HR', 'Admin'])
                                 <a href="{{ route('assign-unit-permissions.create') }}" class="btn btn-success shadow-sm">
-                                    <i class="bi bi-person-plus"></i> Create Circular
+                                    <i class="bi bi-person-plus"></i> Assign New Unit Permission
                                 </a>
                             @endhasanyrole
                         </div>
