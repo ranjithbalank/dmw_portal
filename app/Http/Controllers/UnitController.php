@@ -71,7 +71,13 @@ class UnitController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Fetch the unit by ID
+        $unit = unit::findOrFail($id);
+
+        // Return the edit view with the unit data
+        return view('units.edit', [
+            'unit' => $unit,
+        ]);
     }
 
     /**
@@ -79,14 +85,39 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validate the request data
+        $validated = $request->validate([
+            'name'   => 'required|string|max:255',
+            'code'   => 'required|string|max:50',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        // Find the unit by ID
+        $unit = Unit::findOrFail($id);
+
+        // Update the unit
+        $unit->update($validated);
+
+        // Redirect back with success message
+        return redirect()->route('unit.index')
+                        ->with('success', 'Unit updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        // Find the unit
+        $unit = Unit::findOrFail($id);
+
+        // Delete the unit
+        $unit->delete();
+
+        // Redirect with success message
+        return redirect()->route('units.index')
+                        ->with('success', 'Unit deleted successfully.');
     }
+
 }

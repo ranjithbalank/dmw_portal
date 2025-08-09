@@ -24,7 +24,9 @@
                             <th>Code</th>
                             <th>Unit</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            @hasrole('Admin')
+                                <th>Action</th>
+                            @endhasrole
                         </tr>
                     </thead>
                     <tbody>
@@ -40,15 +42,23 @@
                                         <span class="btn btn-sm btn-success fw-bold">{{ ucfirst($unit->status) }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <a href="{{ route('unit.edit', $unit->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    {{-- <button type="button" class="btn btn-info btn-sm view-unit-btn"
-                                        data-unit-id="{{ $unit->id }}">
-                                        <i class="bi bi-eye"></i>
-                                    </button> --}}
-                                </td>
+                                @hasrole('Admin')
+                                    <td>
+                                        <a href="{{ route('unit.edit', $unit->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form action="{{ route('unit.destroy', $unit->id) }}" method="POST"
+                                            style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete this unit?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endhasrole
                             </tr>
                         @endforeach
                     </tbody>
