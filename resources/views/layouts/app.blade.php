@@ -16,6 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     {{-- Custom Styles --}}
     <style>
@@ -133,11 +134,12 @@
                                             </li>
                                             <li class="nav-item mb-1">
                                                 <a href="{{ route('modules.index') }}" class="nav-link text-warning">
-                                                   Module Master
+                                                    Module Master
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{ route('assign-unit-permissions.index') }}" class="nav-link text-warning">
+                                                <a href="{{ route('assign-unit-permissions.index') }}"
+                                                    class="nav-link text-warning">
                                                     Unit-Role Permissions
                                                 </a>
                                             </li>
