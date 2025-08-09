@@ -132,7 +132,7 @@
                                                 </a>
                                             </li>
                                             <li class="nav-item mb-1">
-                                                <a href="{{ '#' }}" class="nav-link text-warning">
+                                                <a href="{{ route('modules.index') }}" class="nav-link text-warning">
                                                    Module Master
                                                 </a>
                                             </li>

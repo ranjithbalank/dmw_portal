@@ -12,14 +12,15 @@ use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\CircularController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AssetTicketController;
-use App\Http\Controllers\AssignUnitPermissionController;
 use App\Http\Controllers\LeaveExportController;
 use App\Http\Controllers\InternalJobPostingController;
+use App\Http\Controllers\AssignUnitPermissionController;
 
 // commented NAMESPACES
 // use App\Exports\JobApplicantsExport;
@@ -88,6 +89,8 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('departments', DepartmentController::class);
     // Units
     Route::resource('unit', UnitController::class);
+    // MODULES
+    Route::resource('modules', ModuleController::class);
     // Users
     Route::resource('users', UserController::class);
 
