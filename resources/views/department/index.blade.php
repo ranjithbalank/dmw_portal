@@ -41,19 +41,27 @@
                                             <td class="text-start">{{ ucfirst($departments->name) }}</td>
                                             <td class="text-center">
                                                 @if ($departments->status == 'inactive')
-                                                    <span class="btn btn-sm btn-danger fw-bold">{{ ucfirst($departments->status) }}</span>
+                                                    <span
+                                                        class="btn btn-sm btn-danger fw-bold">{{ ucfirst($departments->status) }}</span>
                                                 @else
-                                                    <span class="btn btn-sm btn-success fw-bold">{{ ucfirst($departments->status) }}</span>
+                                                    <span
+                                                        class="btn btn-sm btn-success fw-bold">{{ ucfirst($departments->status) }}</span>
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('roles.edit', $departments->id) }}" class="btn btn-sm btn-primary">
+                                                <a href="{{ route('departments.edit', $departments->id) }}"
+                                                    class="btn btn-sm btn-primary">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                {{-- <button type="button" class="btn btn-info btn-sm view-role-btn"
-                                                    data-role-id="{{ $departments->id }}">
-                                                    <i class="bi bi-eye"></i>
-                                                </button> --}}
+                                                <form action="{{ route('departments.destroy', $departments->id) }}" method="POST"
+                                                    style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to delete this Department?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -102,7 +110,7 @@
     </style>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#departmentTable').DataTable({
                 responsive: true,
                 language: {
@@ -128,7 +136,8 @@
                     fetch(`/roles/${roleId}`)
                         .then(res => res.json())
                         .then(data => {
-                            document.getElementById('roleModalLabel').textContent = 'Role Info - ' + data.name;
+                            document.getElementById('roleModalLabel').textContent =
+                                'Role Info - ' + data.name;
                             document.getElementById('roleModalBody').innerHTML = `
                             <table class="table table-bordered table-striped text-start">
                                 <tr><th>Name</th><td>${data.name}</td></tr>
@@ -136,14 +145,16 @@
                                 <tr><th>Status</th><td>${data.status ?? 'Active'}</td></tr>
                             </table>`;
 
-                            const modal = new bootstrap.Modal(document.getElementById('roleModal'));
+                            const modal = new bootstrap.Modal(document.getElementById(
+                                'roleModal'));
                             modal.show();
                         })
                         .catch(err => {
                             document.getElementById('roleModalBody').innerHTML = `
                             <div class="alert alert-danger">Error loading data.</div>`;
 
-                            const modal = new bootstrap.Modal(document.getElementById('roleModal'));
+                            const modal = new bootstrap.Modal(document.getElementById(
+                                'roleModal'));
                             modal.show();
                         });
                 });

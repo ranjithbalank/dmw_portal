@@ -50,7 +50,7 @@ class DepartmentController extends Controller
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -59,6 +59,9 @@ class DepartmentController extends Controller
     public function edit(string $id)
     {
         //
+        return view('department.edit', [
+            'department' => Department::findOrFail($id),
+        ]);
     }
 
     /**
@@ -66,14 +69,34 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validate form data
+        $validated = $request->validate([
+            'name'   => 'required|string|max:255',
+            'code'   => 'required|string|max:50|unique:departments,code,' . $id,
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        // Find department by ID
+        $department = Department::findOrFail($id);
+
+        // Update department data
+        $department->update($validated);
+
+        // Redirect back with success message
+        return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $department = Department::findOrFail($id);
+
+        $department->delete();
+
+        return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');
     }
+
 }
